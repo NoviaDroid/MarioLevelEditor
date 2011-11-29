@@ -13,10 +13,10 @@ import java.awt.event.MouseListener;
 import java.awt.image.VolatileImage;
 import java.util.Random;
 
-import javax.sound.sampled.LineUnavailableException;
 import javax.swing.JComponent;
 
 import dk.itu.mariolevel.engine.scene.LevelScene;
+import dk.itu.mariolevel.engine.scene.PlayableScene;
 import dk.itu.mariolevel.engine.scene.Scene;
 import dk.itu.mariolevel.engine.sprites.Mario;
 
@@ -144,7 +144,6 @@ public class MarioComponent extends JComponent implements Runnable, KeyListener,
 
 		    public void run()
 		    {
-
 		        graphicsConfiguration = getGraphicsConfiguration();
 
 		        Art.init(graphicsConfiguration);
@@ -165,13 +164,8 @@ public class MarioComponent extends JComponent implements Runnable, KeyListener,
 		        float averagePassedTime = 0;
 
 		        boolean naiveTiming = true;
-		        if (isCustom)
-		        	toCustomGame();
-		        else
-		        toRandomGame();
 
-		        float correction = 0f;
-		        if(System.getProperty("os.name") == "Mac OS X");
+		        toRandomGame();
 
 		        while (running)
 		        {
@@ -218,7 +212,7 @@ public class MarioComponent extends JComponent implements Runnable, KeyListener,
 		            og.setColor(Color.WHITE);
 		            og.fillRect(0, 0, 320, 240);
 
-		            scene.render(og, alpha);
+		            //scene.render(og);
 
 		            if (!this.hasFocus() && tick/4%2==0)
 		            {
@@ -228,6 +222,9 @@ public class MarioComponent extends JComponent implements Runnable, KeyListener,
 		                drawString(og, msg, 160 - msg.length() * 4, 110, 7);
 		            }
 		            og.setColor(Color.BLACK);
+		            
+		            drawString(og, "FPS: " + fps, 5, 220, 0);
+		            drawString(og, "FPS: " + fps, 4, 219, 7);
 
 		            if (width != 320 || height != 240)
 		            {
@@ -304,21 +301,21 @@ public class MarioComponent extends JComponent implements Runnable, KeyListener,
 		    public static final int MINIMIZED_FIRST = 1;
 
 
-		    private LevelScene randomLevel;
+		    private PlayableScene randomLevel;
 
 
 		    /**
 		     * Part of the fun increaser
 		     */
 		    public void toRandomGame(){
-		    	randomLevel = new LevelSceneTest(graphicsConfiguration,this,new Random().nextLong(),0,0,false);
+		    	randomLevel = new LevelScene(graphicsConfiguration,this,new Random().nextLong(),0,0);
 
 		    	Mario.fire = false;
 		    	Mario.large = false;
 		    	Mario.coins = 0;
 		    	Mario.lives = 3;
 
-		    	randomLevel.init();
+		    	//randomLevel.init();
 		    	//randomLevel.setSound(sound);
 		    	scene = randomLevel;
 
@@ -326,14 +323,14 @@ public class MarioComponent extends JComponent implements Runnable, KeyListener,
 
 		    public void toCustomGame(){
 
-		    	randomLevel = new LevelSceneTest(graphicsConfiguration,this,new Random().nextLong(),0,0,true);
+		    	randomLevel = new LevelScene(graphicsConfiguration,this,new Random().nextLong(),0,0);
 
 		    	Mario.fire = false;
 		    	Mario.large = false;
 		    	Mario.coins = 0;
 		    	Mario.lives = 3;
 
-		    	randomLevel.init();
+		    	//randomLevel.init();
 		    	//randomLevel.setSound(sound);
 		    	scene = randomLevel;
 
@@ -382,12 +379,4 @@ public class MarioComponent extends JComponent implements Runnable, KeyListener,
 			public Dimension getPreferredSize(){
 				return new Dimension(width,height);
 			}
-
-
-
-
-
-
-
-
 }

@@ -3,7 +3,7 @@ package dk.itu.mariolevel.engine.sprites;
 import java.awt.Graphics;
 
 import dk.itu.mariolevel.engine.Art;
-import dk.itu.mariolevel.engine.scene.LevelScene;
+import dk.itu.mariolevel.engine.scene.PlayableScene;
 
 
 public class Enemy extends Sprite
@@ -27,7 +27,7 @@ public class Enemy extends Sprite
     int width = 4;
     int height = 24;
 
-    private LevelScene world;
+    private PlayableScene world;
     public int facing;
     public int deadTime = 0;
     public boolean flyDeath = false;
@@ -40,7 +40,7 @@ public class Enemy extends Sprite
     
     public boolean noFireballDeath;
 
-    public Enemy(LevelScene world, int x, int y, int dir, int type, boolean winged)
+    public Enemy(PlayableScene world, int x, int y, int dir, int type, boolean winged)
     {
         this.type = type;
         sheet = Art.enemies;
@@ -377,12 +377,12 @@ public class Enemy extends Sprite
         }
     }
 
-    public void render(Graphics og, float alpha)
+    public void render(Graphics og)
     {
         if (winged)
         {
-            int xPixel = (int) (xOld + (x - xOld) * alpha) - xPicO;
-            int yPixel = (int) (yOld + (y - yOld) * alpha) - yPicO;
+            int xPixel = (int) (xOld + (x - xOld)) - xPicO;
+            int yPixel = (int) (yOld + (y - yOld)) - yPicO;
 
             if (type == Enemy.ENEMY_GREEN_KOOPA || type == Enemy.ENEMY_RED_KOOPA)
             {
@@ -395,12 +395,12 @@ public class Enemy extends Sprite
             }
         }
 
-        super.render(og, alpha);
+        super.render(og);
 
         if (winged)
         {
-            int xPixel = (int) (xOld + (x - xOld) * alpha) - xPicO;
-            int yPixel = (int) (yOld + (y - yOld) * alpha) - yPicO;
+            int xPixel = (int) (xOld + (x - xOld)) - xPicO;
+            int yPixel = (int) (yOld + (y - yOld)) - yPicO;
 
             if (type == Enemy.ENEMY_GREEN_KOOPA || type == Enemy.ENEMY_RED_KOOPA)
             {

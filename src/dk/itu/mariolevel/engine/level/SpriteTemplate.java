@@ -1,6 +1,6 @@
 package dk.itu.mariolevel.engine.level;
 
-import dk.itu.mariolevel.engine.scene.LevelScene;
+import dk.itu.mariolevel.engine.scene.PlayableScene;
 import dk.itu.mariolevel.engine.sprites.Enemy;
 import dk.itu.mariolevel.engine.sprites.FlowerEnemy;
 import dk.itu.mariolevel.engine.sprites.Sprite;
@@ -20,7 +20,7 @@ public class SpriteTemplate
         this.winged = winged;
     }
     
-    public void spawn(LevelScene world, int x, int y, int dir)
+    public void spawn(PlayableScene world, int x, int y, int dir)
     {
         if (isDead) return;
 

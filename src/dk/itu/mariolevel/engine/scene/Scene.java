@@ -1,6 +1,5 @@
 package dk.itu.mariolevel.engine.scene;
 
-import java.awt.Graphics;
 
 
 public abstract class Scene
@@ -12,9 +11,5 @@ public abstract class Scene
         keys[key] = isPressed;
     }
 
-    public abstract void init();
-
     public abstract void tick();
-
-    public abstract void render(Graphics og, float alpha);
 }

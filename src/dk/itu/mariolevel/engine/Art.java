@@ -40,12 +40,12 @@ public class Art
     public static Image[][] particles;
     public static Image[][] font;
     public static Image[][] bg;
-    public static Image[][] map;
-    public static Image[][] endScene;
-    public static Image[][] gameOver;
-    public static Image logo;
-    public static Image titleScreen;
-    public static Image keys, abkey;
+//    public static Image[][] map;
+//    public static Image[][] endScene;
+//    public static Image[][] gameOver;
+//    public static Image logo;
+//    public static Image titleScreen;
+//    public static Image keys, abkey;
 
     //public static SonarSample[] samples = new SonarSample[100];
 
@@ -66,16 +66,16 @@ public class Art
             enemies = cutImage(gc, PREFIX+"/enemysheet.png", 16, 32);
             items = cutImage(gc,PREFIX+ "/itemsheet.png", 16, 16);
             level = cutImage(gc, PREFIX+"/mapsheet.png", 16, 16);
-            map = cutImage(gc, PREFIX+"/worldmap.png", 16, 16);
+//            map = cutImage(gc, PREFIX+"/worldmap.png", 16, 16);
             particles = cutImage(gc, PREFIX+"/particlesheet.png", 8, 8);
             bg = cutImage(gc,PREFIX+ "/bgsheet.png", 32, 32);
-            logo = getImage(gc, PREFIX+"/logo.gif");
-            titleScreen = getImage(gc, PREFIX+"/title.gif");
+//            logo = getImage(gc, PREFIX+"/logo.gif");
+//            titleScreen = getImage(gc, PREFIX+"/title.gif");
             font = cutImage(gc, PREFIX+"/font.gif", 8, 8);
-            endScene = cutImage(gc,PREFIX+ "/endscene.gif", 96, 96);
-            gameOver = cutImage(gc, PREFIX+"/gameovergost.gif", 96, 64);
-            keys = getImage(gc, PREFIX+"/keys.png");
-            abkey = getImage(gc, PREFIX+"/abkey.png");
+//            endScene = cutImage(gc,PREFIX+ "/endscene.gif", 96, 96);
+//            gameOver = cutImage(gc, PREFIX+"/gameovergost.gif", 96, 64);
+//            keys = getImage(gc, PREFIX+"/keys.png");
+//            abkey = getImage(gc, PREFIX+"/abkey.png");
 
 //            if (sound != null)
 //            {

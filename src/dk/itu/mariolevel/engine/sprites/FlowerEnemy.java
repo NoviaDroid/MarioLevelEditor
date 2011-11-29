@@ -1,15 +1,15 @@
 package dk.itu.mariolevel.engine.sprites;
 
-import dk.itu.mariolevel.engine.scene.LevelScene;
+import dk.itu.mariolevel.engine.scene.PlayableScene;
 
 public class FlowerEnemy extends Enemy
 {
     private int tick;
     private int yStart;
     private int jumpTime = 0;
-    private LevelScene world;
+    private PlayableScene world;
     
-    public FlowerEnemy(LevelScene world, int x, int y)
+    public FlowerEnemy(PlayableScene world, int x, int y)
     {
         super(world, x, y, 1, ENEMY_SPIKY, false);
         

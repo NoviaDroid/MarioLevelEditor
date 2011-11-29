@@ -1,9 +1,11 @@
 package dk.itu.mariolevel.engine.sprites;
 
 
+import dk.itu.mariolevel.ai.environments.MultipleAIEnvironment;
 import dk.itu.mariolevel.engine.Art;
 import dk.itu.mariolevel.engine.level.Level;
-import dk.itu.mariolevel.engine.scene.LevelScene;
+import dk.itu.mariolevel.engine.scene.PlayableScene;
+import dk.itu.mariolevel.engine.scene.RenderScene;
 import dk.itu.mariolevel.engine.scene.Scene;
 
 
@@ -31,6 +33,10 @@ public class Mario extends Sprite
     public static final int KEY_JUMP = 4;
     public static final int KEY_SPEED = 5;
 
+    public static final int STATUS_RUNNING = 2;
+    public static final int STATUS_WIN = 1;
+    public static final int STATUS_DEAD = 0;
+    
     private static float GROUND_INERTIA = 0.89f;
     private static float AIR_INERTIA = 0.89f;
 
@@ -45,11 +51,12 @@ public class Mario extends Sprite
     private float xJumpSpeed;
     private float yJumpSpeed;
     private boolean canShoot = false;
+    private int status = STATUS_RUNNING;
 
     int width = 4;
     int height = 24;
 
-    private LevelScene world;
+    private static PlayableScene world;
     public int facing;
     private int powerUpTime = 0;
 
@@ -62,19 +69,19 @@ public class Mario extends Sprite
     public Sprite carried = null;
     private static Mario instance;
 
-    public Mario(LevelScene world)
+    public Mario(PlayableScene world)
     {
         Mario.instance = this;
         this.world = world;
+        x = world.getMarioInitialPos().x;
+        y = world.getMarioInitialPos().y;
         keys = Scene.keys;
-        x = 32;
-        y = 0;
-
+        
         facing = 1;
         setLarge(Mario.large, Mario.fire);
     }
     
-    private boolean lastLarge;
+	private boolean lastLarge;
     private boolean lastFire;
     private boolean newLarge;
     private boolean newFire;
@@ -167,8 +174,6 @@ public class Mario extends Sprite
                 powerUpTime++;
                 blink(((-powerUpTime / 3) & 1) == 0);
             }
-
-            if (powerUpTime == 0) world.paused = false;
 
             calcPic();
             return;
@@ -490,7 +495,7 @@ public class Mario extends Sprite
             x += xa;
             y += ya;
             return true;
-        }
+        }   
     }
 
     private boolean isBlocking(float _x, float _y, float xa, float ya)
@@ -523,7 +528,7 @@ public class Mario extends Sprite
 
     public void stomp(Enemy enemy)
     {
-        if (deathTime > 0 || world.paused) return;
+        if (deathTime > 0) return;
 
         float targetY = enemy.y - enemy.height / 2;
         move(0, targetY - y);
@@ -536,11 +541,12 @@ public class Mario extends Sprite
         onGround = false;
         sliding = false;
         invulnerableTime = 1;
+        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.stomp);
     }
 
     public void stomp(Shell shell)
     {
-        if (deathTime > 0 || world.paused) return;
+        if (deathTime > 0) return;
 
         if (keys[KEY_SPEED] && shell.facing == 0)
         {
@@ -561,16 +567,18 @@ public class Mario extends Sprite
             sliding = false;
             invulnerableTime = 1;
         }
+        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.stomp);
     }
 
     public void getHurt()
     {
-        if (deathTime > 0 || world.paused) return;
+        if (deathTime > 0) return;
         if (invulnerableTime > 0) return;
 
+        world.appendBonusPoints(-MultipleAIEnvironment.IntermediateRewardsSystemOfValues.kills);
+        
         if (large)
         {
-            world.paused = true;
             powerUpTime = -3 * 6;
             //world.sound.play(Art.samples[Art.SAMPLE_MARIO_POWER_DOWN], this, 1, 1, 1);
             if (fire)
@@ -588,13 +596,20 @@ public class Mario extends Sprite
             die();
         }
     }
+    
+    public static void getHiddenBlock()
+    {
+        //++hiddenBlocksFound;
+        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.hiddenBlock);
+    }
 
     private void win()
     {
         xDeathPos = (int) x;
         yDeathPos = (int) y;
-        world.paused = true;
         winTime = 1;
+        status = STATUS_WIN;
+        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.win);
         //Art.stopMusic();
         //world.sound.play(Art.samples[Art.SAMPLE_LEVEL_EXIT], this, 1, 1, 1);
     }
@@ -603,8 +618,11 @@ public class Mario extends Sprite
     {
         xDeathPos = (int) x;
         yDeathPos = (int) y;
-        world.paused = true;
         deathTime = 1;
+        status = STATUS_DEAD;
+        world.appendBonusPoints(-MultipleAIEnvironment.IntermediateRewardsSystemOfValues.win / 2);
+        
+        world.politeReset();
         //Art.stopMusic();
         //world.sound.play(Art.samples[Art.SAMPLE_MARIO_DEATH], this, 1, 1, 1);
     }
@@ -612,11 +630,10 @@ public class Mario extends Sprite
 
     public void getFlower()
     {
-        if (deathTime > 0 || world.paused) return;
+        if (deathTime > 0) return;
 
         if (!fire)
         {
-            world.paused = true;
             powerUpTime = 3 * 6;
             //world.sound.play(Art.samples[Art.SAMPLE_MARIO_POWER_UP], this, 1, 1, 1);
             world.mario.setLarge(true, true);
@@ -626,15 +643,15 @@ public class Mario extends Sprite
             Mario.getCoin();
             //world.sound.play(Art.samples[Art.SAMPLE_GET_COIN], this, 1, 1, 1);
         }
+        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.flowerFire);
     }
 
     public void getMushroom()
     {
-        if (deathTime > 0 || world.paused) return;
+        if (deathTime > 0) return;
 
         if (!large)
         {
-            world.paused = true;
             powerUpTime = 3 * 6;
             //world.sound.play(Art.samples[Art.SAMPLE_MARIO_POWER_UP], this, 1, 1, 1);
             world.mario.setLarge(true, false);
@@ -644,11 +661,12 @@ public class Mario extends Sprite
             Mario.getCoin();
             //world.sound.play(Art.samples[Art.SAMPLE_GET_COIN], this, 1, 1, 1);
         }
+        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.mushroom);
     }
 
     public void kick(Shell shell)
     {
-        if (deathTime > 0 || world.paused) return;
+        if (deathTime > 0) return;
 
         if (keys[KEY_SPEED])
         {
@@ -664,7 +682,7 @@ public class Mario extends Sprite
 
     public void stomp(BulletBill bill)
     {
-        if (deathTime > 0 || world.paused) return;
+        if (deathTime > 0) return;
 
         float targetY = bill.y - bill.height / 2;
         move(0, targetY - y);
@@ -677,6 +695,7 @@ public class Mario extends Sprite
         onGround = false;
         sliding = false;
         invulnerableTime = 1;
+        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.stomp);
     }
 
     public byte getKeyMask()
@@ -715,5 +734,31 @@ public class Mario extends Sprite
             coins = 0;
             get1Up();
         }
+        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.coins);
+    }
+    
+    public int getMode()
+    {
+        return ((large) ? 1 : 0) + ((fire) ? 1 : 0);
+    }
+    
+    public boolean isOnGround()
+    {
+        return onGround;
+    }
+    
+    public boolean mayJump()
+    {
+        return mayJump;
+    }
+
+    public boolean isAbleToShoot()
+    {
+        return canShoot;
+    }
+    
+    public int getStatus()
+    {
+        return status;
     }
 }

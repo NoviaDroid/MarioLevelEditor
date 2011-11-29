@@ -1,7 +1,7 @@
 package dk.itu.mariolevel.engine.sprites;
 
 import dk.itu.mariolevel.engine.Art;
-import dk.itu.mariolevel.engine.scene.LevelScene;
+import dk.itu.mariolevel.engine.scene.PlayableScene;
 
 
 public class Fireball extends Sprite
@@ -15,7 +15,7 @@ public class Fireball extends Sprite
     private int width = 4;
     int height = 24;
 
-    private LevelScene world;
+    private PlayableScene world;
     public int facing;
 
     public boolean avoidCliffs = false;
@@ -24,7 +24,7 @@ public class Fireball extends Sprite
     public boolean dead = false;
     private int deadTime = 0;
 
-    public Fireball(LevelScene world, float x, float y, int facing)
+    public Fireball(PlayableScene world, float x, float y, int facing)
     {
         sheet = Art.particles;
 
@@ -44,7 +44,7 @@ public class Fireball extends Sprite
         ya = 4;
     }
 
-    public void move()
+	public void move()
     {
         if (deadTime > 0)
         {

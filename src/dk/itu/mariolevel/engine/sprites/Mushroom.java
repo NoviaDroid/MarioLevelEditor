@@ -1,7 +1,7 @@
 package dk.itu.mariolevel.engine.sprites;
 
 import dk.itu.mariolevel.engine.Art;
-import dk.itu.mariolevel.engine.scene.LevelScene;
+import dk.itu.mariolevel.engine.scene.PlayableScene;
 
 
 public class Mushroom extends Sprite
@@ -19,13 +19,13 @@ public class Mushroom extends Sprite
     private int width = 4;
     int height = 24;
 
-    private LevelScene world;
+    private PlayableScene world;
     public int facing;
 
     public boolean avoidCliffs = false;
     private int life;
 
-    public Mushroom(LevelScene world, int x, int y)
+    public Mushroom(PlayableScene world, int x, int y)
     {
         sheet = Art.items;
 

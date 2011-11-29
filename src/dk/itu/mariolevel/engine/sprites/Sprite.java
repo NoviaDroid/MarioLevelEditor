@@ -7,9 +7,38 @@ import dk.itu.mariolevel.engine.level.SpriteTemplate;
 
 public class Sprite
 {
+	public static final int KIND_NONE = 0;
+	public static final int KIND_MARIO = -31;
+	public static final int KIND_GOOMBA = 80;
+	public static final int KIND_GOOMBA_WINGED = 95;
+	public static final int KIND_RED_KOOPA = 82;
+	public static final int KIND_RED_KOOPA_WINGED = 97;
+	public static final int KIND_GREEN_KOOPA = 81;
+	public static final int KIND_GREEN_KOOPA_WINGED = 96;
+	public static final int KIND_BULLET_BILL = 84;
+	public static final int KIND_SPIKY = 93;
+	public static final int KIND_SPIKY_WINGED = 99;
+//	    public static final int KIND_ENEMY_FLOWER = 11;
+	public static final int KIND_ENEMY_FLOWER = 91;
+	public static final int KIND_WAVE_GOOMBA = 98; // TODO: !H!: same
+	public static final int KIND_SHELL = 13;
+	public static final int KIND_MUSHROOM = 2;
+	public static final int KIND_GREEN_MUSHROOM = 9;
+	public static final int KIND_PRINCESS = 49;
+	public static final int KIND_FIRE_FLOWER = 3;
+	public static final int KIND_PARTICLE = 21;
+	public static final int KIND_SPARCLE = 22;
+	public static final int KIND_COIN_ANIM = 1;
+	public static final int KIND_FIREBALL = 25;
+	
+	public static final int KIND_UNDEF = -42;
+	
     public static SpriteContext spriteContext;
+    public byte kind = KIND_UNDEF;
     
     public float xOld, yOld, x, y, xa, ya;
+    
+    public int mapX, mapY;
     
     public int xPic, yPic;
     public int wPic = 32;
@@ -30,47 +59,27 @@ public class Sprite
         y+=ya;
     }
     
-    public void render(Graphics og, float alpha)
+    public void render(Graphics og)
     {
         if (!visible) return;
         
-        int xPixel = (int)(xOld+(x-xOld)*alpha)-xPicO;
-        int yPixel = (int)(yOld+(y-yOld)*alpha)-yPicO;
+        int xPixel = (int) x - xPicO;
+        int yPixel = (int) y - yPicO;
 
-        og.drawImage(sheet[xPic][yPic], xPixel+(xFlipPic?wPic:0), yPixel+(yFlipPic?hPic:0), xFlipPic?-wPic:wPic, yFlipPic?-hPic:hPic, null);
+        og.drawImage(sheet[xPic][yPic],
+                xPixel + (xFlipPic ? wPic : 0),
+                yPixel + (yFlipPic ? hPic : 0),
+                xFlipPic ? -wPic : wPic,
+                yFlipPic ? -hPic : hPic, null);
     }
-    
-/*  private void blit(Graphics og, Image bitmap, int x0, int y0, int x1, int y1, int w, int h)
-    {
-        if (!xFlipPic)
-        {
-            if (!yFlipPic)
-            {
-                og.drawImage(bitmap, x0, y0, x0+w, y0+h, x1, y1, x1+w, y1+h, null);
-            }
-            else
-            {
-                og.drawImage(bitmap, x0, y0, x0+w, y0+h, x1, y1+h, x1+w, y1, null);
-            }
-        }
-        else
-        {
-            if (!yFlipPic)
-            {
-                og.drawImage(bitmap, x0, y0, x0+w, y0+h, x1+w, y1, x1, y1+h, null);
-            }
-            else
-            {
-                og.drawImage(bitmap, x0, y0, x0+w, y0+h, x1+w, y1+h, x1, y1, null);
-            }
-        }
-    }*/
 
     public final void tick()
     {
         xOld = x;
         yOld = y;
         move();
+        mapY = (int) (y / 16);
+        mapX = (int) (x / 16);
     }
 
     public final void tickNoMove()
@@ -109,5 +118,10 @@ public class Sprite
     public boolean fireballCollideCheck(Fireball fireball)
     {
         return false;
+    }
+    
+    public boolean isDead()
+    {
+        return spriteTemplate != null && spriteTemplate.isDead;
     }
 }
