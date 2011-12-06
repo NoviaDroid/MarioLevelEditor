@@ -117,7 +117,7 @@ public class LevelRenderer
                         animTime = 2;
                     }
                     int yo = 0;
-                    if (x >= 0 && y >= 0 && x < level.width && y < level.height) yo = level.data[x][y];
+                    if (x >= 0 && y >= 0 && x < level.length && y < level.height) yo = level.data[x][y];
                     if (yo > 0) yo = (int) (Math.sin(yo / 4.0f * Math.PI) * 8);
                     if (yo < 0) yo = 0;
                     g.drawImage(Art.level[(b % 16) / 4 * 4 + animTime][b / 16], (x << 4) - xCam, (y << 4) - yCam - yo, null);

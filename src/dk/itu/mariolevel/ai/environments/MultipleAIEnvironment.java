@@ -1,11 +1,7 @@
 package dk.itu.mariolevel.ai.environments;
 
 
-import java.awt.GraphicsConfiguration;
-import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -20,9 +16,8 @@ import dk.itu.mariolevel.ai.agents.RandomAgent;
 import dk.itu.mariolevel.engine.Replayer;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.level.LevelGenerator;
-import dk.itu.mariolevel.engine.scene.LevelScene;
+import dk.itu.mariolevel.engine.scene.AIScene;
 import dk.itu.mariolevel.engine.scene.RenderScene;
-import dk.itu.mariolevel.engine.sprites.Mario;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
 public class MultipleAIEnvironment implements Environment {
@@ -31,13 +26,13 @@ public class MultipleAIEnvironment implements Environment {
 	
 	public static SystemOfValues IntermediateRewardsSystemOfValues = new SystemOfValues();
 	
-	private HashMap<Agent, LevelScene> aiPairs;
+	private HashMap<Agent, AIScene> aiPairs;
 	
 	private int[] marioEgoPos = new int[]{9,9};
 	private int receptiveFieldHeight = 19; // to be setup via MarioAIOptions
 	private int receptiveFieldWidth = 19; // to be setup via MarioAIOptions
 	
-	private HashMap<Agent, byte[][]> levelSceneZ;
+	private HashMap<Agent, byte[][]> aiSceneZ;
 	//private byte[][] levelSceneZ;     // memory is allocated in reset
 	private HashMap<Agent, byte[][]> enemiesZ;
 	//private byte[][] enemiesZ;      // memory is allocated in reset
@@ -45,38 +40,43 @@ public class MultipleAIEnvironment implements Environment {
 	private HashMap<Agent, byte[][]> mergedZZ;
 	//private byte[][] mergedZZ;      // memory is allocated in reset
 
-	private HashMap<Agent, int[]> serializedLevelScene;
+	private HashMap<Agent, int[]> serializedAiScene;
 	//private int[] serializedLevelScene;   // memory is allocated in reset
 	private HashMap<Agent, int[]> serializedEnemies;
 	//private int[] serializedEnemies;      // memory is allocated in reset
 	private HashMap<Agent, int[]> serializedMergedObservation;
 	//private int[] serializedMergedObservation; // memory is allocated in reset
 	
-	//private RenderScene renderScene;
+	private RenderScene renderScene;
 	
 	public Level level;
 	
-	private GraphicsConfiguration graphicsConfiguration;
-	
-	public MultipleAIEnvironment(GraphicsConfiguration graphicsConfiguration) {	
-		this.graphicsConfiguration = graphicsConfiguration;
-		
+	public MultipleAIEnvironment() {	
 		// Generate the level
 		level = LevelGenerator.createLevel(320, 15, new Random().nextLong(),0,0);
+//		try {
+//			level = Level.load(new ObjectInputStream(new FileInputStream("test.lvl")));
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
+		renderScene = new RenderScene(new Level(level));
 		
-		//renderScene = new RenderScene(level);
-		
-		aiPairs = new HashMap<Agent, LevelScene>();
+		aiPairs = new HashMap<Agent, AIScene>();
 	}
 
 	
 	@Override
 	public void tick() {
-		//renderScene.tick();
+		renderScene.tick();
 		
 		// Tick each level scene
-		for(LevelScene levelScene : aiPairs.values()) {
-			levelScene.tick();
+		for(AIScene aiScene : aiPairs.values()) {
+			aiScene.tick();
 		}
 		
 		// for each agent
@@ -85,9 +85,9 @@ public class MultipleAIEnvironment implements Environment {
 			agent.integrateObservation(this);
 		}
 		
-		// for each      agent / levelscene
+		// for each      agent / aiscene
 		//          get action / perform action
-		for(Entry<Agent, LevelScene> pair : aiPairs.entrySet()) {
+		for(Entry<Agent, AIScene> pair : aiPairs.entrySet()) {
 			pair.getValue().performAction(pair.getKey().getAction());
 		}
 	}
@@ -95,15 +95,15 @@ public class MultipleAIEnvironment implements Environment {
 	
 	@Override
 	public void reset() {
-        serializedLevelScene = new HashMap<Agent, int[]>();
+        serializedAiScene = new HashMap<Agent, int[]>();
         serializedEnemies = new HashMap<Agent, int[]>();
         serializedMergedObservation = new HashMap<Agent, int[]>();
         
-        levelSceneZ = new HashMap<Agent, byte[][]>();
+        aiSceneZ = new HashMap<Agent, byte[][]>();
         enemiesZ = new HashMap<Agent, byte[][]>();
         mergedZZ = new HashMap<Agent, byte[][]>();
         
-        //renderScene.reset();
+        renderScene.reset();
         
         aiPairs.clear();
 //		for(LevelScene levelScene : aiPairs.values()) {
@@ -115,30 +115,14 @@ public class MultipleAIEnvironment implements Environment {
 	    addAgent(new RandomAgent());
 	}
 	
-	private Agent followAgent;
-	
-	public Mario getMarioToFollow()
-	{
-		Mario mario = aiPairs.get(followAgent).mario;
-		
-		//renderScene.mario = mario;
-		
-		return mario;
-	}
-	
 	public List<Sprite> getSprites()
 	{
 		ArrayList<Sprite> returnSprites = new ArrayList<Sprite>();
 		
-		//returnSprites.addAll(renderScene.sprites);		
+		returnSprites.addAll(renderScene.sprites);		
 		
-		//LevelScene blug = null;
-		for(LevelScene levelScene : aiPairs.values()) {
-			returnSprites.addAll(levelScene.sprites);
-		}
-	
-		for(LevelScene levelScene : aiPairs.values()) {
-			returnSprites.add(levelScene.mario);
+		for(AIScene aiscene : aiPairs.values()) {
+			returnSprites.add(aiscene.mario);
 		}
 		//returnSprites.addAll(blug.sprites);
 		
@@ -147,28 +131,24 @@ public class MultipleAIEnvironment implements Environment {
 	
 	public int getTick()
 	{
-		for(LevelScene levelScene : aiPairs.values()) {
-			return levelScene.tickCount;
-		
-		}
-		return 0;
-		
-	    //return renderScene.tickCount;
+//		for(LevelScene levelScene : aiPairs.values()) {
+//			return levelScene.tickCount;
+//		
+//		}
+//		return 0;
+//		
+	    return renderScene.tickCount;
 	}
 	
 	public void addAgent(Agent agent) {
-		// Each agent gets it's own copy of a levelscene
-		LevelScene levelScene = new LevelScene(graphicsConfiguration, null, level);
-		levelScene.reset();
+		// Each agent gets it's own copy of a aiscene
+		AIScene aiScene = new AIScene(new Level(level));
+		aiScene.reset();
 		
-		aiPairs.put(agent, levelScene);
-		
-		//renderScene.mario = levelScene.mario;
-		
+		aiPairs.put(agent, aiScene);
+
 		agent.reset();
 		agent.setObservationDetails(receptiveFieldWidth, receptiveFieldHeight,marioEgoPos[0],marioEgoPos[1]);
-		
-		followAgent = agent;
 	}
 	
 	@Override
@@ -248,41 +228,41 @@ public class MultipleAIEnvironment implements Environment {
 	}
 
 	@Override
-	public byte[][] getMergedObservationZZ(Agent agent, int ZLevelScene, int ZLevelEnemies) {
+	public byte[][] getMergedObservationZZ(Agent agent, int ZaiScene, int ZLevelEnemies) {
 		if(!aiPairs.containsKey(agent)) return null;
 		
-		LevelScene levelScene = aiPairs.get(agent);
+		AIScene aiScene = aiPairs.get(agent);
 		
 		int mCol = marioEgoPos[1];
 		int mRow = marioEgoPos[0];
 		
 		byte[][] mergedZZ = new byte[receptiveFieldHeight][receptiveFieldWidth];
 		
-		for (int y = levelScene.mario.mapY - mRow, row = 0; y <= levelScene.mario.mapY + (receptiveFieldHeight - mRow - 1); y++, row++)
+		for (int y = aiScene.mario.mapY - mRow, row = 0; y <= aiScene.mario.mapY + (receptiveFieldHeight - mRow - 1); y++, row++)
 		{
-			for (int x = levelScene.mario.mapX - mCol, col = 0; x <= levelScene.mario.mapX + (receptiveFieldWidth - mCol - 1); x++, col++)
+			for (int x = aiScene.mario.mapX - mCol, col = 0; x <= aiScene.mario.mapX + (receptiveFieldWidth - mCol - 1); x++, col++)
 			{
-				if (x >= 0 && x < levelScene.level.xExit && y >= 0 && y < levelScene.level.height)
-					mergedZZ[row][col] = GeneralizerLevelScene.ZLevelGeneralization(levelScene.level.map[x][y], ZLevelScene);	
+				if (x >= 0 && x < aiScene.level.xExit && y >= 0 && y < aiScene.level.height)
+					mergedZZ[row][col] = GeneralizerLevelScene.ZLevelGeneralization(aiScene.level.map[x][y], ZaiScene);	
 				else
 					mergedZZ[row][col] = 0;
 		    }
 		}
 		    
-	    for (Sprite sprite : levelScene.sprites)
+	    for (Sprite sprite : aiScene.sprites)
 	    {
-	        if (sprite.isDead() || sprite.kind == levelScene.mario.kind)
+	        if (sprite.isDead() || sprite.kind == aiScene.mario.kind)
 	            continue;
 	        if (sprite.mapX >= 0 &&
-	                sprite.mapX >= levelScene.mario.mapX - mCol &&
-	                sprite.mapX <= levelScene.mario.mapX + (receptiveFieldWidth - mCol - 1) &&
+	                sprite.mapX >= aiScene.mario.mapX - mCol &&
+	                sprite.mapX <= aiScene.mario.mapX + (receptiveFieldWidth - mCol - 1) &&
 	                sprite.mapY >= 0 &&
-	                sprite.mapY >= levelScene.mario.mapY - mRow &&
-	                sprite.mapY <= levelScene.mario.mapY + (receptiveFieldHeight - mRow - 1) &&
+	                sprite.mapY >= aiScene.mario.mapY - mRow &&
+	                sprite.mapY <= aiScene.mario.mapY + (receptiveFieldHeight - mRow - 1) &&
 	                sprite.kind != Sprite.KIND_PRINCESS)
 	        {
-	            int row = sprite.mapY - levelScene.mario.mapY + mRow;
-	            int col = sprite.mapX - levelScene.mario.mapX + mCol;
+	            int row = sprite.mapY - aiScene.mario.mapY + mRow;
+	            int col = sprite.mapX - aiScene.mario.mapX + mCol;
 	            byte tmp = GeneralizerEnemies.ZLevelGeneralization(sprite.kind, ZLevelEnemies);
 	            if (tmp != Sprite.KIND_NONE)
 	                mergedZZ[row][col] = tmp;
@@ -298,7 +278,7 @@ public class MultipleAIEnvironment implements Environment {
 	public byte[][] getLevelSceneObservationZ(Agent agent, int ZLevel) {
 		if(!aiPairs.containsKey(agent)) return null;
 		
-		LevelScene levelScene = aiPairs.get(agent);
+		AIScene aiScene = aiPairs.get(agent);
 		
 		if(!mergedZZ.containsKey(agent))
 			this.mergedZZ.put(agent, new byte[receptiveFieldHeight][receptiveFieldWidth]);
@@ -308,32 +288,32 @@ public class MultipleAIEnvironment implements Environment {
 	    int mCol = marioEgoPos[1];
 	    int mRow = marioEgoPos[0];
 	    
-	    byte[][] levelSceneZ = new byte[receptiveFieldHeight][receptiveFieldWidth];
+	    byte[][] aiSceneZ = new byte[receptiveFieldHeight][receptiveFieldWidth];
 	    
-	    for (int y = levelScene.mario.mapY - mRow, row = 0; y <= levelScene.mario.mapY + (receptiveFieldHeight - mRow - 1); y++, row++)
+	    for (int y = aiScene.mario.mapY - mRow, row = 0; y <= aiScene.mario.mapY + (receptiveFieldHeight - mRow - 1); y++, row++)
 	    {
-	        for (int x = levelScene.mario.mapX - mCol, col = 0; x <= levelScene.mario.mapX + (receptiveFieldWidth - mCol - 1); x++, col++)
+	        for (int x = aiScene.mario.mapX - mCol, col = 0; x <= aiScene.mario.mapX + (receptiveFieldWidth - mCol - 1); x++, col++)
 	        {
-	            if (x >= 0 && x < levelScene.level.width && y >= 0 && y < levelScene.level.height)
+	            if (x >= 0 && x < aiScene.level.length && y >= 0 && y < aiScene.level.height)
 	            {
-	                mergedZZ[row][col] = levelSceneZ[row][col] = GeneralizerLevelScene.ZLevelGeneralization(levelScene.level.map[x][y], ZLevel);
+	                mergedZZ[row][col] = aiSceneZ[row][col] = GeneralizerLevelScene.ZLevelGeneralization(aiScene.level.map[x][y], ZLevel);
 	            } else
 	            {
-	                mergedZZ[row][col] = levelSceneZ[row][col] = 0;
+	                mergedZZ[row][col] = aiSceneZ[row][col] = 0;
 	            }
 	        }
 	    }
 	    
-	    this.levelSceneZ.put(agent, levelSceneZ);
+	    this.aiSceneZ.put(agent, aiSceneZ);
 	    
-	    return levelSceneZ;
+	    return aiSceneZ;
 	}
 
 	@Override
 	public byte[][] getEnemiesObservationZ(Agent agent, int ZLevel) {
 		if(!aiPairs.containsKey(agent)) return null;
 		
-		LevelScene levelScene = aiPairs.get(agent);
+		AIScene aiScene = aiPairs.get(agent);
 		
 		if(!mergedZZ.containsKey(agent))
 			this.mergedZZ.put(agent, new byte[receptiveFieldHeight][receptiveFieldWidth]);
@@ -348,20 +328,20 @@ public class MultipleAIEnvironment implements Environment {
 	    for (int w = 0; w < enemiesZ.length; w++)
 	        for (int h = 0; h < enemiesZ[0].length; h++)
 	            enemiesZ[w][h] = 0;
-	    for (Sprite sprite : levelScene.sprites)
+	    for (Sprite sprite : aiScene.sprites)
 	    {
-	        if (sprite.isDead() || sprite.kind == levelScene.mario.kind)
+	        if (sprite.isDead() || sprite.kind == aiScene.mario.kind)
 	            continue;
 	        if (sprite.mapX >= 0 &&
-	                sprite.mapX >= levelScene.mario.mapX - marioEgoCol &&
-	                sprite.mapX <= levelScene.mario.mapX + (receptiveFieldWidth - marioEgoCol - 1) &&
+	                sprite.mapX >= aiScene.mario.mapX - marioEgoCol &&
+	                sprite.mapX <= aiScene.mario.mapX + (receptiveFieldWidth - marioEgoCol - 1) &&
 	                sprite.mapY >= 0 &&
-	                sprite.mapY >= levelScene.mario.mapY - marioEgoRow &&
-	                sprite.mapY <= levelScene.mario.mapY + (receptiveFieldHeight - marioEgoRow - 1) &&
+	                sprite.mapY >= aiScene.mario.mapY - marioEgoRow &&
+	                sprite.mapY <= aiScene.mario.mapY + (receptiveFieldHeight - marioEgoRow - 1) &&
 	                sprite.kind != Sprite.KIND_PRINCESS)
 	        {
-	            int row = sprite.mapY - levelScene.mario.mapY + marioEgoRow;
-	            int col = sprite.mapX - levelScene.mario.mapX + marioEgoCol;
+	            int row = sprite.mapY - aiScene.mario.mapY + marioEgoRow;
+	            int col = sprite.mapX - aiScene.mario.mapX + marioEgoCol;
 
 	            mergedZZ[row][col] = enemiesZ[row][col] = GeneralizerEnemies.ZLevelGeneralization(sprite.kind, ZLevel);
 	        }
@@ -373,36 +353,36 @@ public class MultipleAIEnvironment implements Environment {
 	}
 
 	@Override
-	public int[] getSerializedFullObservationZZ(Agent agent, int ZLevelScene, int ZLevelEnemies) {
+	public int[] getSerializedFullObservationZZ(Agent agent, int ZaiScene, int ZLevelEnemies) {
 	    int[] obs = new int[receptiveFieldHeight * receptiveFieldWidth * 2 + 11]; // 11 is a size of the MarioState array
 
 	    int receptiveFieldSize = receptiveFieldWidth * receptiveFieldHeight;
 
-	    System.arraycopy(getSerializedLevelSceneObservationZ(agent, ZLevelScene), 0, obs, 0, receptiveFieldSize);
-	    System.arraycopy(getSerializedEnemiesObservationZ(agent, ZLevelScene), 0, obs, receptiveFieldSize, receptiveFieldSize);
+	    System.arraycopy(getSerializedLevelSceneObservationZ(agent, ZaiScene), 0, obs, 0, receptiveFieldSize);
+	    System.arraycopy(getSerializedEnemiesObservationZ(agent, ZaiScene), 0, obs, receptiveFieldSize, receptiveFieldSize);
 	    System.arraycopy(getMarioState(agent), 0, obs, receptiveFieldSize * 2, 11);
 
 	    return obs;
 	}
 
 	@Override
-	public int[] getSerializedLevelSceneObservationZ(Agent agent, int ZLevelScene) {
+	public int[] getSerializedLevelSceneObservationZ(Agent agent, int ZAiScene) {
 		if(!aiPairs.containsKey(agent)) return null;
 		
-	    byte[][] levelScene = this.getLevelSceneObservationZ(agent, ZLevelScene);
+	    byte[][] aiScene = this.getLevelSceneObservationZ(agent, ZAiScene);
 	    
-	    int[] serializedLevelScene = new int[receptiveFieldHeight * receptiveFieldWidth];
+	    int[] serializedAiScene = new int[receptiveFieldHeight * receptiveFieldWidth];
 	    
-	    for (int i = 0; i < serializedLevelScene.length; ++i)
+	    for (int i = 0; i < serializedAiScene.length; ++i)
 	    {
 	        final int i1 = i / receptiveFieldWidth;
 	        final int i2 = i % receptiveFieldWidth;
-	        serializedLevelScene[i] = (int) levelScene[i1][i2];
+	        serializedAiScene[i] = (int) aiScene[i1][i2];
 	    }
 	    
-	    this.serializedLevelScene.put(agent, serializedLevelScene);
+	    this.serializedAiScene.put(agent, serializedAiScene);
 	    
-	    return serializedLevelScene;
+	    return serializedAiScene;
 	}
 
 	@Override
@@ -422,13 +402,13 @@ public class MultipleAIEnvironment implements Environment {
 	}
 
 	@Override
-	public int[] getSerializedMergedObservationZZ(Agent agent, int ZLevelScene, int ZLevelEnemies) {
+	public int[] getSerializedMergedObservationZZ(Agent agent, int ZaiScene, int ZLevelEnemies) {
 		if(!aiPairs.containsKey(agent)) return null;
 		
 		int[] serializedMergedObservation = new int[receptiveFieldHeight * receptiveFieldWidth];
 		
 	    // serialization into arrays of primitive types to speed up the data transfer.
-	    byte[][] merged = this.getMergedObservationZZ(agent, ZLevelScene, ZLevelEnemies);
+	    byte[][] merged = this.getMergedObservationZZ(agent, ZaiScene, ZLevelEnemies);
 	    for (int i = 0; i < serializedMergedObservation.length; ++i)
 	        serializedMergedObservation[i] = (int) merged[i / receptiveFieldWidth][i % receptiveFieldWidth];
 	    

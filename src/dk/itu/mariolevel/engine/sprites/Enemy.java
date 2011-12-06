@@ -3,16 +3,17 @@ package dk.itu.mariolevel.engine.sprites;
 import java.awt.Graphics;
 
 import dk.itu.mariolevel.engine.Art;
-import dk.itu.mariolevel.engine.scene.PlayableScene;
+import dk.itu.mariolevel.engine.scene.LevelScene;
 
 
 public class Enemy extends Sprite
 {
-    public static final int ENEMY_RED_KOOPA = 0;
-    public static final int ENEMY_GREEN_KOOPA = 1;
-    public static final int ENEMY_GOOMBA = 2;
-    public static final int ENEMY_SPIKY = 3;
-    public static final int ENEMY_FLOWER = 4;
+	public static final int IN_FILE_POS_RED_KOOPA = 0;
+	public static final int IN_FILE_POS_GREEN_KOOPA = 1;
+	public static final int IN_FILE_POS_GOOMBA = 2;
+	public static final int IN_FILE_POS_SPIKY = 3;
+	public static final int IN_FILE_POS_FLOWER = 4;
+	public static final int POSITION_WAVE_GOOMBA = 7;
 
     private static float GROUND_INERTIA = 0.89f;
     private static float AIR_INERTIA = 0.89f;
@@ -27,22 +28,21 @@ public class Enemy extends Sprite
     int width = 4;
     int height = 24;
 
-    private PlayableScene world;
+    public LevelScene world;
     public int facing;
     public int deadTime = 0;
     public boolean flyDeath = false;
 
     public boolean avoidCliffs = true;
-    private int type;
 
     public boolean winged = true;
     private int wingTime = 0;
     
     public boolean noFireballDeath;
 
-    public Enemy(PlayableScene world, int x, int y, int dir, int type, boolean winged)
+    public Enemy(LevelScene world, int x, int y, int dir, int type, boolean winged)
     {
-        this.type = type;
+        kind = (byte) type;
         sheet = Art.enemies;
         this.winged = winged;
 
@@ -52,15 +52,41 @@ public class Enemy extends Sprite
         xPicO = 8;
         yPicO = 31;
 
-        avoidCliffs = type == Enemy.ENEMY_RED_KOOPA;
         
-        noFireballDeath = type == Enemy.ENEMY_SPIKY;
+        switch (type)
+        {
+            case KIND_GOOMBA:
+            case KIND_GOOMBA_WINGED:
+                yPic = IN_FILE_POS_GOOMBA;
+                break;
+            case KIND_RED_KOOPA:
+            case KIND_RED_KOOPA_WINGED:
+                yPic = IN_FILE_POS_RED_KOOPA;
+                break;
+            case KIND_GREEN_KOOPA:
+            case KIND_GREEN_KOOPA_WINGED:
+                yPic = IN_FILE_POS_GREEN_KOOPA;
+                break;
+            case KIND_SPIKY:
+            case KIND_SPIKY_WINGED:
+                yPic = IN_FILE_POS_SPIKY;
+                break;
+            case KIND_ENEMY_FLOWER:
+                yPic = IN_FILE_POS_FLOWER;
+                break;
+            case KIND_WAVE_GOOMBA:
+                yPic = POSITION_WAVE_GOOMBA;
+                break;
+        }
+        
+        avoidCliffs = kind == KIND_RED_KOOPA;
 
-        yPic = type;
+        noFireballDeath = (kind == KIND_SPIKY || kind == KIND_SPIKY_WINGED);
+
         if (yPic > 1) height = 12;
         facing = dir;
         if (facing == 0) facing = 1;
-        this.wPic = 16;
+        this.wPic = 16;     
     }
 
     public void collideCheck()
@@ -77,7 +103,7 @@ public class Enemy extends Sprite
         {
             if (yMarioD > -height && yMarioD < world.mario.height)
             {
-                if (type != Enemy.ENEMY_SPIKY && world.mario.ya > 0 && yMarioD <= 0 && (!world.mario.onGround || !world.mario.wasOnGround))
+                if ((kind != KIND_SPIKY && kind != KIND_SPIKY_WINGED && kind != KIND_ENEMY_FLOWER) && world.mario.ya > 0 && yMarioD <= 0 && (!world.mario.onGround || !world.mario.wasOnGround))
                 {
                     world.mario.stomp(this);
                     if (winged)
@@ -93,11 +119,11 @@ public class Enemy extends Sprite
                         deadTime = 10;
                         winged = false;
 
-                        if (type == Enemy.ENEMY_RED_KOOPA)
+                        if (kind == KIND_RED_KOOPA || kind == KIND_RED_KOOPA_WINGED)
                         {
                             spriteContext.addSprite(new Shell(world, x, y, 0));
                         }
-                        else if (type == Enemy.ENEMY_GREEN_KOOPA)
+                        else if (kind == KIND_GREEN_KOOPA || kind == KIND_GREEN_KOOPA_WINGED)
                         {
                             spriteContext.addSprite(new Shell(world, x, y, 1));
                         }
@@ -384,10 +410,12 @@ public class Enemy extends Sprite
             int xPixel = (int) (xOld + (x - xOld)) - xPicO;
             int yPixel = (int) (yOld + (y - yOld)) - yPicO;
 
-            if (type == Enemy.ENEMY_GREEN_KOOPA || type == Enemy.ENEMY_RED_KOOPA)
+            if (kind == KIND_GREEN_KOOPA ||
+                    kind == KIND_RED_KOOPA ||
+                    kind == KIND_GREEN_KOOPA_WINGED ||
+                    kind == KIND_RED_KOOPA_WINGED)
             {
-            }
-            else
+            } else
             {
                 xFlipPic = !xFlipPic;
                 og.drawImage(sheet[wingTime / 4 % 2][4], xPixel + (xFlipPic ? wPic : 0) + (xFlipPic ? 10 : -10), yPixel + (yFlipPic ? hPic : 0) - 8, xFlipPic ? -wPic : wPic, yFlipPic ? -hPic : hPic, null);
@@ -402,11 +430,13 @@ public class Enemy extends Sprite
             int xPixel = (int) (xOld + (x - xOld)) - xPicO;
             int yPixel = (int) (yOld + (y - yOld)) - yPicO;
 
-            if (type == Enemy.ENEMY_GREEN_KOOPA || type == Enemy.ENEMY_RED_KOOPA)
+            if (kind == KIND_GREEN_KOOPA ||
+                    kind == KIND_RED_KOOPA ||
+                    kind == KIND_GREEN_KOOPA_WINGED ||
+                    kind == KIND_RED_KOOPA_WINGED)
             {
                 og.drawImage(sheet[wingTime / 4 % 2][4], xPixel + (xFlipPic ? wPic : 0) + (xFlipPic ? 10 : -10), yPixel + (yFlipPic ? hPic : 0) - 10, xFlipPic ? -wPic : wPic, yFlipPic ? -hPic : hPic, null);
-            }
-            else
+            } else
             {
                 og.drawImage(sheet[wingTime / 4 % 2][4], xPixel + (xFlipPic ? wPic : 0) + (xFlipPic ? 10 : -10), yPixel + (yFlipPic ? hPic : 0) - 8, xFlipPic ? -wPic : wPic, yFlipPic ? -hPic : hPic, null);
             }

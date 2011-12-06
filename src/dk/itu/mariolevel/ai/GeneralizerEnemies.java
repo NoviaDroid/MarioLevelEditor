@@ -50,7 +50,7 @@ public static byte ZLevelGeneralization(byte el, int ZLevel)
                 // cancel irrelevant sprite codes
                 case (Sprite.KIND_COIN_ANIM):
                 case (Sprite.KIND_PARTICLE):
-                case (Sprite.KIND_SPARCLE):
+                case (Sprite.KIND_SPARKLE):
                 case (Sprite.KIND_MARIO):
                     return Sprite.KIND_NONE;
             }
@@ -60,7 +60,7 @@ public static byte ZLevelGeneralization(byte el, int ZLevel)
             {
                 case (Sprite.KIND_COIN_ANIM):
                 case (Sprite.KIND_PARTICLE):
-                case (Sprite.KIND_SPARCLE):
+                case (Sprite.KIND_SPARKLE):
                 case (Sprite.KIND_MARIO):
                     return Sprite.KIND_NONE;
                 case (Sprite.KIND_FIRE_FLOWER):
@@ -93,7 +93,7 @@ public static byte ZLevelGeneralization(byte el, int ZLevel)
             {
                 case (Sprite.KIND_COIN_ANIM):
                 case (Sprite.KIND_PARTICLE):
-                case (Sprite.KIND_SPARCLE):
+                case (Sprite.KIND_SPARKLE):
                 case (Sprite.KIND_FIREBALL):
                 case (Sprite.KIND_MARIO):
                 case (Sprite.KIND_FIRE_FLOWER):

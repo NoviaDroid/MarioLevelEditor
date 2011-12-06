@@ -1,11 +1,14 @@
 package dk.itu.mariolevel;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
-import dk.itu.mariolevel.ai.environments.MultipleAIEnvironment;
+import javax.swing.JFrame;
+
 import dk.itu.mariolevel.editor.EditorComponent;
-import dk.itu.mariolevel.engine.MarioComponent;
+import dk.itu.mariolevel.editor.PlayComponent;
 
 public class FrameLauncher
 {
@@ -13,11 +16,19 @@ public class FrameLauncher
     {
     	// Create environment which then has the component.
     	
-    	EditorComponent component = new EditorComponent(640, 480);	
+    	PlayComponent playComponent = new PlayComponent(640, 480);	
+    	EditorComponent editorComponent = new EditorComponent(200, 480);
     	
-//        MarioComponent mario = new MarioComponent(640, 480, false);
         JFrame frame = new JFrame("Mario Test");
-        frame.setContentPane(component);
+        
+        Container bluh = frame.getContentPane();
+        
+        bluh.setLayout(new BorderLayout());
+        
+        bluh.add(playComponent, BorderLayout.WEST);
+        bluh.add(editorComponent, BorderLayout.EAST);
+        
+        frame.setContentPane(bluh);
         frame.pack();
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -27,8 +38,6 @@ public class FrameLauncher
         
         frame.setVisible(true);
         
-        component.start();
-//        frame.addKeyListener(mario);
-//        frame.addFocusListener(mario);
+        playComponent.start();
     }
 }

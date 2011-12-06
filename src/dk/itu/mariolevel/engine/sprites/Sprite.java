@@ -27,7 +27,7 @@ public class Sprite
 	public static final int KIND_PRINCESS = 49;
 	public static final int KIND_FIRE_FLOWER = 3;
 	public static final int KIND_PARTICLE = 21;
-	public static final int KIND_SPARCLE = 22;
+	public static final int KIND_SPARKLE = 22;
 	public static final int KIND_COIN_ANIM = 1;
 	public static final int KIND_FIREBALL = 25;
 	
@@ -52,6 +52,47 @@ public class Sprite
     public int layer = 1;
 
     public SpriteTemplate spriteTemplate;
+    
+    public static String getNameByKind(final int kind)
+    {
+        switch (kind)
+        {
+            case Sprite.KIND_MARIO:
+                return "Mario";
+            case Sprite.KIND_GOOMBA:
+                return "Goomba";
+            case Sprite.KIND_GOOMBA_WINGED:
+                return "Goomba Winged";
+            case Sprite.KIND_RED_KOOPA:
+                return "Red Koopa";
+            case Sprite.KIND_RED_KOOPA_WINGED:
+                return "Red Koopa Winged";
+            case Sprite.KIND_GREEN_KOOPA:
+                return "Green Koopa";
+            case Sprite.KIND_GREEN_KOOPA_WINGED:
+                return "Green Koopa Winged";
+            case Sprite.KIND_SPIKY:
+                return "Spiky";
+            case Sprite.KIND_SPIKY_WINGED:
+                return "Spiky Winged";
+            case Sprite.KIND_BULLET_BILL:
+                return "Bullet";
+            case Sprite.KIND_ENEMY_FLOWER:
+                return "Flower";
+            case Sprite.KIND_SHELL:
+                return "Shell";
+            case Sprite.KIND_MUSHROOM:
+                return "Mushroom";
+            case Sprite.KIND_FIRE_FLOWER:
+                return "Power up Flower";
+            case Sprite.KIND_GREEN_MUSHROOM:
+                return "Green mushroom";
+            /*case Sprite.KIND_PRINCESS:
+                return "Princess";*/
+        }
+
+        return "Unknown";
+    }
     
     public void move()
     {

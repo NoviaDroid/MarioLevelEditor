@@ -1,7 +1,7 @@
 package dk.itu.mariolevel.engine.sprites;
 
 import dk.itu.mariolevel.engine.Art;
-import dk.itu.mariolevel.engine.scene.PlayableScene;
+import dk.itu.mariolevel.engine.scene.LevelScene;
 
 
 public class BulletBill extends Sprite
@@ -9,7 +9,7 @@ public class BulletBill extends Sprite
     private int width = 4;
     int height = 24;
 
-    private PlayableScene world;
+    private LevelScene world;
     public int facing;
 
     public boolean avoidCliffs = false;
@@ -19,8 +19,9 @@ public class BulletBill extends Sprite
     private int deadTime = 0;
 
 
-    public BulletBill(PlayableScene world, float x, float y, int dir)
+    public BulletBill(LevelScene world, float x, float y, int dir)
     {
+        kind = KIND_BULLET_BILL;
         sheet = Art.enemies;
 
         this.x = x;

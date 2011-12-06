@@ -1,70 +1,91 @@
 package dk.itu.mariolevel.engine.scene;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
+
+import dk.itu.mariolevel.engine.CameraHandler;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.level.SpriteTemplate;
+import dk.itu.mariolevel.engine.res.ResourcesManager;
 import dk.itu.mariolevel.engine.sprites.BulletBill;
-import dk.itu.mariolevel.engine.sprites.CoinAnim;
-import dk.itu.mariolevel.engine.sprites.FireFlower;
+import dk.itu.mariolevel.engine.sprites.Enemy;
 import dk.itu.mariolevel.engine.sprites.Fireball;
 import dk.itu.mariolevel.engine.sprites.Mario;
-import dk.itu.mariolevel.engine.sprites.Mushroom;
-import dk.itu.mariolevel.engine.sprites.Particle;
 import dk.itu.mariolevel.engine.sprites.Shell;
 import dk.itu.mariolevel.engine.sprites.Sparkle;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
-public class RenderScene extends PlayableScene {
+public class RenderScene extends LevelScene{
 	
+    public List<Sprite> sprites = new ArrayList<Sprite>();
+    protected List<Sprite> spritesToAdd = new ArrayList<Sprite>();
+    protected List<Sprite> spritesToRemove = new ArrayList<Sprite>();
 
+    public float xCam, yCam;
+    
+    public int startTime = 0;
+    
+    public int tickCount;
+    
+    private boolean politeReset;
+    
+    protected int width;
+    protected int height;
+    
 	public RenderScene(Level level) {
-		super(level);
+		this.mario = new Mario(32, 32);
 		
-		super.reset();
+		this.level = level;
+		
+		try
+        {
+            Level.loadBehaviors(new DataInputStream(ResourcesManager.class.getResourceAsStream("res/tiles.dat")));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            System.exit(0);
+        }
 	}
 
-	@Override
 	public void reset() {
-		//super.reset();
-
-		sprites.remove(mario);
+        sprites.clear();
+        level.reset();
+        
+        tickCount = 0;
+        
+        width = 320;
+	    height = 240;
+	}
+	
+	public void politeReset() {
+		politeReset = true;
 	}
 	
 	@Override
 	public void tick() {
-        xCamO = xCam;
-        yCamO = yCam;
-
+		if(politeReset) {
+			politeReset = false;
+			reset();
+		}
+		
         if (startTime > 0)
-        {
-            startTime++;
-        }
+        	startTime++;
 
-        float targetXCam = mario.x - 160;
-
-        xCam = targetXCam;
-
-        if (xCam < 0) xCam = 0;
-        if (xCam > level.width * 16 - 320) xCam = level.width * 16 - 320;
-        
-        fireballsOnScreen = 0;
+        xCam = CameraHandler.getInstance().getCameraPosition().x;
+        yCam = CameraHandler.getInstance().getCameraPosition().y;
 
         for (Sprite sprite : sprites)
         {
-            if (sprite != mario)
+        	float xd = sprite.x - xCam;
+            float yd = sprite.y - yCam;
+            if (xd < -64 || xd > 320 + 64 || yd < -64 || yd > 240 + 64)
             {
-                float xd = sprite.x - xCam;
-                float yd = sprite.y - yCam;
-                if (xd < -64 || xd > 320 + 64 || yd < -64 || yd > 240 + 64)
-                {
-                    removeSprite(sprite);
-                }
-                else
-                {
-                    if (sprite instanceof Fireball)
-                    {
-                        fireballsOnScreen++;
-                    }
-                }
+                removeSprite(sprite);
             }
         }
 
@@ -74,10 +95,7 @@ public class RenderScene extends PlayableScene {
         for (int x = (int) xCam / 16 - 1; x <= (int) (xCam + this.width) / 16 + 1; x++)
             for (int y = (int) yCam / 16 - 1; y <= (int) (yCam + this.height) / 16 + 1; y++)
             {
-                int dir = 0;
-
-                if (x * 16 + 8 > mario.x + 16) dir = -1;
-                if (x * 16 + 8 < mario.x - 16) dir = 1;
+                int dir = -1;
 
                 SpriteTemplate st = level.getSpriteTemplate(x, y);
 
@@ -117,7 +135,6 @@ public class RenderScene extends PlayableScene {
 
         for (Sprite sprite : sprites)
         {
-        	if(sprite instanceof Mario) continue;
             sprite.tick();
         }
 
@@ -125,15 +142,40 @@ public class RenderScene extends PlayableScene {
         sprites.removeAll(spritesToRemove);
         spritesToAdd.clear();
         spritesToRemove.clear();
+        
+        if(tickCount > 50) politeReset = true;
 	}
 	
-	public void bump(int x, int y, boolean canBreakBricks)
+
+	@Override
+    public void addSprite(Sprite sprite)
     {
+        spritesToAdd.add(sprite);
         
+//        System.out.println("Add sprite: " + sprite.getNameByKind(sprite.kind) + ", " + sprites.size());
+        
+        sprite.tick();
     }
 
-    public void bumpInto(int x, int y)
+    @Override
+    public void removeSprite(Sprite sprite)
     {
-        
+        spritesToRemove.add(sprite);
     }
+	
+    @Override
+	public void bump(int x, int y, boolean canBreakBricks){}
+
+	@Override
+    public void bumpInto(int x, int y){}
+
+	@Override
+	public void checkShellCollide(Shell shell) {}
+	
+	@Override
+	public void checkFireballCollide(Fireball fireball) {}
+	@Override
+	public String toString() {
+		return "RenderScene";
+	}
 }

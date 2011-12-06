@@ -1,7 +1,7 @@
 package dk.itu.mariolevel.engine.sprites;
 
 import dk.itu.mariolevel.engine.Art;
-import dk.itu.mariolevel.engine.scene.PlayableScene;
+import dk.itu.mariolevel.engine.scene.LevelScene;
 
 
 public class Shell extends Sprite
@@ -15,7 +15,7 @@ public class Shell extends Sprite
     private int width = 4;
     int height = 24;
 
-    private PlayableScene world;
+    private LevelScene world;
     public int facing;
 
     public boolean avoidCliffs = false;
@@ -26,8 +26,9 @@ public class Shell extends Sprite
     public boolean carried;
 
 
-    public Shell(PlayableScene world, float x, float y, int type)
+    public Shell(LevelScene world, float x, float y, int type)
     {
+        kind = KIND_SHELL;
         sheet = Art.enemies;
 
         this.x = x;

@@ -4,8 +4,7 @@ package dk.itu.mariolevel.engine.sprites;
 import dk.itu.mariolevel.ai.environments.MultipleAIEnvironment;
 import dk.itu.mariolevel.engine.Art;
 import dk.itu.mariolevel.engine.level.Level;
-import dk.itu.mariolevel.engine.scene.PlayableScene;
-import dk.itu.mariolevel.engine.scene.RenderScene;
+import dk.itu.mariolevel.engine.scene.AIScene;
 import dk.itu.mariolevel.engine.scene.Scene;
 
 
@@ -47,7 +46,7 @@ public class Mario extends Sprite
     private boolean mayJump = false;
     private boolean ducking = false;
     private boolean sliding = false;
-    private int jumpTime = 0;
+    public int jumpTime = 0;
     private float xJumpSpeed;
     private float yJumpSpeed;
     private boolean canShoot = false;
@@ -56,7 +55,7 @@ public class Mario extends Sprite
     int width = 4;
     int height = 24;
 
-    private static PlayableScene world;
+    private AIScene world;
     public int facing;
     private int powerUpTime = 0;
 
@@ -67,11 +66,9 @@ public class Mario extends Sprite
     private int invulnerableTime = 0;
 
     public Sprite carried = null;
-    private static Mario instance;
 
-    public Mario(PlayableScene world)
+    public Mario(AIScene world)
     {
-        Mario.instance = this;
         this.world = world;
         x = world.getMarioInitialPos().x;
         y = world.getMarioInitialPos().y;
@@ -79,6 +76,11 @@ public class Mario extends Sprite
         
         facing = 1;
         setLarge(Mario.large, Mario.fire);
+    }
+    
+    public Mario(int x, int y) {
+    	this.x = x;
+        this.y = y;
     }
     
 	private boolean lastLarge;
@@ -318,9 +320,9 @@ public class Mario extends Sprite
             win();
         }
 
-        if (x > world.level.width * 16)
+        if (x > world.level.length * 16)
         {
-            x = world.level.width * 16;
+            x = world.level.length * 16;
             xa = 0;
         }
 
@@ -510,7 +512,7 @@ public class Mario extends Sprite
 
         if (((Level.TILE_BEHAVIORS[block & 0xff]) & Level.BIT_PICKUPABLE) > 0)
         {
-            Mario.getCoin();
+            getCoin();
             //world.sound.play(Art.samples[Art.SAMPLE_GET_COIN], new FixedSoundSource(x * 16 + 8, y * 16 + 8), 1, 1, 1);
             world.level.setBlock(x, y, (byte) 0);
             for (int xx = 0; xx < 2; xx++)
@@ -597,7 +599,7 @@ public class Mario extends Sprite
         }
     }
     
-    public static void getHiddenBlock()
+    public void getHiddenBlock()
     {
         //++hiddenBlocksFound;
         world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.hiddenBlock);
@@ -610,6 +612,8 @@ public class Mario extends Sprite
         winTime = 1;
         status = STATUS_WIN;
         world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.win);
+        
+        world.politeReset();
         //Art.stopMusic();
         //world.sound.play(Art.samples[Art.SAMPLE_LEVEL_EXIT], this, 1, 1, 1);
     }
@@ -640,7 +644,7 @@ public class Mario extends Sprite
         }
         else
         {
-            Mario.getCoin();
+            getCoin();
             //world.sound.play(Art.samples[Art.SAMPLE_GET_COIN], this, 1, 1, 1);
         }
         world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.flowerFire);
@@ -658,10 +662,16 @@ public class Mario extends Sprite
         }
         else
         {
-            Mario.getCoin();
+            getCoin();
             //world.sound.play(Art.samples[Art.SAMPLE_GET_COIN], this, 1, 1, 1);
         }
         world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.mushroom);
+    }
+    
+    public void getGreenMushroom()
+    {
+        //++greenMushroomsDevoured;
+        get1Up();
     }
 
     public void kick(Shell shell)
@@ -726,7 +736,7 @@ public class Mario extends Sprite
         }
     }
     
-    public static void getCoin()
+    public void getCoin()
     {
         coins++;
         if (coins==100)

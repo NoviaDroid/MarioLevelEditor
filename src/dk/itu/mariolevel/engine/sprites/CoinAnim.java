@@ -9,6 +9,7 @@ public class CoinAnim extends Sprite
 
     public CoinAnim(int xTile, int yTile)
     {
+    	kind = KIND_COIN_ANIM;
         sheet = Art.level;
         wPic = hPic = 16;
 

@@ -1,7 +1,7 @@
 package dk.itu.mariolevel.engine.sprites;
 
 import dk.itu.mariolevel.engine.Art;
-import dk.itu.mariolevel.engine.scene.PlayableScene;
+import dk.itu.mariolevel.engine.scene.AIScene;
 
 
 public class FireFlower extends Sprite
@@ -9,14 +9,15 @@ public class FireFlower extends Sprite
     private int width = 4;
     int height = 24;
 
-    private PlayableScene world;
+    private AIScene world;
     public int facing;
 
     public boolean avoidCliffs = false;
     private int life;
 
-    public FireFlower(PlayableScene world, int x, int y)
+    public FireFlower(AIScene world, int x, int y)
     {
+        kind = KIND_FIRE_FLOWER;
         sheet = Art.items;
 
         this.x = x;

@@ -1,5 +1,8 @@
 package dk.itu.mariolevel.engine.scene;
 
+import dk.itu.mariolevel.engine.sprites.Mario;
+import dk.itu.mariolevel.engine.sprites.Sprite;
+
 
 
 public abstract class Scene

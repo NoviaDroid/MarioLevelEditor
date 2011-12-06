@@ -16,7 +16,7 @@ import java.util.Random;
 import javax.swing.JComponent;
 
 import dk.itu.mariolevel.engine.scene.LevelScene;
-import dk.itu.mariolevel.engine.scene.PlayableScene;
+import dk.itu.mariolevel.engine.scene.AIScene;
 import dk.itu.mariolevel.engine.scene.Scene;
 import dk.itu.mariolevel.engine.sprites.Mario;
 
@@ -301,14 +301,14 @@ public class MarioComponent extends JComponent implements Runnable, KeyListener,
 		    public static final int MINIMIZED_FIRST = 1;
 
 
-		    private PlayableScene randomLevel;
+		    private AIScene randomLevel;
 
 
 		    /**
 		     * Part of the fun increaser
 		     */
 		    public void toRandomGame(){
-		    	randomLevel = new LevelScene(graphicsConfiguration,this,new Random().nextLong(),0,0);
+		    	//randomLevel = new LevelScene(graphicsConfiguration,this,new Random().nextLong(),0,0);
 
 		    	Mario.fire = false;
 		    	Mario.large = false;
@@ -323,7 +323,7 @@ public class MarioComponent extends JComponent implements Runnable, KeyListener,
 
 		    public void toCustomGame(){
 
-		    	randomLevel = new LevelScene(graphicsConfiguration,this,new Random().nextLong(),0,0);
+		    	//randomLevel = new LevelScene(graphicsConfiguration,this,new Random().nextLong(),0,0);
 
 		    	Mario.fire = false;
 		    	Mario.large = false;

@@ -5,10 +5,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import dk.itu.mariolevel.engine.level.Level;
-import dk.itu.mariolevel.engine.level.LevelGenerator;
 import dk.itu.mariolevel.engine.level.SpriteTemplate;
 import dk.itu.mariolevel.engine.res.ResourcesManager;
 import dk.itu.mariolevel.engine.sprites.BulletBill;
@@ -23,15 +21,13 @@ import dk.itu.mariolevel.engine.sprites.Sparkle;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 import dk.itu.mariolevel.engine.sprites.SpriteContext;
 
-public abstract class PlayableScene extends Scene implements SpriteContext {
+public class AIScene extends LevelScene implements SpriteContext {
 	public static final int cellSize = 16;	
 	
     public List<Sprite> sprites = new ArrayList<Sprite>();
     protected List<Sprite> spritesToAdd = new ArrayList<Sprite>();
     protected List<Sprite> spritesToRemove = new ArrayList<Sprite>();
     
-    public Level level;
-    public Mario mario;
     public float xCam, yCam, xCamO, yCamO;
     
     public int tickCount;
@@ -41,11 +37,7 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
     protected int width;
     protected int height;
     
-    private boolean customLevel;
-    
-    private Random randomGen = new Random(0);
-    
-    private boolean politeReset = false;
+    private boolean politeReset;
     
     final private List<Float> enemiesFloatsList = new ArrayList<Float>();
     final private float[] marioFloatPos = new float[2];
@@ -54,10 +46,6 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
     private Point marioInitialPos;
     private int bonusPoints = -1;
 
-    private long levelSeed;  
-    private int levelType;
-    private int levelDifficulty;
-    
     public static int killedCreaturesTotal;
     public static int killedCreaturesByFireBall;
     public static int killedCreaturesByStomp;
@@ -67,30 +55,11 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
 
     List<Shell> shellsToCheck = new ArrayList<Shell>();
     List<Fireball> fireballsToCheck = new ArrayList<Fireball>();
-    
-    // TODO Pick number of screens to render on the playable part
-	public PlayableScene(long seed, int levelDifficulty, int type) {
-        this.levelSeed = seed;
-        this.levelDifficulty = levelDifficulty;
-        this.levelType = type;
-        
-        customLevel = true;
-        
-        try
-        {
-            Level.loadBehaviors(new DataInputStream(ResourcesManager.class.getResourceAsStream("res/tiles.dat")));
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            System.exit(0);
-        }
-	}
-	
-	public PlayableScene(Level level) {
+ 	
+	public AIScene(Level level) {
         this.level = level;
-        
-        customLevel = false;
+
+        marioInitialPos = new Point(32, 32);
         
         try
         {
@@ -112,13 +81,11 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
 	    bonusPoints = -1;
 	    
 	    // Default value
-	    marioInitialPos = new Point(32, 32);
-	    
-	    if(level == null || customLevel) level = LevelGenerator.createLevel(320, 15, levelSeed, levelDifficulty, levelType);
-	    
-	    Sprite.spriteContext = this;
+
         sprites.clear();
 	    
+        level.reset();
+        
 	    mario = new Mario(this);
 	    sprites.add(mario);
 	    
@@ -136,11 +103,13 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
 		politeReset = true;
 	}
 	
+	@Override
 	public void checkShellCollide(Shell shell)
     {
         shellsToCheck.add(shell);
     }
 	
+	@Override
     public void checkFireballCollide(Fireball fireball)
     {
         fireballsToCheck.add(fireball);
@@ -149,9 +118,11 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
 	@Override
 	public void tick() {
 		if(politeReset) {
-			reset();
 			politeReset = false;
+			reset();
 		}
+		
+		Sprite.spriteContext = this;
 		
 		timeLeft--;
         if (timeLeft==0)
@@ -171,7 +142,7 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
         xCam = targetXCam;
 
         if (xCam < 0) xCam = 0;
-        if (xCam > level.width * 16 - 320) xCam = level.width * 16 - 320;
+        if (xCam > level.length * 16 - 320) xCam = level.length * 16 - 320;
         
         fireballsOnScreen = 0;
 
@@ -369,12 +340,14 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
 //        }     
 //	}
 	
+	@Override
     public void addSprite(Sprite sprite)
     {
         spritesToAdd.add(sprite);
         sprite.tick();
     }
 
+    @Override
     public void removeSprite(Sprite sprite)
     {
         spritesToRemove.add(sprite);
@@ -408,6 +381,7 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
 //        }
 //    }
 	
+    @Override
 	public void bump(int x, int y, boolean canBreakBricks)
     {
         byte block = level.getBlock(x, y);
@@ -415,7 +389,7 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
         if ((Level.TILE_BEHAVIORS[block & 0xff] & Level.BIT_BUMPABLE) > 0)
         {
             if (block == 1)
-                Mario.getHiddenBlock();
+                mario.getHiddenBlock();
         	
             bumpInto(x, y - 1);
             level.setBlock(x, y, (byte) 4);
@@ -434,7 +408,7 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
             }
             else
             {
-                Mario.getCoin();
+                mario.getCoin();
                 addSprite(new CoinAnim(x, y));
             }
         }
@@ -456,12 +430,13 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
         }
     }
 
+    @Override
     public void bumpInto(int x, int y)
     {
         byte block = level.getBlock(x, y);
         if (((Level.TILE_BEHAVIORS[block & 0xff]) & Level.BIT_PICKUPABLE) > 0)
         {
-            Mario.getCoin();
+            mario.getCoin();
             level.setBlock(x, y, (byte) 0);
             addSprite(new CoinAnim(x, y + 1));
         }
@@ -627,4 +602,8 @@ public abstract class PlayableScene extends Scene implements SpriteContext {
         return enemiesFloatsPosArray;
     }
 
+    @Override
+    public String toString() {
+    	return "AIScene";
+    }
 }

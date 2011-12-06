@@ -14,6 +14,7 @@ public class Sparkle extends Sprite
 
     public Sparkle(int x, int y, float xa, float ya, int xPic, int yPic, int timeSpan)
     {
+        kind = KIND_SPARKLE;
         sheet = Art.particles;
         this.x = x;
         this.y = y;
