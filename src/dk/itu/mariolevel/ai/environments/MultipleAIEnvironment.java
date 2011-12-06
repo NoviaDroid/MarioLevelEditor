@@ -72,6 +72,11 @@ public class MultipleAIEnvironment implements Environment {
 	
 	@Override
 	public void tick() {
+		if(politeReset) {
+			politeReset = false;
+			actualReset();
+		}
+		
 		renderScene.tick();
 		
 		// Tick each level scene
@@ -92,9 +97,14 @@ public class MultipleAIEnvironment implements Environment {
 		}
 	}
 
+	private boolean politeReset;
 	
 	@Override
 	public void reset() {
+		politeReset = true;
+	}
+	
+	private void actualReset() {
         serializedAiScene = new HashMap<Agent, int[]>();
         serializedEnemies = new HashMap<Agent, int[]>();
         serializedMergedObservation = new HashMap<Agent, int[]>();
@@ -103,6 +113,7 @@ public class MultipleAIEnvironment implements Environment {
         enemiesZ = new HashMap<Agent, byte[][]>();
         mergedZZ = new HashMap<Agent, byte[][]>();
         
+        renderScene.level = new Level(level);
         renderScene.reset();
         
         aiPairs.clear();

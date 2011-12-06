@@ -133,6 +133,7 @@ public void mouseMoved(MouseEvent e)
 
 public void setPickedTile(byte block)
 {
+	System.out.println("blug: " + block);
     pickedTile = block;
     repaint();
     if (tilePickChangedListener != null)

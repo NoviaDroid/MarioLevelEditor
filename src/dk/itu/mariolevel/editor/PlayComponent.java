@@ -1,6 +1,5 @@
 package dk.itu.mariolevel.editor;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
@@ -25,7 +24,6 @@ import dk.itu.mariolevel.engine.LevelRenderer;
 import dk.itu.mariolevel.engine.Scale2x;
 import dk.itu.mariolevel.engine.level.BgLevelGenerator;
 import dk.itu.mariolevel.engine.level.Level;
-import dk.itu.mariolevel.engine.sprites.Mario;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
 public class PlayComponent extends JComponent implements Runnable, KeyListener, FocusListener, MouseListener, MouseMotionListener {
@@ -55,7 +53,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	private BgRenderer[] bgLayer = new BgRenderer[2];
 	
 	private long tm = System.currentTimeMillis();
-	private long tm0;
+
 	int delay = 1000/24;
 
 	private Scale2x scale2x = new Scale2x(320, 240);
@@ -63,10 +61,12 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	private boolean left, right;
 	
 	private boolean editing = true;
-	private Point lastMousePos = new Point(-1, -1);
+	private Point lastMousePos = new Point(-100, -100);
 	
 	int xCam, yCam;
 	   
+	private byte pickedTile;
+	
     public PlayComponent(int width, int height){
     	addFocusListener(this);
     	addMouseListener(this);
@@ -143,16 +143,15 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	    		
 	    if(editing) {
 		    // If editing, draw tile marking and picked tile (alphaed)
-	    	int xTile = (lastMousePos.x + (xCam*2)) / 32;
-			int yTile = (lastMousePos.y + (yCam*2)) / 32;
-
-			int relativeTilePositionX = (xTile * 16) - xCam;
-			int relativeTilePositionY = (yTile * 16) - yCam;
+			Point tile = CameraHandler.getInstance().mousePointToTile(lastMousePos);
+			
+			int relativeTilePositionX = (tile.x * 16) - xCam;
+			int relativeTilePositionY = (tile.y * 16) - yCam;
 			
 		    g.drawRect(relativeTilePositionX, relativeTilePositionY, 16, 16);
 	    }
 	}
-	
+
 	public void start() {
 	    if (!running)
         {
@@ -198,7 +197,6 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	
 	public void reset() {
 	    tm = System.currentTimeMillis();
-	    this.tm0 = tm;
 	}
     
 	@Override
@@ -215,19 +213,21 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		lastMousePos = new Point(-1, -1);
+		lastMousePos = new Point(-100, -100);
 	}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void mousePressed(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+        	Point bluh = CameraHandler.getInstance().mousePointToTile(lastMousePos);
+        	environment.level.setBlock(bluh.x, bluh.y, pickedTile);
+        }
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		environment.reset();
+		layer.setLevel(environment.level);
 	}
 
 	@Override
@@ -257,6 +257,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 		// TODO Auto-generated method stub
 		
 	}
+
 	
 	 private void toggleKey(int keyCode, boolean isPressed)
     {
@@ -278,8 +279,14 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		lastMousePos = e.getPoint();
+
+		Point bluh = CameraHandler.getInstance().mousePointToTile(lastMousePos);
+    	environment.level.setBlock(bluh.x, bluh.y, pickedTile);
+	}
+	
+	public void setPickedTile(byte tile) {
+		pickedTile = tile;
 	}
 
 	@Override

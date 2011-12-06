@@ -51,4 +51,11 @@ public class CameraHandler {
 		this.width = width * (scalex2 ? 2 : 1);
 		this.height = height * (scalex2 ? 2 : 1);
 	}
+	
+	public Point mousePointToTile(Point mousePos) {
+    	int xTile = (mousePos.x + (camX*2)) / 32;
+		int yTile = (mousePos.y + (camY*2)) / 32;
+		
+		return new Point(xTile, yTile);
+	}
 }

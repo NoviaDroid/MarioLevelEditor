@@ -9,16 +9,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.VolatileImage;
 
 import javax.swing.JComponent;
 
-import dk.itu.mariolevel.ai.environments.MultipleAIEnvironment;
 import dk.itu.mariolevel.engine.Art;
-import dk.itu.mariolevel.engine.BgRenderer;
-import dk.itu.mariolevel.engine.CameraHandler;
-import dk.itu.mariolevel.engine.LevelRenderer;
-import dk.itu.mariolevel.engine.level.BgLevelGenerator;
-import dk.itu.mariolevel.engine.level.Level;
+import dk.itu.mariolevel.engine.Scale2x;
 
 public class EditorComponent extends JComponent implements KeyListener, FocusListener, MouseListener {
 
@@ -26,7 +22,21 @@ public class EditorComponent extends JComponent implements KeyListener, FocusLis
 
 	private int width, height;
 	
-	public EditorComponent(int width, int height) {
+	private byte[] validTiles = new byte[]{0,16,20,4,32,9,10,11,27,26,-128,-127,-126,-124,-123,-122};
+
+	public VolatileImage thisVolatileImage;
+	public Graphics thisVolatileImageGraphics;
+	private Scale2x scale2x;
+	
+	public byte pickedTile;
+	
+	private PlayComponent tilePickListener;
+	
+	private int tilesPerRow;
+	
+	private int tileX, tileY;
+	
+	public EditorComponent(int width) {
     	addFocusListener(this);
     	addMouseListener(this);
     	addKeyListener(this);
@@ -34,7 +44,7 @@ public class EditorComponent extends JComponent implements KeyListener, FocusLis
         this.setFocusable(true);
         this.setEnabled(true);
         this.width = width;
-        this.height = height;
+        this.height = 480;
         
         Dimension size = new Dimension(width, height);
         setPreferredSize(size);
@@ -44,24 +54,74 @@ public class EditorComponent extends JComponent implements KeyListener, FocusLis
         this.setFocusable(true);
 	}
 	
+	public void setTilePickListener(PlayComponent listener) {
+		tilePickListener = listener;
+	}
+
+	public void setTilePicked(int tileX, int tileY) {
+		int tilePos = tileX + (tileY*tilesPerRow);
+		
+		if(tilePos >= validTiles.length) return;
+		
+		this.tileX = tileX;
+		this.tileY = tileY;
+		
+		pickedTile = validTiles[tilePos];
+		
+		if(tilePickListener != null) {
+			tilePickListener.setPickedTile(pickedTile);
+		}
+	}
+	
+	@Override
+	public void addNotify() {
+		super.addNotify();
+		
+		Art.init(getGraphicsConfiguration());
+
+        scale2x = new Scale2x(width / 2, 1500);
+        
+        thisVolatileImage = createVolatileImage(width / 2, 1500);
+		thisVolatileImageGraphics = thisVolatileImage.getGraphics();
+	}
+	
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 		
-		g.setColor(Color.GREEN);
+		this.render(thisVolatileImageGraphics);
+	   
+		g.drawImage(scale2x.scale(thisVolatileImage), 0, 0, null);
+	}
+	
+	public void render(Graphics g) {
+		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, width, height);
+
+		tilesPerRow = width/32 -1;
+		
+		for(int y = 0; y < (validTiles.length / tilesPerRow + (validTiles.length%tilesPerRow != 0 ? 1 : 0)); y++) {
+			for(int x = 0; x < tilesPerRow; x++) {
+				if(x+(y*tilesPerRow) >= validTiles.length) continue;
+				 byte tileByte = validTiles[x+(y*tilesPerRow)];
+				 
+				 int xPickedTile = (tileByte & 0xff) % 16;
+				 int yPickedTile = (tileByte & 0xff) / 16;
+				 
+				 g.drawImage(Art.level[xPickedTile][yPickedTile], x*18+2, y*18+2, null);
+			}
+		}
+		
+		g.setColor(Color.BLACK);
+		g.drawRect(tileX*18, tileY*18, 19, 19);
 	}
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-//		System.out.println("ARGH: " + arg0.getX() + ", " + arg0.getY());
 	}
 
 	@Override
@@ -71,9 +131,12 @@ public class EditorComponent extends JComponent implements KeyListener, FocusLis
 	}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+	public void mousePressed(MouseEvent e) {
+		int tileX = (e.getX()+2)/36;
+		int tileY = (e.getY()+2)/36;
 		
+		setTilePicked(tileX, tileY);
+		repaint();
 	}
 
 	@Override

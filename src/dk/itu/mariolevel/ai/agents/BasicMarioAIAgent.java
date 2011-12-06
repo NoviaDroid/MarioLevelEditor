@@ -98,18 +98,20 @@ public void integrateObservation(Environment environment)
     receptiveFieldWidth = environment.getReceptiveFieldWidth();
     receptiveFieldHeight = environment.getReceptiveFieldHeight();
 
-    // It also possible to use direct methods from Environment interface.
-    //
-    marioStatus = marioState[0];
-    marioMode = marioState[1];
-    isMarioOnGround = marioState[2] == 1;
-    isMarioAbleToJump = marioState[3] == 1;
-    isMarioAbleToShoot = marioState[4] == 1;
-    isMarioCarrying = marioState[5] == 1;
-    getKillsTotal = marioState[6];
-    getKillsByFire = marioState[7];
-    getKillsByStomp = marioState[8];
-    getKillsByShell = marioState[9];
+//    if(marioState != null) { 
+        // It also possible to use direct methods from Environment interface.
+        //
+        marioStatus = marioState[0];
+        marioMode = marioState[1];
+        isMarioOnGround = marioState[2] == 1;
+        isMarioAbleToJump = marioState[3] == 1;
+        isMarioAbleToShoot = marioState[4] == 1;
+        isMarioCarrying = marioState[5] == 1;
+        getKillsTotal = marioState[6];
+        getKillsByFire = marioState[7];
+        getKillsByStomp = marioState[8];
+        getKillsByShell = marioState[9];
+//    }
 }
 
 public void giveIntermediateReward(float intermediateReward)

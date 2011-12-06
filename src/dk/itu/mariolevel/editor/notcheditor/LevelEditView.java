@@ -123,6 +123,7 @@ public void mousePressed(MouseEvent e)
         tilePicker.setPickedTile(level.getBlock(xTile, yTile));
     } else
     {
+    	System.out.println("bluh: " + tilePicker.pickedTile);
         level.setBlock(xTile, yTile, tilePicker.pickedTile);
         levelRenderer.repaint(xTile - 1, yTile - 1, 3, 3);
 

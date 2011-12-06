@@ -40,24 +40,15 @@ public class Art
     public static Image[][] particles;
     public static Image[][] font;
     public static Image[][] bg;
-//    public static Image[][] map;
-//    public static Image[][] endScene;
-//    public static Image[][] gameOver;
-//    public static Image logo;
-//    public static Image titleScreen;
-//    public static Image keys, abkey;
 
-    //public static SonarSample[] samples = new SonarSample[100];
-
-    //private static Sequence[] songs = new Sequence[10];
-    //private static Sequencer sequencer;
-
-    //public static boolean mute = false;
     private static final String PREFIX="res";
-
-
+    
+    private static boolean successfullInit;
+    
     public static void init(GraphicsConfiguration gc)
     {
+    	if(successfullInit) return;
+    	
         try
         {
             mario = cutImage(gc, PREFIX+"/mariosheet.png", 32, 32);
@@ -66,55 +57,16 @@ public class Art
             enemies = cutImage(gc, PREFIX+"/enemysheet.png", 16, 32);
             items = cutImage(gc,PREFIX+ "/itemsheet.png", 16, 16);
             level = cutImage(gc, PREFIX+"/mapsheet.png", 16, 16);
-//            map = cutImage(gc, PREFIX+"/worldmap.png", 16, 16);
             particles = cutImage(gc, PREFIX+"/particlesheet.png", 8, 8);
             bg = cutImage(gc,PREFIX+ "/bgsheet.png", 32, 32);
-//            logo = getImage(gc, PREFIX+"/logo.gif");
-//            titleScreen = getImage(gc, PREFIX+"/title.gif");
             font = cutImage(gc, PREFIX+"/font.gif", 8, 8);
-//            endScene = cutImage(gc,PREFIX+ "/endscene.gif", 96, 96);
-//            gameOver = cutImage(gc, PREFIX+"/gameovergost.gif", 96, 64);
-//            keys = getImage(gc, PREFIX+"/keys.png");
-//            abkey = getImage(gc, PREFIX+"/abkey.png");
-
-//            if (sound != null)
-//            {
-//                samples[SAMPLE_BREAK_BLOCK] = sound.loadSample(PREFIX+"/snd/breakblock.wav");
-//                samples[SAMPLE_GET_COIN] = sound.loadSample(PREFIX+"/snd/coin.wav");
-//                samples[SAMPLE_MARIO_JUMP] = sound.loadSample(PREFIX+"/snd/jump.wav");
-//                samples[SAMPLE_MARIO_STOMP] = sound.loadSample(PREFIX+"/snd/stomp.wav");
-//                samples[SAMPLE_MARIO_KICK] = sound.loadSample(PREFIX+"/snd/kick.wav");
-//                samples[SAMPLE_MARIO_POWER_UP] = sound.loadSample(PREFIX+"/snd/powerup.wav");
-//                samples[SAMPLE_MARIO_POWER_DOWN] = sound.loadSample(PREFIX+"/snd/powerdown.wav");
-//                samples[SAMPLE_MARIO_DEATH] = sound.loadSample(PREFIX+"/snd/death.wav");
-//                samples[SAMPLE_ITEM_SPROUT] = sound.loadSample(PREFIX+"/snd/sprout.wav");
-//                samples[SAMPLE_CANNON_FIRE] = sound.loadSample(PREFIX+"/snd/cannon.wav");
-//                samples[SAMPLE_SHELL_BUMP] = sound.loadSample(PREFIX+"/snd/bump.wav");
-//                samples[SAMPLE_LEVEL_EXIT] = sound.loadSample(PREFIX+"/snd/exit.wav");
-//                samples[SAMPLE_MARIO_1UP] = sound.loadSample(PREFIX+"/snd/1-up.wav");
-//                samples[SAMPLE_MARIO_FIREBALL] = sound.loadSample(PREFIX+"/snd/fireball.wav");
-//            }
+            
+            successfullInit = true;
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-
-//        try
-//        {
-//            sequencer = MidiSystem.getSequencer();
-//            sequencer.open();
-//            songs[0] = MidiSystem.getSequence(ResourcesManager.class.getResourceAsStream(PREFIX+"/mus/smb3map1.mid"));
-//            songs[1] = MidiSystem.getSequence(ResourcesManager.class.getResourceAsStream(PREFIX+"/mus/smwovr1.mid"));
-//            songs[2] = MidiSystem.getSequence(ResourcesManager.class.getResourceAsStream(PREFIX+"/mus/smb3undr.mid"));
-//            songs[3] = MidiSystem.getSequence(ResourcesManager.class.getResourceAsStream(PREFIX+"/mus/smwfortress.mid"));
-//            songs[4] = MidiSystem.getSequence(ResourcesManager.class.getResourceAsStream(PREFIX+"/mus/smwtitle.mid"));
-//        }
-//        catch (Exception e)
-//        {
-//            sequencer = null;
-//            e.printStackTrace();
-//        }
     }
 
     private static Image getImage(GraphicsConfiguration gc, String imageName) throws IOException
@@ -148,41 +100,4 @@ public class Art
 
         return images;
     }
-
-//    public static void startMusic(int song)
-//    {
-//    	if(!mute){
-//	        stopMusic();
-//	        if (sequencer != null)
-//	        {
-//	            try
-//	            {
-//	                sequencer.open();
-//	                sequencer.setSequence((Sequence)null);
-//	                sequencer.setSequence(songs[song]);
-//                        int i = Sequencer.LOOP_CONTINUOUSLY;
-//	                sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
-//	                sequencer.start();
-//	            }
-//	            catch (Exception e)
-//	            {
-//	            }
-//	        }
-//        }
-//    }
-//
-//    public static void stopMusic()
-//    {
-//        if (sequencer != null)
-//        {
-//            try
-//            {
-//                sequencer.stop();
-//                sequencer.close();
-//            }
-//            catch (Exception e)
-//            {
-//            }
-//        }
-//    }
 }
