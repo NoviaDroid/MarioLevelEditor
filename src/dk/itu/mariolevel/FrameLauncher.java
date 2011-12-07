@@ -1,6 +1,7 @@
 package dk.itu.mariolevel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -30,16 +31,21 @@ public class FrameLauncher
         
         bluh.add(playComponent, BorderLayout.WEST);
 
-        bluh.add(editorComponent, BorderLayout.EAST);
+        
+        JScrollPane scroll = new JScrollPane(editorComponent, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        bluh.add(scroll, BorderLayout.EAST);
+        
+        bluh.setBackground(Color.BLACK);
         
         frame.setContentPane(bluh);
 //        
-//        Dimension size = new Dimension(840, 480);
-//        frame. setPreferredSize(size);
-//        frame.setMinimumSize(size);
-//        frame.setMaximumSize(size);
+        Dimension size = new Dimension(850, 480);
+        frame. setPreferredSize(size);
+        frame.setMinimumSize(size);
+        frame.setMaximumSize(size);
 //        
-        frame.pack();
+//        frame.pack();
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         

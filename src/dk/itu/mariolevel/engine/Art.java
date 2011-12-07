@@ -69,7 +69,7 @@ public class Art
         }
     }
 
-    private static Image getImage(GraphicsConfiguration gc, String imageName) throws IOException
+    public static Image getImage(GraphicsConfiguration gc, String imageName) throws IOException
     {
         InputStream p=ResourcesManager.class.getResourceAsStream(imageName);
         BufferedImage source = ImageIO.read(p);
