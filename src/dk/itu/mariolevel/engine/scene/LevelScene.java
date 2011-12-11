@@ -1,14 +1,9 @@
 package dk.itu.mariolevel.engine.scene;
 
 import dk.itu.mariolevel.engine.level.Level;
-import dk.itu.mariolevel.engine.sprites.CoinAnim;
-import dk.itu.mariolevel.engine.sprites.FireFlower;
 import dk.itu.mariolevel.engine.sprites.Fireball;
 import dk.itu.mariolevel.engine.sprites.Mario;
-import dk.itu.mariolevel.engine.sprites.Mushroom;
-import dk.itu.mariolevel.engine.sprites.Particle;
 import dk.itu.mariolevel.engine.sprites.Shell;
-import dk.itu.mariolevel.engine.sprites.Sprite;
 import dk.itu.mariolevel.engine.sprites.SpriteContext;
 
 public abstract class LevelScene extends Scene implements SpriteContext{

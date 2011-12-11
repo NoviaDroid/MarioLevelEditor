@@ -52,13 +52,6 @@ public static final int MARIO_STATUS_WIN = Mario.STATUS_WIN;
 public static final int MARIO_STATUS_DEAD = Mario.STATUS_DEAD;
 public static final int MARIO_STATUS_RUNNING = Mario.STATUS_RUNNING;
 
-// tunable dimensionality:
-// default: 21x21 cells [0..20][0..20]
-// always centered on the agent
-
-// Chaning ZLevel during the game on-the-fly;
-// if your agent recieves too ambiguous observation, it might request for more precise one for the next step
-
 public void resetDefault();
 
 public void reset(String setUpOptions);

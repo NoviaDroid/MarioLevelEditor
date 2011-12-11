@@ -2,14 +2,14 @@ package dk.itu.mariolevel;
 
 import javax.swing.JApplet;
 
-import dk.itu.mariolevel.engine.MarioComponent;
+import dk.itu.mariolevel.editor.PlayComponent;
 
 
 public class AppletLauncher extends JApplet
 {
     private static final long serialVersionUID = -2238077255106243788L;
 
-    private MarioComponent mario;
+    private PlayComponent mario;
     private boolean started = false;
 
     public void init()
@@ -21,14 +21,12 @@ public class AppletLauncher extends JApplet
         if (!started)
         {
             started = true;
-            mario = new MarioComponent(getWidth(), getHeight(), false);
+            mario = new PlayComponent(getWidth(), getHeight());
             setContentPane(mario);
             setFocusable(false);
             mario.setFocusCycleRoot(true);
 
             mario.start();
-//            addKeyListener(mario);
-//            addFocusListener(mario);
         }
     }
 
@@ -37,9 +35,7 @@ public class AppletLauncher extends JApplet
         if (started)
         {
             started = false;
-            removeKeyListener(mario);
             mario.stop();
-            removeFocusListener(mario);
         }
     }
 }

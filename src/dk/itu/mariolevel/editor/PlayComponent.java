@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.Point;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -16,6 +14,7 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import dk.itu.mariolevel.MarioPanel;
 import dk.itu.mariolevel.ai.environments.MultipleAIEnvironment;
 import dk.itu.mariolevel.engine.Art;
 import dk.itu.mariolevel.engine.BgRenderer;
@@ -26,7 +25,7 @@ import dk.itu.mariolevel.engine.level.BgLevelGenerator;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
-public class PlayComponent extends JComponent implements Runnable, KeyListener, FocusListener, MouseListener, MouseMotionListener {
+public class PlayComponent extends JComponent implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 5552300968020476470L;
 	
 	public static final int KEY_LEFT = 0;
@@ -57,10 +56,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	int delay = 1000/24;
 
 	private Scale2x scale2x = new Scale2x(320, 240);
-	
-	private boolean left, right;
-	
-	private boolean editing = true;
+
 	private Point lastMousePos = new Point(-100, -100);
 	
 	int xCam, yCam;
@@ -68,7 +64,6 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	private byte pickedTile;
 	
     public PlayComponent(int width, int height){
-    	addFocusListener(this);
     	addMouseListener(this);
     	addMouseMotionListener(this);
     	addKeyListener(this);
@@ -82,18 +77,17 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
         setPreferredSize(size);
         setMinimumSize(size);
         setMaximumSize(size);
-
-        this.setFocusable(true);
     }
+
+	@Override
+	public void addNotify() {
+		super.addNotify();
+		
+		requestFocus();
+	}
     
 	public void tick() {
-		if(right) {		
-			CameraHandler.getInstance().moveCamera(20, 0);
-			
-		}
-		if(left) {
-			CameraHandler.getInstance().moveCamera(-20, 0);
-		}
+		CameraHandler.getInstance().tick();
 		
 		xCam = CameraHandler.getInstance().getCameraPosition().x;
 		yCam = CameraHandler.getInstance().getCameraPosition().y;
@@ -141,8 +135,20 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 	    g.translate(xCam, yCam);
 	    		
-	    if(editing) {
-		    // If editing, draw tile marking and picked tile (alphaed)
+	    if(getMarioPanel().isEditing()) {
+		    // Start block
+		    int xEnterPos = environment.level.xEnter * 16;
+		    int yEnterPos = environment.level.yEnter * 16;
+		    
+		    g.drawImage(Art.specialBlockStart, xEnterPos-xCam, yEnterPos-yCam, null);
+		    
+		    // End block
+		    int xEndPos = environment.level.xExit * 16;
+		    int yEndPos = environment.level.yExit * 16;
+		    
+		    g.drawImage(Art.specialBlockEnd, xEndPos-xCam, yEndPos-yCam, null);
+	    	
+	    	// Draw tile marker
 			Point tile = CameraHandler.getInstance().mousePointToTile(lastMousePos);
 			
 			int relativeTilePositionX = (tile.x * 16) - xCam;
@@ -158,6 +164,15 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
             running = true;
             new Thread(this, "Game Thread").start();
         }
+	}
+	
+	public void stop() {
+		running = false;
+	}
+	
+	
+	private MarioPanel getMarioPanel() {
+		return (MarioPanel) getParent();
 	}
 	
 	@Override
@@ -181,14 +196,13 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
             int w = ((environment.level.length * 16) - COMPONENT_WIDTH) / scrollSpeed + COMPONENT_WIDTH;
             int h = ((environment.level.height * 16) - COMPONENT_HEIGHT) / scrollSpeed + COMPONENT_HEIGHT;
             
-            // TODO: Fix level type being the same
             Level bgLevel = BgLevelGenerator.createLevel(w / 32 + 1, h / 32 + 1, i == 0, 0);
             
             bgLayer[i] = new BgRenderer(bgLevel, graphicsConfiguration, COMPONENT_WIDTH, COMPONENT_HEIGHT, scrollSpeed);
         }       
         
         CameraHandler.getInstance().setLimits(0, environment.level.length * 16, 0, 0);
-        CameraHandler.getInstance().setScreenSize(COMPONENT_WIDTH, COMPONENT_HEIGHT, false);
+        CameraHandler.getInstance().setScreenSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         
 		while(running) {
 			tick();
@@ -198,18 +212,6 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	public void reset() {
 	    tm = System.currentTimeMillis();
 	}
-    
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
@@ -218,7 +220,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
+        if (e.getButton() == MouseEvent.BUTTON1 && getMarioPanel().isEditing()) {
         	Point bluh = CameraHandler.getInstance().mousePointToTile(lastMousePos);
         	environment.level.setBlock(bluh.x, bluh.y, pickedTile);
         }
@@ -226,20 +228,10 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		environment.reset();
-		layer.setLevel(environment.level);
-	}
-
-	@Override
-	public void focusGained(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void focusLost(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		if(getMarioPanel().isEditing()) {
+			environment.reset();
+			layer.setLevel(environment.level);
+		}
 	}
 
 	@Override
@@ -252,37 +244,22 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 		toggleKey(arg0.getKeyCode(), false);
 	}
 
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
+	private void toggleKey(int keyCode, boolean isPressed){
+		environment.toggleKey(keyCode, isPressed);
 		
+		if(keyCode == KeyEvent.VK_E && !isPressed) {
+			getMarioPanel().toggleEditing();
+		}
 	}
-
-	
-	 private void toggleKey(int keyCode, boolean isPressed)
-    {
-        if (keyCode == KeyEvent.VK_LEFT)
-        {
-        	left = isPressed;
-        }
-        if (keyCode == KeyEvent.VK_RIGHT)
-        {
-        	right = isPressed;
-        }
-        if (keyCode == KeyEvent.VK_DOWN)
-        {
-        }
-        if (keyCode == KeyEvent.VK_UP)
-        {
-        }
-    }
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		lastMousePos = e.getPoint();
 
-		Point bluh = CameraHandler.getInstance().mousePointToTile(lastMousePos);
-    	environment.level.setBlock(bluh.x, bluh.y, pickedTile);
+		if(getMarioPanel().isEditing()) {
+			Point bluh = CameraHandler.getInstance().mousePointToTile(lastMousePos);
+	    	environment.level.setBlock(bluh.x, bluh.y, pickedTile);
+		}
 	}
 	
 	public void setPickedTile(byte tile) {
@@ -293,4 +270,13 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	public void mouseMoved(MouseEvent e) {
 		lastMousePos = e.getPoint();
 	}
+	
+	@Override
+	public void keyTyped(KeyEvent arg0) {}
+	
+	@Override
+	public void mouseClicked(MouseEvent arg0) {}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {}
 }

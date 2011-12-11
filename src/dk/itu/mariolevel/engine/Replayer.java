@@ -35,6 +35,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import dk.itu.mariolevel.ai.ReplayerOptions;
+import dk.itu.mariolevel.ai.ReplayerOptions.Interval;
 import dk.itu.mariolevel.ai.environments.Environment;
 
 /**
@@ -56,11 +57,9 @@ public Replayer(String replayOptions)
     this.options = new ReplayerOptions(replayOptions);
 }
 
+@SuppressWarnings("unchecked")
 public boolean openNextReplayFile() throws IOException
 {
-//    if (zf != null)
-//        zf.close();
-
     String fileName = options.getNextReplayFile();
     if (fileName == null)
         return false;
@@ -75,7 +74,7 @@ public boolean openNextReplayFile() throws IOException
     try
     {
         openFile("chunks");
-        options.setChunks((Queue) readObject());
+        options.setChunks((Queue<Interval>) readObject());
     } catch (Exception ignored)
     {} //if file with replay chunks not found, than use user specified chunks
 

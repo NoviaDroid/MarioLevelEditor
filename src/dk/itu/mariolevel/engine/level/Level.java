@@ -121,6 +121,9 @@ public class Level implements Serializable
 	public static final int BIT_PICKUPABLE = 1 << 6;
 	public static final int BIT_ANIMATED = 1 << 7;
 	
+	public static final byte SPECIAL_BLOCK_START = -1;
+	public static final byte SPECIAL_BLOCK_END = -2;
+	
 	public static objCounters counters;
 	
 	//private final int FILE_HEADER = 0x271c4178;
@@ -136,6 +139,9 @@ public class Level implements Serializable
 	public int[][] marioTrace;
 	
 	public SpriteTemplate[][] spriteTemplates;
+	
+	public int xEnter;
+	public int yEnter;
 	
 	public int xExit;
 	public int yExit;
@@ -176,13 +182,16 @@ public class Level implements Serializable
 	    this.length = level.length;
 	    this.height = level.height;
 	
-	    xExit = 50;
-	    yExit = 10;
+	    xEnter = level.xEnter;
+	    yEnter = level.yEnter;
+	    
+	    xExit = level.xExit;
+	    yExit = level.yExit;
 	
 	    try
 	    {
-	        map = level.map.clone();
-	        data = level.data.clone();
+	        map = cloneTwoDimensional(level.map);
+	        data = cloneTwoDimensional(level.data);
 	        spriteTemplates =  cloneSpriteTemplate(level.spriteTemplates);
 	        marioTrace = level.marioTrace.clone();
 	        
@@ -209,6 +218,16 @@ public class Level implements Serializable
 		}
 		
 		return output;
+	}
+	
+	private byte[][] cloneTwoDimensional(byte[][] src) {
+		byte[][] out = new byte[src.length][];
+		
+		for(int i = 0; i < src.length; i++) {
+			out[i] = src[i].clone();
+		}
+		
+		return out;
 	}
 	
 	public static void loadBehaviors(DataInputStream dis) throws IOException
@@ -263,6 +282,18 @@ public class Level implements Serializable
 	
 	public void setBlock(int x, int y, byte b)
 	{
+		if(b == SPECIAL_BLOCK_START) {
+			xEnter = x;
+			yEnter = y;		
+			return;
+		}
+		
+		if(b == SPECIAL_BLOCK_END) {
+			xExit = x;
+			yExit = y;
+			return;
+		}
+		
 	    if (x < 0) return;
 	    if (y < 0) return;
 	    if (x >= length) return;

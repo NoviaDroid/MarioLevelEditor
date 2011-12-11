@@ -70,8 +70,8 @@ public class Mario extends Sprite
     public Mario(AIScene world)
     {
         this.world = world;
-        x = world.getMarioInitialPos().x;
-        y = world.getMarioInitialPos().y;
+        x = (world.getMarioInitialPos().x+1)*16;
+        y = (world.getMarioInitialPos().y+1)*16;
         keys = Scene.keys;
         
         facing = 1;

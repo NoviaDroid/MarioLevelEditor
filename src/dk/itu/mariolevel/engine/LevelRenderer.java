@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.Transparency;
-import java.util.Random;
 
 import dk.itu.mariolevel.engine.level.Level;
 
@@ -21,7 +20,6 @@ public class LevelRenderer
     private static final Color transparent = new Color(0, 0, 0, 0);
     private Level level;
 
-    private Random random = new Random();
     public boolean renderBehaviors = false;
 
     public int width;

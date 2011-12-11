@@ -2,6 +2,8 @@ package dk.itu.mariolevel.engine;
 
 import java.awt.Point;
 
+import dk.itu.mariolevel.engine.sprites.Mario;
+
 public class CameraHandler {
 	private static CameraHandler _instance;
 	
@@ -19,7 +21,20 @@ public class CameraHandler {
 	
 	private int minX, maxX, minY, maxY;
 	
-	private int width, height;
+	public int width, height;
+	
+	private Mario followMario;
+	
+	public void tick() {
+		if(followMario != null){
+			camX = (int) (followMario.x - width/2);
+			camY = 0;
+		}
+	}
+	
+	public void setFollowMario(Mario mario) {
+		followMario = mario;
+	}
 	
 	public void moveCamera(int x, int y) {
 		camX += x;
@@ -47,9 +62,9 @@ public class CameraHandler {
 		this.maxY = maxY;
 	}
 	
-	public void setScreenSize(int width, int height, boolean scalex2) {
-		this.width = width * (scalex2 ? 2 : 1);
-		this.height = height * (scalex2 ? 2 : 1);
+	public void setScreenSize(int width, int height) {
+		this.width = width;
+		this.height = height;
 	}
 	
 	public Point mousePointToTile(Point mousePos) {

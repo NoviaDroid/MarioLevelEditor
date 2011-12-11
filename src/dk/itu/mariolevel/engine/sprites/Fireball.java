@@ -9,7 +9,6 @@ public class Fireball extends Sprite
     private static float GROUND_INERTIA = 0.89f;
     private static float AIR_INERTIA = 0.89f;
 
-    private float runTime;
     private boolean onGround = false;
 
     private int width = 4;
@@ -77,8 +76,6 @@ public class Fireball extends Sprite
         world.checkFireballCollide(this);
 
         xFlipPic = facing == -1;
-
-        runTime += (Math.abs(xa)) + 5;
 
         xPic = (anim) % 4;
 
@@ -202,8 +199,6 @@ public class Fireball extends Sprite
         if (x == (int) (this.x / 16) && y == (int) (this.y / 16)) return false;
 
         boolean blocking = world.level.isBlocking(x, y, xa, ya);
-
-        byte block = world.level.getBlock(x, y);
 
         return blocking;
     }

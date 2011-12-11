@@ -5,14 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
-
 import dk.itu.mariolevel.engine.CameraHandler;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.level.SpriteTemplate;
 import dk.itu.mariolevel.engine.res.ResourcesManager;
 import dk.itu.mariolevel.engine.sprites.BulletBill;
-import dk.itu.mariolevel.engine.sprites.Enemy;
 import dk.itu.mariolevel.engine.sprites.Fireball;
 import dk.itu.mariolevel.engine.sprites.Mario;
 import dk.itu.mariolevel.engine.sprites.Shell;
@@ -32,9 +29,6 @@ public class RenderScene extends LevelScene{
     public int tickCount;
     
     private boolean politeReset;
-    
-    protected int width;
-    protected int height;
     
 	public RenderScene(Level level) {
 		this.mario = new Mario(32, 32);
@@ -57,9 +51,6 @@ public class RenderScene extends LevelScene{
         level.reset();
         
         tickCount = 0;
-        
-        width = 320;
-	    height = 240;
 	}
 	
 	public void politeReset() {
@@ -92,8 +83,8 @@ public class RenderScene extends LevelScene{
         tickCount++;
         level.tick();
 
-        for (int x = (int) xCam / 16 - 1; x <= (int) (xCam + this.width) / 16 + 1; x++)
-            for (int y = (int) yCam / 16 - 1; y <= (int) (yCam + this.height) / 16 + 1; y++)
+        for (int x = (int) xCam / 16 - 1; x <= (int) (xCam + CameraHandler.getInstance().width) / 16 + 1; x++)
+            for (int y = (int) yCam / 16 - 1; y <= (int) (yCam + CameraHandler.getInstance().height) / 16 + 1; y++)
             {
                 int dir = -1;
 

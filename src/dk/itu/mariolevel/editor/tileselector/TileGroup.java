@@ -14,6 +14,7 @@ import javax.swing.JComponent;
 import dk.itu.mariolevel.editor.EditorComponent;
 import dk.itu.mariolevel.engine.Art;
 import dk.itu.mariolevel.engine.Scale2x;
+import dk.itu.mariolevel.engine.level.Level;
 
 public class TileGroup extends JComponent  implements MouseListener {
 	private static final long serialVersionUID = -4748861593538807170L;
@@ -81,10 +82,18 @@ public class TileGroup extends JComponent  implements MouseListener {
 				if(x+(y*tilesPerRow) >= tiles.length) continue;
 				 byte tileByte = tiles[x+(y*tilesPerRow)];
 				 
-				 int xPickedTile = (tileByte & 0xff) % 16;
-				 int yPickedTile = (tileByte & 0xff) / 16;
-				 
-				 g.drawImage(Art.level[xPickedTile][yPickedTile], x*18+2, y*18+2, null);
+				 if(tileByte == Level.SPECIAL_BLOCK_START) {
+					 g.drawImage(Art.specialBlockStart, x*18+2, y*18+2, null);
+				 }
+				 else if(tileByte == Level.SPECIAL_BLOCK_END) {
+					 g.drawImage(Art.specialBlockEnd, x*18+2, y*18+2, null);
+				 }
+				 else {
+					 int xPickedTile = (tileByte & 0xff) % 16;
+					 int yPickedTile = (tileByte & 0xff) / 16;
+					 
+					 g.drawImage(Art.level[xPickedTile][yPickedTile], x*18+2, y*18+2, null);
+				 }
 			}
 		}
 		

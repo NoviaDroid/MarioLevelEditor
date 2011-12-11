@@ -1,11 +1,11 @@
 package dk.itu.mariolevel.ai.environments;
 
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Random;
 
 import dk.itu.mariolevel.ai.GeneralizerEnemies;
 import dk.itu.mariolevel.ai.GeneralizerLevelScene;
@@ -13,6 +13,7 @@ import dk.itu.mariolevel.ai.SystemOfValues;
 import dk.itu.mariolevel.ai.agents.Agent;
 import dk.itu.mariolevel.ai.agents.ForwardAgent;
 import dk.itu.mariolevel.ai.agents.RandomAgent;
+import dk.itu.mariolevel.engine.CameraHandler;
 import dk.itu.mariolevel.engine.Replayer;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.level.LevelGenerator;
@@ -29,31 +30,28 @@ public class MultipleAIEnvironment implements Environment {
 	private HashMap<Agent, AIScene> aiPairs;
 	
 	private int[] marioEgoPos = new int[]{9,9};
-	private int receptiveFieldHeight = 19; // to be setup via MarioAIOptions
-	private int receptiveFieldWidth = 19; // to be setup via MarioAIOptions
+	private int receptiveFieldHeight = 19; // standard value
+	private int receptiveFieldWidth = 19; // standard value
 	
 	private HashMap<Agent, byte[][]> aiSceneZ;
-	//private byte[][] levelSceneZ;     // memory is allocated in reset
 	private HashMap<Agent, byte[][]> enemiesZ;
-	//private byte[][] enemiesZ;      // memory is allocated in reset
-	
 	private HashMap<Agent, byte[][]> mergedZZ;
-	//private byte[][] mergedZZ;      // memory is allocated in reset
 
 	private HashMap<Agent, int[]> serializedAiScene;
-	//private int[] serializedLevelScene;   // memory is allocated in reset
 	private HashMap<Agent, int[]> serializedEnemies;
-	//private int[] serializedEnemies;      // memory is allocated in reset
 	private HashMap<Agent, int[]> serializedMergedObservation;
-	//private int[] serializedMergedObservation; // memory is allocated in reset
 	
 	private RenderScene renderScene;
 	
 	public Level level;
 	
+	private boolean left, right, speedScroll;
+	
 	public MultipleAIEnvironment() {	
 		// Generate the level
-		level = LevelGenerator.createLevel(320, 15, new Random().nextLong(),0,0);
+//		level = LevelGenerator.createLevel(320, 15, new Random().nextLong(),0,0);
+		
+		level = LevelGenerator.createEditorLevel(320, 15);
 //		try {
 //			level = Level.load(new ObjectInputStream(new FileInputStream("test.lvl")));
 //		} catch (ClassNotFoundException e) {
@@ -69,12 +67,27 @@ public class MultipleAIEnvironment implements Environment {
 		aiPairs = new HashMap<Agent, AIScene>();
 	}
 
+	public void toggleKey(int keyCode, boolean isPressed){
+		if (keyCode == KeyEvent.VK_LEFT)
+			left = isPressed;
+		if (keyCode == KeyEvent.VK_RIGHT)
+			right = isPressed;
+		if (keyCode == KeyEvent.VK_SHIFT)
+			speedScroll = isPressed;
+	}
 	
 	@Override
 	public void tick() {
 		if(politeReset) {
 			politeReset = false;
 			actualReset();
+		}
+		
+		if(right) {
+			CameraHandler.getInstance().moveCamera(speedScroll ? 100 : 20, 0);
+		}
+		if(left) {
+			CameraHandler.getInstance().moveCamera(speedScroll ? -100 : -20, 0);
 		}
 		
 		renderScene.tick();
@@ -135,19 +148,12 @@ public class MultipleAIEnvironment implements Environment {
 		for(AIScene aiscene : aiPairs.values()) {
 			returnSprites.add(aiscene.mario);
 		}
-		//returnSprites.addAll(blug.sprites);
 		
 	    return returnSprites;
 	}
 	
 	public int getTick()
 	{
-//		for(LevelScene levelScene : aiPairs.values()) {
-//			return levelScene.tickCount;
-//		
-//		}
-//		return 0;
-//		
 	    return renderScene.tickCount;
 	}
 	

@@ -41,6 +41,9 @@ public class Art
     public static Image[][] font;
     public static Image[][] bg;
 
+    public static Image specialBlockStart;
+    public static Image specialBlockEnd;
+    
     private static final String PREFIX="res";
     
     private static boolean successfullInit;
@@ -60,6 +63,9 @@ public class Art
             particles = cutImage(gc, PREFIX+"/particlesheet.png", 8, 8);
             bg = cutImage(gc,PREFIX+ "/bgsheet.png", 32, 32);
             font = cutImage(gc, PREFIX+"/font.gif", 8, 8);
+            
+            specialBlockStart = getImage(gc, PREFIX+"/special_block_start.png");
+            specialBlockEnd = getImage(gc, PREFIX+"/special_block_end.png");
             
             successfullInit = true;
         }

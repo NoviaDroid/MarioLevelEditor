@@ -6,7 +6,6 @@ import dk.itu.mariolevel.engine.scene.AIScene;
 
 public class FireFlower extends Sprite
 {
-    private int width = 4;
     int height = 24;
 
     private AIScene world;
@@ -38,7 +37,7 @@ public class FireFlower extends Sprite
     {
         float xMarioD = world.mario.x - x;
         float yMarioD = world.mario.y - y;
-        float w = 16;
+
         if (xMarioD > -16 && xMarioD < 16)
         {
             if (yMarioD > -height && yMarioD < world.mario.height)

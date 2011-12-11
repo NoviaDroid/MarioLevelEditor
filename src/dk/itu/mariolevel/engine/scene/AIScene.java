@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dk.itu.mariolevel.engine.CameraHandler;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.level.SpriteTemplate;
 import dk.itu.mariolevel.engine.res.ResourcesManager;
@@ -34,9 +35,7 @@ public class AIScene extends LevelScene implements SpriteContext {
 
     public int startTime = 0;
     private int timeLeft;
-    protected int width;
-    protected int height;
-    
+
     private boolean politeReset;
     
     final private List<Float> enemiesFloatsList = new ArrayList<Float>();
@@ -59,7 +58,7 @@ public class AIScene extends LevelScene implements SpriteContext {
 	public AIScene(Level level) {
         this.level = level;
 
-        marioInitialPos = new Point(32, 32);
+        marioInitialPos = new Point(level.xEnter, level.yEnter);
         
         try
         {
@@ -93,10 +92,6 @@ public class AIScene extends LevelScene implements SpriteContext {
 	    timeLeft = 200*15;
 	    
 	    tickCount = 0;
-	    
-	    // Default values
-	    width = 320;
-	    height = 240;
 	}
 	
 	public void politeReset() {
@@ -169,8 +164,8 @@ public class AIScene extends LevelScene implements SpriteContext {
         tickCount++;
         level.tick();
 
-        for (int x = (int) xCam / 16 - 1; x <= (int) (xCam + this.width) / 16 + 1; x++)
-            for (int y = (int) yCam / 16 - 1; y <= (int) (yCam + this.height) / 16 + 1; y++)
+        for (int x = (int) xCam / 16 - 1; x <= (int) (xCam + CameraHandler.getInstance().width) / 16 + 1; x++)
+            for (int y = (int) yCam / 16 - 1; y <= (int) (yCam + CameraHandler.getInstance().height) / 16 + 1; y++)
             {
                 int dir = 0;
 
@@ -456,10 +451,6 @@ public class AIScene extends LevelScene implements SpriteContext {
     
     public Point getMarioInitialPos() {
     	return marioInitialPos;
-    }
-    
-    public void setMarioInitialPos(Point p) {
-    	marioInitialPos = p;
     }
     
     public int getMarioMode() { 

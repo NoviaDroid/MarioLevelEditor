@@ -1,12 +1,8 @@
 package dk.itu.mariolevel.editor;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,15 +10,15 @@ import javax.swing.JPanel;
 
 import dk.itu.mariolevel.editor.tileselector.TileGroup;
 import dk.itu.mariolevel.engine.Art;
+import dk.itu.mariolevel.engine.level.Level;
 
 public class EditorComponent extends JPanel {
 
 	private static final long serialVersionUID = -2642655301800190064L;
 
-	private int width, height;
+	public int width, height;
 	
 	private PlayComponent tilePickListener;
-
 	
 	private List<TileGroup> children = new ArrayList<TileGroup>();
 	
@@ -51,6 +47,7 @@ public class EditorComponent extends JPanel {
 		addTileGroup(new TileGroup("blocks", new byte[]{32,20,4,16,12,9,0,0,0,0}, width, this));
 		addTileGroup(new TileGroup("enemies", new byte[]{0,20,20,20,20,20}, width, this));
 		addTileGroup(new TileGroup("pipes", new byte[]{10,11,24,0,0,26,27,40,0,0,0,0,56,0,0}, width, this));
+		addTileGroup(new TileGroup("special", new byte[]{Level.SPECIAL_BLOCK_START,Level.SPECIAL_BLOCK_END,0,0,0}, width, this));
 		addTileGroup(new TileGroup("misc", new byte[]{80,81,82,0,0,96,97,98}, width, this));
 		
 		revalidate();
@@ -77,12 +74,10 @@ public class EditorComponent extends JPanel {
 			setMaximumSize(size);
 		}
 	}
-	
 
 	public void setTilePickListener(PlayComponent listener) {
 		tilePickListener = listener;
 	}
-
 	
 	public void setTilePicked(TileGroup tileChild) {
 		for(TileGroup child : children)
@@ -98,5 +93,9 @@ public class EditorComponent extends JPanel {
 		super.addNotify();
 		
 		Art.init(getGraphicsConfiguration());
+	}
+	
+	public int getWidth() {
+		return width + 20;
 	}
 }

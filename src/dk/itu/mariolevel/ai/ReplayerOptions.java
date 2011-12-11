@@ -44,7 +44,9 @@ public class ReplayerOptions
 {
 public static class Interval implements Serializable
 {
-    public int from;
+	private static final long serialVersionUID = -1463384109954536757L;
+	
+	public int from;
     public int to;
 
     public Interval()
@@ -124,7 +126,7 @@ public boolean hasMoreChunks()
     return !chunks.isEmpty();
 }
 
-public void setChunks(Queue chunks)
+public void setChunks(Queue<Interval> chunks)
 {
     this.chunks = chunks;
 }

@@ -28,9 +28,6 @@
 
 package dk.itu.mariolevel.engine.level;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Random;
 
 import dk.itu.mariolevel.ai.tools.RandomCreatureGenerator;
@@ -97,18 +94,39 @@ public class LevelGenerator
 	
 	private LevelGenerator() {}
 	
-	private static void loadLevel(String filePath)
-	{
-	    try
-	    {
-	        level = Level.load(new ObjectInputStream(new FileInputStream(filePath)));
-	    } catch (IOException e)
-	    {
-	        System.err.println("[MarioAI EXCEPTION] : failed while trying to loadAgent " + filePath);
-	    } catch (ClassNotFoundException e)
-	    {
-	        System.err.println("[MarioAI EXCEPTION] : class not found in " + filePath);
-	    }
+//	private static void loadLevel(String filePath)
+//	{
+//	    try
+//	    {
+//	        level = Level.load(new ObjectInputStream(new FileInputStream(filePath)));
+//	    } catch (IOException e)
+//	    {
+//	        System.err.println("[MarioAI EXCEPTION] : failed while trying to loadAgent " + filePath);
+//	    } catch (ClassNotFoundException e)
+//	    {
+//	        System.err.println("[MarioAI EXCEPTION] : class not found in " + filePath);
+//	    }
+//	}
+	
+	public static Level createEditorLevel(int width, int levelHeight) {
+		length = width;
+		height = levelHeight;
+		
+		level = new Level(length, height);
+		
+		int floor = height-1;
+		
+		buildStraight(0, level.length, true, floor, 2);
+		
+		fixWalls();
+		
+		level.xEnter = 2;
+		level.yEnter = 2;
+		
+	    level.xExit = level.length - 1;
+	    level.yExit = floor - 1;
+		
+		return level;
 	}
 	
 	public static Level createLevel(int width, int levelHeight, long seed, int difficulty, int type)
@@ -194,7 +212,7 @@ public class LevelGenerator
 	
 	    fixWalls();
 	
-	    level.counters = counters;
+	    Level.counters = counters;
 	
 	    return level;
 	}
@@ -516,7 +534,7 @@ public class LevelGenerator
 	        floorHeight = height - floor;
 	    }
 	
-	    int oldXCannon = -1;
+//	    int oldXCannon = -1;
 	
 	    int xCannon = xo + 1 + globalRandom.nextInt(4);
 	    for (int x = xo; x < xo + length; x++)
@@ -561,7 +579,7 @@ public class LevelGenerator
 	                {
 	                    if (y == cannonHeight)
 	                    {
-	                        oldXCannon = x;
+//	                        oldXCannon = x;
 	                        level.setBlock(x, y, (byte) (14 + 0 * 16));   // cannon barrel
 	                    } else if (y == cannonHeight + 1)
 	                    {
@@ -696,7 +714,7 @@ public class LevelGenerator
 	        floorHeight = height - floor;
 	    }
 	
-	    int oldXTube = -1;
+//	    int oldXTube = -1;
 	
 	    for (int x = xo; x < xo + length; x++)
 	    {
@@ -741,7 +759,7 @@ public class LevelGenerator
 	                        level.setBlock(x, y, (byte) (xPic + 0 * 16));
 	                        if (x == xTube)
 	                        {
-	                            oldXTube = x;
+//	                            oldXTube = x;
 	                            counters.tubesCount++;
 	                        }
 	                    } else

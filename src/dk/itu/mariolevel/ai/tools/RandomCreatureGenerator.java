@@ -43,6 +43,8 @@ import dk.itu.mariolevel.engine.sprites.Sprite;
  */
 public class RandomCreatureGenerator extends Random
 {
+private static final long serialVersionUID = 1835974266634700165L;
+	
 private HashSet<String> allowedCreatures = new HashSet<String>();
 private boolean creaturesEnabled = true;
 private boolean kindByDifficulty = true;
@@ -50,7 +52,7 @@ private int difficulty = 0;
 private final String[] kinds = {"g", "gw", "gk", "gkw", "rk", "rkw", "s", "sw", "gww"};
 private String lastDecreased;
 
-private final int INFINITE = -1;
+//private final int INFINITE = -1;
 
 private int GOOMBA = 0;
 private int GOOMBA_WINGED = 1;
