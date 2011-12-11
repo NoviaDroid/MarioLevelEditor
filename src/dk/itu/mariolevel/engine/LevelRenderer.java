@@ -24,6 +24,8 @@ public class LevelRenderer
 
     public int width;
     public int height;
+    
+    private int barTick;
 
     public LevelRenderer(Level level, GraphicsConfiguration graphicsConfiguration, int width, int height)
     {
@@ -36,6 +38,8 @@ public class LevelRenderer
         g.setComposite(AlphaComposite.Src);
 
         updateArea(0, 0, width, height);
+        
+        barTick = 0;
     }
 
     public void setCam(int xCam, int yCam)
@@ -188,22 +192,26 @@ public class LevelRenderer
         updateArea(0, 0, width, height);
     }
 
-    public void renderExit0(Graphics g, int tick, float alpha, boolean bar)
+    public void renderExit0(Graphics g)
     {
+    	barTick++;
+    	
         for (int y = level.yExit - 8; y < level.yExit; y++)
         {
             g.drawImage(Art.level[12][y == level.yExit - 8 ? 4 : 5], (level.xExit << 4) - xCam - 16, (y << 4) - yCam, null);
         }
-        int yh = level.yExit * 16 - (int) ((Math.sin((tick + alpha) / 20) * 0.5 + 0.5) * 7 * 16) - 8;
-        if (bar)
-        {
-            g.drawImage(Art.level[12][3], (level.xExit << 4) - xCam - 16, yh - yCam, null);
-            g.drawImage(Art.level[13][3], (level.xExit << 4) - xCam, yh - yCam, null);
-        }
+        
+        double barCurve = (Math.sin(barTick/4.0) * 0.5 + 0.5);
+        
+        int yh = level.yExit * 16 - (int) (barCurve * 7 * 16) - 8;
+
+        g.drawImage(Art.level[12][3], (level.xExit << 4) - xCam - 16, yh - yCam, null);
+        g.drawImage(Art.level[13][3], (level.xExit << 4) - xCam, yh - yCam, null);
+        
     }
 
 
-    public void renderExit1(Graphics g, int tick, float alpha)
+    public void renderExit1(Graphics g)
     {
         for (int y = level.yExit - 8; y < level.yExit; y++)
         {

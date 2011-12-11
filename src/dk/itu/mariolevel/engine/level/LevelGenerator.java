@@ -123,8 +123,8 @@ public class LevelGenerator
 		level.xEnter = 2;
 		level.yEnter = 2;
 		
-	    level.xExit = level.length - 1;
-	    level.yExit = floor - 1;
+	    level.xExit = level.length - 2;
+	    level.yExit = floor;
 		
 		return level;
 	}

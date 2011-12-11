@@ -127,6 +127,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 	    layer.setCam(xCam, yCam);
 	    layer.render(g, environment.getTick() /*levelScene.paused ? 0 : */);
+	    layer.renderExit0(g);
 	    
 	    g.translate(-xCam, -yCam);
 
@@ -134,6 +135,8 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	        if (sprite.layer == 1) sprite.render(g);
 
 	    g.translate(xCam, yCam);
+	    		
+	    layer.renderExit1(g);
 	    		
 	    if(getMarioPanel().isEditing()) {
 		    // Start block
