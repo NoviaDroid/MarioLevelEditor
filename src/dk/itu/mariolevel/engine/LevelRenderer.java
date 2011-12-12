@@ -201,7 +201,7 @@ public class LevelRenderer
             g.drawImage(Art.level[12][y == level.yExit - 8 ? 4 : 5], (level.xExit << 4) - xCam - 16, (y << 4) - yCam, null);
         }
         
-        double barCurve = (Math.sin(barTick/4.0) * 0.5 + 0.5);
+        double barCurve = (Math.sin(barTick/8.0) * 0.5 + 0.5);
         
         int yh = level.yExit * 16 - (int) (barCurve * 7 * 16) - 8;
 

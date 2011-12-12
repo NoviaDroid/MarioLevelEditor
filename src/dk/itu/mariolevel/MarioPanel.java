@@ -24,7 +24,7 @@ import dk.itu.mariolevel.engine.level.Level;
 public class MarioPanel extends JPanel {
 	private static final long serialVersionUID = 8118679016668905717L;
 	
-	private static final int EDITOR_BUTTON = 1;
+//	private static final int EDITOR_BUTTON = 1;
 	
 	private JFrame parentFrame;
 	
@@ -141,5 +141,9 @@ public class MarioPanel extends JPanel {
 		if(level != null) {
 			playComponent.changeLevel(level);
 		}
+	}
+
+	public void returnFocusToGame() {
+		playComponent.requestFocus();
 	}
 }

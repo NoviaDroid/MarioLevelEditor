@@ -12,6 +12,8 @@ public class FrameLauncher
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        
+        
         frame.setVisible(true);
         
         panel.start();

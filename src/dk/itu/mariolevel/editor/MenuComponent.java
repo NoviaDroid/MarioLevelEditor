@@ -20,8 +20,6 @@ public class MenuComponent extends JPanel implements ActionListener{
 	
 	public int width, height;
 	
-	private final JFileChooser fc = new JFileChooser();
-	
 	public MenuComponent(int width) {
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 //		setLayout(null);
@@ -88,6 +86,8 @@ public class MenuComponent extends JPanel implements ActionListener{
 	}
 	
 	private String showFileDialog(boolean open) {
+		final JFileChooser fc = new JFileChooser();
+		
 		int returnVal = -1;
 		
 		if(open)  {
@@ -96,6 +96,8 @@ public class MenuComponent extends JPanel implements ActionListener{
 		else {
 			returnVal = fc.showSaveDialog(getMarioPanel());
 		}
+		
+		getMarioPanel().returnFocusToGame();
 		
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
            	return fc.getSelectedFile().getPath();

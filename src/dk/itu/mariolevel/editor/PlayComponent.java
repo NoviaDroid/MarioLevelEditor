@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.Point;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -27,7 +25,7 @@ import dk.itu.mariolevel.engine.level.BgLevelGenerator;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
-public class PlayComponent extends JComponent implements Runnable, KeyListener, MouseListener, MouseMotionListener, FocusListener {
+public class PlayComponent extends JComponent implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 5552300968020476470L;
 	
 	public static final int KEY_LEFT = 0;
@@ -69,7 +67,6 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
     	addMouseListener(this);
     	addMouseMotionListener(this);
     	addKeyListener(this);
-    	addFocusListener(this);
 
         this.setFocusable(true);
         this.setEnabled(true);
@@ -298,15 +295,4 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {}
-
-	@Override
-	public void focusGained(FocusEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void focusLost(FocusEvent e) {
-		requestFocus();
-	}
 }
