@@ -12,6 +12,7 @@ import dk.itu.mariolevel.ai.GeneralizerLevelScene;
 import dk.itu.mariolevel.ai.SystemOfValues;
 import dk.itu.mariolevel.ai.agents.Agent;
 import dk.itu.mariolevel.ai.agents.ForwardAgent;
+import dk.itu.mariolevel.ai.agents.HumanKeyboardAgent;
 import dk.itu.mariolevel.ai.agents.RandomAgent;
 import dk.itu.mariolevel.engine.CameraHandler;
 import dk.itu.mariolevel.engine.Replayer;
@@ -47,6 +48,10 @@ public class MultipleAIEnvironment implements Environment {
 	
 	private boolean left, right, speedScroll;
 	
+	private boolean editing, politeReset;
+	
+	private HumanKeyboardAgent keyboardAgent;
+	
 	public MultipleAIEnvironment() {	
 		// Generate the level
 //		level = LevelGenerator.createLevel(320, 15, new Random().nextLong(),0,0);
@@ -68,12 +73,18 @@ public class MultipleAIEnvironment implements Environment {
 	}
 
 	public void toggleKey(int keyCode, boolean isPressed){
-		if (keyCode == KeyEvent.VK_LEFT)
-			left = isPressed;
-		if (keyCode == KeyEvent.VK_RIGHT)
-			right = isPressed;
-		if (keyCode == KeyEvent.VK_SHIFT)
-			speedScroll = isPressed;
+		if(editing) {
+			if (keyCode == KeyEvent.VK_LEFT)
+				left = isPressed;
+			if (keyCode == KeyEvent.VK_RIGHT)
+				right = isPressed;
+			if (keyCode == KeyEvent.VK_SHIFT)
+				speedScroll = isPressed;
+		}
+		else {
+			// Forward to keyboard controller
+			keyboardAgent.toggleKey(keyCode, isPressed);
+		}
 	}
 	
 	@Override
@@ -110,11 +121,14 @@ public class MultipleAIEnvironment implements Environment {
 		}
 	}
 
-	private boolean politeReset;
-	
 	@Override
 	public void reset() {
 		politeReset = true;
+	}
+	
+	public void reset(boolean editing) {
+		politeReset = true;
+		this.editing = editing;
 	}
 	
 	private void actualReset() {
@@ -130,13 +144,20 @@ public class MultipleAIEnvironment implements Environment {
         renderScene.reset();
         
         aiPairs.clear();
-//		for(LevelScene levelScene : aiPairs.values()) {
-//			levelScene.reset();
-//		}
         
-	    // Add test agent
-	    addAgent(new ForwardAgent());
-	    addAgent(new RandomAgent());
+        if(editing) {
+    	    // Add test agent
+    	    addAgent(new ForwardAgent());
+    	    addAgent(new RandomAgent());
+    	    
+    	    CameraHandler.getInstance().setFollowMario(null);
+        }
+        else {
+        	// Add human "agent"
+        	keyboardAgent = new HumanKeyboardAgent();
+        	addAgent(keyboardAgent);
+        	CameraHandler.getInstance().setFollowMario(aiPairs.get(keyboardAgent).mario);
+        }
 	}
 	
 	public List<Sprite> getSprites()

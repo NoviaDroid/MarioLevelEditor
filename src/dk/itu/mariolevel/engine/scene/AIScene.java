@@ -84,9 +84,15 @@ public class AIScene extends LevelScene implements SpriteContext {
         sprites.clear();
 	    
         level.reset();
-        
+            
+        Mario oldMario = mario;
 	    mario = new Mario(this);
 	    sprites.add(mario);
+	    
+        if(CameraHandler.getInstance().getFollowMario() == oldMario) {
+        	CameraHandler.getInstance().setFollowMario(mario);
+        }
+	    
 	    
 	    startTime = 1;
 	    timeLeft = 200*15;

@@ -11,16 +11,19 @@ import javax.swing.JScrollPane;
 
 import dk.itu.mariolevel.editor.EditorComponent;
 import dk.itu.mariolevel.editor.PlayComponent;
+import dk.itu.mariolevel.engine.Art;
 
 public class MarioPanel extends JPanel {
 	private static final long serialVersionUID = 8118679016668905717L;
+	
+	private static final int EDITOR_BUTTON = 1;
 	
 	private JFrame parentFrame;
 	
 	private PlayComponent playComponent;
 	private EditorComponent editorComponent;
 	
-	private boolean editing;
+	private boolean editing = true;
 	
 	public MarioPanel(JFrame parentFrame) {
 		this.parentFrame = parentFrame;
@@ -76,6 +79,8 @@ public class MarioPanel extends JPanel {
 	@Override
 	public void addNotify() {
 		super.addNotify();
+		
+		Art.init(getGraphicsConfiguration());
 		
 		updateSize();
 		

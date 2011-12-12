@@ -9,7 +9,6 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import dk.itu.mariolevel.editor.tileselector.TileGroup;
-import dk.itu.mariolevel.engine.Art;
 import dk.itu.mariolevel.engine.level.Level;
 
 public class EditorComponent extends JPanel {
@@ -86,13 +85,6 @@ public class EditorComponent extends JPanel {
 		if(tilePickListener != null) {
 			tilePickListener.setPickedTile(tileChild.pickedTile);
 		}
-	}
-	
-	@Override
-	public void addNotify() {
-		super.addNotify();
-		
-		Art.init(getGraphicsConfiguration());
 	}
 	
 	public int getWidth() {

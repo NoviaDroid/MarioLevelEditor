@@ -29,11 +29,20 @@ public class CameraHandler {
 		if(followMario != null){
 			camX = (int) (followMario.x - width/2);
 			camY = 0;
+			
+			if(camX + width > maxX)
+				camX = maxX - width;
+	    	
+	    	if(camX < minX) camX = minX;
 		}
 	}
 	
 	public void setFollowMario(Mario mario) {
 		followMario = mario;
+	}
+	
+	public Mario getFollowMario() {
+		return followMario;
 	}
 	
 	public void moveCamera(int x, int y) {

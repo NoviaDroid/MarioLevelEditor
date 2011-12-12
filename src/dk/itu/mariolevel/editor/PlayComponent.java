@@ -182,15 +182,13 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	public void run() {
 		graphicsConfiguration = getGraphicsConfiguration();
 
-		Art.init(graphicsConfiguration);
-		
         thisVolatileImage = createVolatileImage(COMPONENT_WIDTH, COMPONENT_HEIGHT);
         thisGraphics = getGraphics();
         thisVolatileImageGraphics = thisVolatileImage.getGraphics();
         
         environment = new MultipleAIEnvironment();
         
-        environment.reset();
+        environment.reset(getMarioPanel().isEditing());
         
         layer = new LevelRenderer(environment.level, graphicsConfiguration, this.width, this.height);
         for (int i = 0; i < bgLayer.length; i++)
@@ -252,6 +250,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 		
 		if(keyCode == KeyEvent.VK_E && !isPressed) {
 			getMarioPanel().toggleEditing();
+			environment.reset(getMarioPanel().isEditing());
 		}
 	}
 

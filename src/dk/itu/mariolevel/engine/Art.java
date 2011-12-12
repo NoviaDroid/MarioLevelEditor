@@ -43,7 +43,7 @@ public class Art
 
     public static Image specialBlockStart;
     public static Image specialBlockEnd;
-    
+
     private static final String PREFIX="res";
     
     private static boolean successfullInit;
@@ -66,7 +66,7 @@ public class Art
             
             specialBlockStart = getImage(gc, PREFIX+"/special_block_start.png");
             specialBlockEnd = getImage(gc, PREFIX+"/special_block_end.png");
-            
+            		
             successfullInit = true;
         }
         catch (Exception e)
