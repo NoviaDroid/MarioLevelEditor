@@ -248,6 +248,7 @@ public class Level implements Serializable
 	
 	public static void save(Level lvl, ObjectOutputStream oos) throws IOException
 	{
+//		lvl.safeCopy = null;
 	    oos.writeObject(lvl);
 	}
 	

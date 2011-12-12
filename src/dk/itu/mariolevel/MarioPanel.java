@@ -4,14 +4,22 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import dk.itu.mariolevel.editor.EditorComponent;
+import dk.itu.mariolevel.editor.MenuComponent;
 import dk.itu.mariolevel.editor.PlayComponent;
 import dk.itu.mariolevel.engine.Art;
+import dk.itu.mariolevel.engine.level.Level;
 
 public class MarioPanel extends JPanel {
 	private static final long serialVersionUID = 8118679016668905717L;
@@ -22,8 +30,10 @@ public class MarioPanel extends JPanel {
 	
 	private PlayComponent playComponent;
 	private EditorComponent editorComponent;
+	private MenuComponent menuComponent;
 	
-	private boolean editing = true;
+	private boolean showEdit = true;
+	private boolean showMenu;
 	
 	public MarioPanel(JFrame parentFrame) {
 		this.parentFrame = parentFrame;
@@ -32,6 +42,7 @@ public class MarioPanel extends JPanel {
 		
     	playComponent = new PlayComponent(640, 480);	
     	editorComponent = new EditorComponent(200);
+    	menuComponent = new MenuComponent(640);
     	
     	editorComponent.setTilePickListener(playComponent);
         
@@ -41,13 +52,19 @@ public class MarioPanel extends JPanel {
 	}
 	
 	public void toggleEditing() {
-		editing = !editing;
+		showEdit = !showEdit;
+		
+		updateComponents();
+	}
+	
+	public void toggleMenu() {
+		showMenu = !showMenu;
 		
 		updateComponents();
 	}
 	
 	public boolean isEditing() {
-		return editing;
+		return showEdit;
 	}
 	
 	private void updateComponents() {
@@ -55,18 +72,22 @@ public class MarioPanel extends JPanel {
 		
         add(playComponent, BorderLayout.CENTER);
 
-        if(editing) {
+        if(showEdit) {
             JScrollPane scroll = new JScrollPane(editorComponent, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scroll.getVerticalScrollBar().setUnitIncrement(16);
             add(scroll, BorderLayout.EAST);
+        }
+        
+        if(showMenu) {
+        	add(menuComponent, BorderLayout.SOUTH);
         }
         
         updateSize();
 	}
 	
 	private void updateSize() {
-		int height = PlayComponent.COMPONENT_HEIGHT*2;
-		int width = PlayComponent.COMPONENT_WIDTH*2 + (editing ? editorComponent.getWidth() : 0);
+		int height = PlayComponent.COMPONENT_HEIGHT*2 + (showMenu ? menuComponent.height : 0);
+		int width = PlayComponent.COMPONENT_WIDTH*2 + (showEdit ? editorComponent.width : 0);
 		
 		Dimension size = new Dimension(width, height);
 		setPreferredSize(size);
@@ -90,5 +111,35 @@ public class MarioPanel extends JPanel {
 	
 	public void start() {
 		playComponent.start();
+	}
+	
+	public void saveLevel(String path) {
+		Level level = playComponent.getLevel();
+		
+		try {
+			Level.save(level, new ObjectOutputStream(new FileOutputStream(path)));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void loadLevel(String path) {
+		Level level = null;
+		
+		try {
+			level = Level.load(new ObjectInputStream(new FileInputStream(path)));
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		if(level != null) {
+			playComponent.changeLevel(level);
+		}
 	}
 }

@@ -44,7 +44,7 @@ public class MultipleAIEnvironment implements Environment {
 	
 	private RenderScene renderScene;
 	
-	public Level level;
+	private Level level;
 	
 	private boolean left, right, speedScroll;
 	
@@ -57,15 +57,7 @@ public class MultipleAIEnvironment implements Environment {
 //		level = LevelGenerator.createLevel(320, 15, new Random().nextLong(),0,0);
 		
 		level = LevelGenerator.createEditorLevel(320, 15);
-//		try {
-//			level = Level.load(new ObjectInputStream(new FileInputStream("test.lvl")));
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
 
 		renderScene = new RenderScene(new Level(level));
 		
@@ -85,6 +77,15 @@ public class MultipleAIEnvironment implements Environment {
 			// Forward to keyboard controller
 			keyboardAgent.toggleKey(keyCode, isPressed);
 		}
+	}
+	
+	public void changeLevel(Level level) {
+		this.level = level;
+		this.reset();
+	}
+	
+	public Level getLevel() {
+		return level;
 	}
 	
 	@Override

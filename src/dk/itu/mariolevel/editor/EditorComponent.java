@@ -27,9 +27,7 @@ public class EditorComponent extends JPanel {
         this.setEnabled(true);
         this.width = width;
         this.height = 480;
-        
-        this.setFocusable(true);
-        
+
 		Dimension size = new Dimension(width, height);
 		setPreferredSize(size);
 		setMinimumSize(size);

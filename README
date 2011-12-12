@@ -5,6 +5,7 @@ This is done by having AI's run through the level as you create it. Using Ai's f
 Current controls are:
 
 E: Activate/Deactivate edit mode
+M: Activate/Deactivate menu
 
 ** Play mode **
 Left/Right: Go Left/Right

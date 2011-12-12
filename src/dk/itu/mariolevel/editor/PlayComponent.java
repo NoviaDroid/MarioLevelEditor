@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.Point;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -25,7 +27,7 @@ import dk.itu.mariolevel.engine.level.BgLevelGenerator;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
-public class PlayComponent extends JComponent implements Runnable, KeyListener, MouseListener, MouseMotionListener {
+public class PlayComponent extends JComponent implements Runnable, KeyListener, MouseListener, MouseMotionListener, FocusListener {
 	private static final long serialVersionUID = 5552300968020476470L;
 	
 	public static final int KEY_LEFT = 0;
@@ -67,6 +69,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
     	addMouseListener(this);
     	addMouseMotionListener(this);
     	addKeyListener(this);
+    	addFocusListener(this);
 
         this.setFocusable(true);
         this.setEnabled(true);
@@ -140,14 +143,14 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	    		
 	    if(getMarioPanel().isEditing()) {
 		    // Start block
-		    int xEnterPos = environment.level.xEnter * 16;
-		    int yEnterPos = environment.level.yEnter * 16;
+		    int xEnterPos = environment.getLevel().xEnter * 16;
+		    int yEnterPos = environment.getLevel().yEnter * 16;
 		    
 		    g.drawImage(Art.specialBlockStart, xEnterPos-xCam, yEnterPos-yCam, null);
 		    
 		    // End block
-		    int xEndPos = environment.level.xExit * 16;
-		    int yEndPos = environment.level.yExit * 16;
+		    int xEndPos = environment.getLevel().xExit * 16;
+		    int yEndPos = environment.getLevel().yExit * 16;
 		    
 		    g.drawImage(Art.specialBlockEnd, xEndPos-xCam, yEndPos-yCam, null);
 	    	
@@ -190,28 +193,38 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
         
         environment.reset(getMarioPanel().isEditing());
         
-        layer = new LevelRenderer(environment.level, graphicsConfiguration, this.width, this.height);
+        layer = new LevelRenderer(environment.getLevel(), graphicsConfiguration, this.width, this.height);
         for (int i = 0; i < bgLayer.length; i++)
         {
             int scrollSpeed = 4 >> i;
-            int w = ((environment.level.length * 16) - COMPONENT_WIDTH) / scrollSpeed + COMPONENT_WIDTH;
-            int h = ((environment.level.height * 16) - COMPONENT_HEIGHT) / scrollSpeed + COMPONENT_HEIGHT;
+            int w = ((environment.getLevel().length * 16) - COMPONENT_WIDTH) / scrollSpeed + COMPONENT_WIDTH;
+            int h = ((environment.getLevel().height * 16) - COMPONENT_HEIGHT) / scrollSpeed + COMPONENT_HEIGHT;
             
             Level bgLevel = BgLevelGenerator.createLevel(w / 32 + 1, h / 32 + 1, i == 0, 0);
             
             bgLayer[i] = new BgRenderer(bgLevel, graphicsConfiguration, COMPONENT_WIDTH, COMPONENT_HEIGHT, scrollSpeed);
         }       
         
-        CameraHandler.getInstance().setLimits(0, environment.level.length * 16, 0, 0);
+        CameraHandler.getInstance().setLimits(0, environment.getLevel().length * 16, 0, 0);
         CameraHandler.getInstance().setScreenSize(COMPONENT_WIDTH, COMPONENT_HEIGHT);
+        
+        // Stupid hack to fix weird frame packing
+        getMarioPanel().toggleEditing();
+        getMarioPanel().toggleEditing();
+        // Stupid hack to fix weird frame packing
         
 		while(running) {
 			tick();
 		}
 	}
 	
-	public void reset() {
-	    tm = System.currentTimeMillis();
+	public void changeLevel(Level level) {
+		layer.setLevel(level);
+		environment.changeLevel(level);
+	}
+	
+	public Level getLevel() {
+		return environment.getLevel();
 	}
 
 	@Override
@@ -223,7 +236,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1 && getMarioPanel().isEditing()) {
         	Point bluh = CameraHandler.getInstance().mousePointToTile(lastMousePos);
-        	environment.level.setBlock(bluh.x, bluh.y, pickedTile);
+        	environment.getLevel().setBlock(bluh.x, bluh.y, pickedTile);
         }
 	}
 
@@ -231,7 +244,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	public void mouseReleased(MouseEvent arg0) {
 		if(getMarioPanel().isEditing()) {
 			environment.reset();
-			layer.setLevel(environment.level);
+			layer.setLevel(environment.getLevel());
 		}
 	}
 
@@ -252,6 +265,10 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 			getMarioPanel().toggleEditing();
 			environment.reset(getMarioPanel().isEditing());
 		}
+		
+		if(keyCode == KeyEvent.VK_M && !isPressed) {
+			getMarioPanel().toggleMenu();
+		}
 	}
 
 	@Override
@@ -260,7 +277,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 		if(getMarioPanel().isEditing()) {
 			Point bluh = CameraHandler.getInstance().mousePointToTile(lastMousePos);
-	    	environment.level.setBlock(bluh.x, bluh.y, pickedTile);
+	    	environment.getLevel().setBlock(bluh.x, bluh.y, pickedTile);
 		}
 	}
 	
@@ -281,4 +298,15 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		requestFocus();
+	}
 }
