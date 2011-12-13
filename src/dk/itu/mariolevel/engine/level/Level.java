@@ -126,8 +126,9 @@ public class Level implements Serializable
 	public static final byte SPECIAL_BLOCK_START = -1;
 	public static final byte SPECIAL_BLOCK_END = -2;
 	public static final byte SPECIAL_BLOCK_GOOMBA = -3;
-	public static final byte SPECIAL_BLOCK_RED_KOOPA = -5;
-	public static final byte SPECIAL_BLOCK_GREEN_KOOPA = -4;
+	public static final byte SPECIAL_BLOCK_RED_KOOPA = -4;
+	public static final byte SPECIAL_BLOCK_GREEN_KOOPA = -5;
+	public static final byte SPECIAL_BLOCK_FLOWER = -6;
 	
 	
 	public static objCounters counters;
@@ -303,7 +304,7 @@ public class Level implements Serializable
 			return;
 		}
 		
-		if(b == SPECIAL_BLOCK_GOOMBA || b == SPECIAL_BLOCK_GREEN_KOOPA || b == SPECIAL_BLOCK_RED_KOOPA) {
+		if(b == SPECIAL_BLOCK_GOOMBA || b == SPECIAL_BLOCK_GREEN_KOOPA || b == SPECIAL_BLOCK_RED_KOOPA || b == SPECIAL_BLOCK_FLOWER) {
 			addEnemy(x, y, b);
 			return;
 		}
@@ -324,9 +325,17 @@ public class Level implements Serializable
 	private void addEnemy(int x, int y, byte b) {
 		int kind = -1;
 		
-		
 		if(b == SPECIAL_BLOCK_GOOMBA) {
 			kind = Sprite.KIND_GOOMBA;
+		}
+		else if(b == SPECIAL_BLOCK_GREEN_KOOPA) {
+			kind = Sprite.KIND_GREEN_KOOPA;
+		}
+		else if(b == SPECIAL_BLOCK_RED_KOOPA) {
+			kind = Sprite.KIND_RED_KOOPA;
+		}
+		else if(b == SPECIAL_BLOCK_FLOWER) {
+			kind = Sprite.KIND_ENEMY_FLOWER;
 		}
 		
 		if(kind != -1)
