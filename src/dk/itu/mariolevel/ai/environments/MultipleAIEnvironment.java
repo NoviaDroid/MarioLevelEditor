@@ -44,20 +44,20 @@ public class MultipleAIEnvironment implements Environment {
 	
 	private RenderScene renderScene;
 	
+	private AIScene playScene;
+	private HumanKeyboardAgent playAgent;
+	
 	private Level level;
 	
 	private boolean left, right, speedScroll;
 	
 	private boolean editing, politeReset;
 	
-	private HumanKeyboardAgent keyboardAgent;
-	
 	public MultipleAIEnvironment() {	
 		// Generate the level
 //		level = LevelGenerator.createLevel(320, 15, new Random().nextLong(),0,0);
 		
 		level = LevelGenerator.createEditorLevel(320, 15);
-
 
 		renderScene = new RenderScene(new Level(level));
 		
@@ -75,7 +75,7 @@ public class MultipleAIEnvironment implements Environment {
 		}
 		else {
 			// Forward to keyboard controller
-			keyboardAgent.toggleKey(keyCode, isPressed);
+			playAgent.toggleKey(keyCode, isPressed);
 		}
 	}
 	
@@ -86,6 +86,13 @@ public class MultipleAIEnvironment implements Environment {
 	
 	public Level getLevel() {
 		return level;
+	}
+	
+	public Level getLevelToRender() {
+		if(editing)
+			return level;
+	
+		return playScene.level;
 	}
 	
 	@Override
@@ -102,24 +109,30 @@ public class MultipleAIEnvironment implements Environment {
 			CameraHandler.getInstance().moveCamera(speedScroll ? -100 : -20, 0);
 		}
 		
-		renderScene.tick();
-		
-		// Tick each level scene
-		for(AIScene aiScene : aiPairs.values()) {
-			aiScene.tick();
+		if(editing) {
+			renderScene.tick();
+			
+			// Tick each level scene
+			for(AIScene aiScene : aiPairs.values()) {
+				aiScene.tick();
+			}
+			
+			// for each agent
+			// Integrate observation
+			for(Agent agent : aiPairs.keySet()) {
+				agent.integrateObservation(this);
+			}
+			
+			// for each      agent / aiscene
+			//          get action / perform action
+			for(Entry<Agent, AIScene> pair : aiPairs.entrySet()) {
+				pair.getValue().performAction(pair.getKey().getAction());
+			}
 		}
-		
-		// for each agent
-		// Integrate observation
-		for(Agent agent : aiPairs.keySet()) {
-			agent.integrateObservation(this);
-		}
-		
-		// for each      agent / aiscene
-		//          get action / perform action
-		for(Entry<Agent, AIScene> pair : aiPairs.entrySet()) {
-			pair.getValue().performAction(pair.getKey().getAction());
-		}
+		else {
+			playScene.tick();
+			playScene.performAction(playAgent.getAction());
+		}		
 	}
 
 	@Override
@@ -132,7 +145,7 @@ public class MultipleAIEnvironment implements Environment {
 		this.editing = editing;
 	}
 	
-	private void actualReset() {
+	public void actualReset() {
         serializedAiScene = new HashMap<Agent, int[]>();
         serializedEnemies = new HashMap<Agent, int[]>();
         serializedMergedObservation = new HashMap<Agent, int[]>();
@@ -140,13 +153,13 @@ public class MultipleAIEnvironment implements Environment {
         aiSceneZ = new HashMap<Agent, byte[][]>();
         enemiesZ = new HashMap<Agent, byte[][]>();
         mergedZZ = new HashMap<Agent, byte[][]>();
-        
-        renderScene.level = new Level(level);
-        renderScene.reset();
-        
-        aiPairs.clear();
-        
+
         if(editing) {
+        	renderScene.level = new Level(level);
+            renderScene.reset();
+            
+            aiPairs.clear();
+        	
     	    // Add test agent
     	    addAgent(new ForwardAgent());
     	    addAgent(new RandomAgent());
@@ -155,9 +168,13 @@ public class MultipleAIEnvironment implements Environment {
         }
         else {
         	// Add human "agent"
-        	keyboardAgent = new HumanKeyboardAgent();
-        	addAgent(keyboardAgent);
-        	CameraHandler.getInstance().setFollowMario(aiPairs.get(keyboardAgent).mario);
+        	playAgent = new HumanKeyboardAgent();
+        	playAgent.reset();
+        	
+        	playScene = new AIScene(new Level(level));
+        	playScene.reset();
+        	
+        	CameraHandler.getInstance().setFollowMario(playScene.mario);
         }
 	}
 	
@@ -165,10 +182,15 @@ public class MultipleAIEnvironment implements Environment {
 	{
 		ArrayList<Sprite> returnSprites = new ArrayList<Sprite>();
 		
-		returnSprites.addAll(renderScene.sprites);		
-		
-		for(AIScene aiscene : aiPairs.values()) {
-			returnSprites.add(aiscene.mario);
+		if(editing) {
+			returnSprites.addAll(renderScene.sprites);		
+			
+			for(AIScene aiscene : aiPairs.values()) {
+				returnSprites.add(aiscene.mario);
+			}
+		}
+		else {
+			returnSprites.addAll(playScene.sprites);
 		}
 		
 	    return returnSprites;
@@ -176,7 +198,11 @@ public class MultipleAIEnvironment implements Environment {
 	
 	public int getTick()
 	{
-	    return renderScene.tickCount;
+		if(editing) {
+			return renderScene.tickCount;
+		}
+		
+		return playScene.tickCount;
 	}
 	
 	public void addAgent(Agent agent) {

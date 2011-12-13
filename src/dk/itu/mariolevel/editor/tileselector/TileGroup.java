@@ -79,21 +79,39 @@ public class TileGroup extends JComponent  implements MouseListener {
 		
 		for(int y = 0; y < rows; y++) {
 			for(int x = 0; x < tilesPerRow; x++) {
+				
 				if(x+(y*tilesPerRow) >= tiles.length) continue;
-				 byte tileByte = tiles[x+(y*tilesPerRow)];
+				
+				byte tileByte = tiles[x+(y*tilesPerRow)];
 				 
-				 if(tileByte == Level.SPECIAL_BLOCK_START) {
-					 g.drawImage(Art.specialBlockStart, x*18+2, y*18+2, null);
-				 }
-				 else if(tileByte == Level.SPECIAL_BLOCK_END) {
-					 g.drawImage(Art.specialBlockEnd, x*18+2, y*18+2, null);
-				 }
-				 else {
-					 int xPickedTile = (tileByte & 0xff) % 16;
-					 int yPickedTile = (tileByte & 0xff) / 16;
-					 
-					 g.drawImage(Art.level[xPickedTile][yPickedTile], x*18+2, y*18+2, null);
-				 }
+				Image drawImage = null;
+				
+				int drawX = x * 18 + 2;
+				int drawY = y * 18 + 2;
+				
+				if(tileByte == Level.SPECIAL_BLOCK_START) {
+					drawImage = Art.specialBlockStart;
+//					g.drawImage(Art.specialBlockStart, drawX, drawY, null);
+				}
+				else if(tileByte == Level.SPECIAL_BLOCK_END) {
+					drawImage = Art.specialBlockEnd;
+//					g.drawImage(Art.specialBlockEnd, drawX, drawY, null);
+				}
+				else if(tileByte == Level.SPECIAL_BLOCK_GOOMBA) {
+					drawImage = Art.enemies[0][2];
+					drawY -= 16;
+//					g.drawImage(Art.enemies[0][2], drawX;, drawY, null);
+				}
+				else {
+					int xPickedTile = (tileByte & 0xff) % 16;
+					int yPickedTile = (tileByte & 0xff) / 16;
+					
+					drawImage = Art.level[xPickedTile][yPickedTile];
+//					g.drawImage(Art.level[xPickedTile][yPickedTile], drawX, y*18+2, null);
+				}
+
+				if(drawImage != null)
+					g.drawImage(drawImage, drawX, drawY, null);
 			}
 		}
 		

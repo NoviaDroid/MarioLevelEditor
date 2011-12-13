@@ -32,7 +32,7 @@ public class MarioPanel extends JPanel {
 	private EditorComponent editorComponent;
 	private MenuComponent menuComponent;
 	
-	private boolean showEdit = true;
+	private boolean showEdit;
 	private boolean showMenu;
 	
 	public MarioPanel(JFrame parentFrame) {
@@ -75,6 +75,7 @@ public class MarioPanel extends JPanel {
         if(showEdit) {
             JScrollPane scroll = new JScrollPane(editorComponent, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scroll.getVerticalScrollBar().setUnitIncrement(16);
+            scroll.setBorder(null);
             add(scroll, BorderLayout.EAST);
         }
         
@@ -87,7 +88,7 @@ public class MarioPanel extends JPanel {
 	
 	private void updateSize() {
 		int height = PlayComponent.COMPONENT_HEIGHT*2 + (showMenu ? menuComponent.height : 0);
-		int width = PlayComponent.COMPONENT_WIDTH*2 + (showEdit ? editorComponent.width : 0);
+		int width = PlayComponent.COMPONENT_WIDTH*2 + (showEdit ? editorComponent.getWidth() : 0);
 		
 		Dimension size = new Dimension(width, height);
 		setPreferredSize(size);

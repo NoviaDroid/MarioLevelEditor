@@ -125,6 +125,8 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 	    g.translate(xCam, yCam);
 
+	    layer.renderBehaviors = getMarioPanel().isEditing();
+	    		
 	    layer.setCam(xCam, yCam);
 	    layer.render(g, environment.getTick() /*levelScene.paused ? 0 : */);
 	    layer.renderExit0(g);
@@ -188,9 +190,9 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
         
         environment = new MultipleAIEnvironment();
         
-        environment.reset(getMarioPanel().isEditing());
+        environment.actualReset();
         
-        layer = new LevelRenderer(environment.getLevel(), graphicsConfiguration, this.width, this.height);
+        layer = new LevelRenderer(environment.getLevelToRender(), graphicsConfiguration, this.width, this.height);
         for (int i = 0; i < bgLayer.length; i++)
         {
             int scrollSpeed = 4 >> i;
@@ -241,7 +243,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	public void mouseReleased(MouseEvent arg0) {
 		if(getMarioPanel().isEditing()) {
 			environment.reset();
-			layer.setLevel(environment.getLevel());
+			layer.setLevel(environment.getLevelToRender());
 		}
 	}
 
@@ -261,6 +263,8 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 		if(keyCode == KeyEvent.VK_E && !isPressed) {
 			getMarioPanel().toggleEditing();
 			environment.reset(getMarioPanel().isEditing());
+			environment.tick();
+			layer.setLevel(environment.getLevelToRender());
 		}
 		
 		if(keyCode == KeyEvent.VK_M && !isPressed) {

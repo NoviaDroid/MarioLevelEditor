@@ -34,6 +34,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import dk.itu.mariolevel.engine.sprites.Sprite;
+
 public class Level implements Serializable
 {
 	private static final long serialVersionUID = -2222762134065697580L;
@@ -123,6 +125,10 @@ public class Level implements Serializable
 	
 	public static final byte SPECIAL_BLOCK_START = -1;
 	public static final byte SPECIAL_BLOCK_END = -2;
+	public static final byte SPECIAL_BLOCK_GOOMBA = -3;
+	public static final byte SPECIAL_BLOCK_RED_KOOPA = -5;
+	public static final byte SPECIAL_BLOCK_GREEN_KOOPA = -4;
+	
 	
 	public static objCounters counters;
 	
@@ -297,11 +303,34 @@ public class Level implements Serializable
 			return;
 		}
 		
+		if(b == SPECIAL_BLOCK_GOOMBA || b == SPECIAL_BLOCK_GREEN_KOOPA || b == SPECIAL_BLOCK_RED_KOOPA) {
+			addEnemy(x, y, b);
+			return;
+		}
+		
+		// Delete enemy first
+		if(b == 0 && getSpriteTemplate(x, y) != null) {
+			setSpriteTemplate(x, y, null);
+			return;
+		}
+	
 	    if (x < 0) return;
 	    if (y < 0) return;
 	    if (x >= length) return;
 	    if (y >= height) return;
 	    map[x][y] = b;
+	}
+	
+	private void addEnemy(int x, int y, byte b) {
+		int kind = -1;
+		
+		
+		if(b == SPECIAL_BLOCK_GOOMBA) {
+			kind = Sprite.KIND_GOOMBA;
+		}
+		
+		if(kind != -1)
+			setSpriteTemplate(x, y, new SpriteTemplate(kind));	
 	}
 	
 	public void setBlockData(int x, int y, byte b)
