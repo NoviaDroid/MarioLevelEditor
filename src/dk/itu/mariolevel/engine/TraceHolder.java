@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 public class TraceHolder {
 	private final static int MAX_TRACES = 5;
+	private final static int MAX_POS_TRACE = 50;
 	
 	private int currentTrace;
 	private ArrayList<ArrayList<Point>> traces;
@@ -17,7 +18,7 @@ public class TraceHolder {
 	}
 	
 	public void addToTrack(Point point) {
-		if(currentTrace <= traces.size())
+		if(currentTrace >= traces.size())
 			traces.add(new ArrayList<Point>());
 		
 		// Avoid additional points the same place
@@ -28,8 +29,20 @@ public class TraceHolder {
 		if(traceSize > 0)
 			lastPoint = traces.get(currentTrace).get(traceSize-1);
 		
-		if(lastPoint != point)
+		if(lastPoint != point) {
 			traces.get(currentTrace).add(point);
+			
+			// Trim traces
+			if(traces.get(currentTrace).size() > MAX_POS_TRACE) traces.get(currentTrace).remove(0);
+		}
+			
+	}
+	
+	public ArrayList<Point> getRecordedTraces() {
+		if(currentTrace >= traces.size())
+			traces.add(new ArrayList<Point>());
+		
+		return traces.get(currentTrace);
 	}
 	
 	public void addFinish(Point point, boolean win) {
@@ -43,12 +56,5 @@ public class TraceHolder {
 		}
 		
 		finishMap.put(point, win);
-	}
-	
-	public void clearTracks() {
-		currentTrace = 0;
-		
-		traces.clear();
-		finishMap.clear();
 	}
 }

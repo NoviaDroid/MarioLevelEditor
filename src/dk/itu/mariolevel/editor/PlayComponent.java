@@ -1,5 +1,6 @@
 package dk.itu.mariolevel.editor;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
@@ -20,7 +21,9 @@ import dk.itu.mariolevel.engine.Art;
 import dk.itu.mariolevel.engine.BgRenderer;
 import dk.itu.mariolevel.engine.CameraHandler;
 import dk.itu.mariolevel.engine.LevelRenderer;
+import dk.itu.mariolevel.engine.MarioTracker;
 import dk.itu.mariolevel.engine.Scale2x;
+import dk.itu.mariolevel.engine.TraceHolder;
 import dk.itu.mariolevel.engine.level.BgLevelGenerator;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.sprites.Sprite;
@@ -161,7 +164,40 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 			
 		    g.drawRect(relativeTilePositionX, relativeTilePositionY, 16, 16);
 	    }
+	    
+	    if(MarioTracker.getInstance().isTracing()) {
+			List<TraceHolder> traces = MarioTracker.getInstance().getTracings();
+			
+			for(int i = 0; i < traces.size(); i++) {
+				TraceHolder trace = traces.get(i);
+				
+				g.setColor(colors[i]);
+				
+				Point lastPoint = null;
+				
+				Point cam = CameraHandler.getInstance().getCameraPosition();
+				
+				for(Point point : trace.getRecordedTraces()) {
+					if(lastPoint != null) {		
+
+						int x1 = (int) (lastPoint.getX()-cam.getX());
+						int y1 = (int) (lastPoint.getY()-cam.getY());
+						int x2 = (int) (point.getX()-cam.getX());
+						int y2 = (int) (point.getY()-cam.getY());
+								
+						g.drawLine(x1, y1, x2, y2);
+					}
+					
+					lastPoint = point;
+				}
+				
+				g.setColor(Color.BLACK);
+			}
+	    }
 	}
+	
+	private Color[] colors = new Color[]{Color.RED, Color.BLUE, Color.GREEN, Color.ORANGE, Color.YELLOW};
+	
 
 	public void start() {
 	    if (!running)
@@ -272,7 +308,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 		}
 		
 		if(keyCode == KeyEvent.VK_T && !isPressed) {
-			environment.toggleTracing();
+			MarioTracker.getInstance().toggleTracing();
 		}
 	}
 

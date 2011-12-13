@@ -1,14 +1,16 @@
 package dk.itu.mariolevel.engine;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import dk.itu.mariolevel.engine.scene.LevelScene;
 import dk.itu.mariolevel.engine.sprites.Mario;
 
 public class MarioTracker {
-	private final static int POS_TRACE_INTERVAL = 20;
+	private final static int POS_TRACE_INTERVAL = 5;
 	
 	private static MarioTracker _instance;
 	
@@ -23,6 +25,8 @@ public class MarioTracker {
 	
 	private int tick;
 	
+	private boolean trace;
+	
 	private MarioTracker() {
 		traceMap = new HashMap<LevelScene, TraceHolder>();
 	}
@@ -33,28 +37,57 @@ public class MarioTracker {
 		}
 	}
 	
-	public void clearTracing() {
+	public void removeTracing(LevelScene levelScene) {
+		traceMap.remove(levelScene);
+	}
+	
+	public void removeAllTracing() {
 		traceMap = new HashMap<LevelScene, TraceHolder>();
 		tick = 0;
+	}
+	
+	private void clearTracing() {
+		for(LevelScene key : traceMap.keySet())
+			traceMap.put(key, new TraceHolder());
+		
+		tick = 0;
+	}
+	
+	public void toggleTracing() {
+		trace = !trace;
+		clearTracing();
+	}
+	
+	public boolean isTracing() {
+		return trace;
+	}
+	
+	public List<TraceHolder> getTracings() {
+		ArrayList<TraceHolder> returnList = new ArrayList<TraceHolder>();
+		
+		returnList.addAll(traceMap.values());
+		
+		return returnList;
 	}
 	
 	public void tick() {
 		tick++;
 		
-		for(Entry<LevelScene, TraceHolder> pair : traceMap.entrySet()) {
-			Mario mario = pair.getKey().mario;
-			TraceHolder traceHolder = pair.getValue();
-			
-			if(mario.getStatus() == Mario.STATUS_DEAD || mario.getStatus() == Mario.STATUS_WIN) {
-				traceHolder.addFinish(new Point(mario.xDeathPos, mario.yDeathPos), mario.getStatus() == Mario.STATUS_WIN);
+		if(trace) {
+			for(Entry<LevelScene, TraceHolder> pair : traceMap.entrySet()) {
+				Mario mario = pair.getKey().mario;
+				TraceHolder traceHolder = pair.getValue();
 				
-				System.out.println(mario.getStatus() == Mario.STATUS_WIN ? "Win" : "Death");
-			}
-			else {
-				if(tick % POS_TRACE_INTERVAL == 0) {
-					traceHolder.addToTrack(new Point((int)mario.x, (int)mario.y));
-					
-					System.out.println("Tracked pos: " + (int)mario.x + ", " + (int)mario.y);
+				if(mario.getStatus() == Mario.STATUS_DEAD || mario.getStatus() == Mario.STATUS_WIN) {
+					traceHolder.addFinish(new Point(mario.xDeathPos, mario.yDeathPos), mario.getStatus() == Mario.STATUS_WIN);
+				}
+				else {
+					if(tick % POS_TRACE_INTERVAL == 0) {
+						int x = (int) (mario.x);
+						int y = (int) (mario.y - 7);
+
+						traceHolder.addToTrack(new Point(x, y));
+					}
 				}
 			}
 		}

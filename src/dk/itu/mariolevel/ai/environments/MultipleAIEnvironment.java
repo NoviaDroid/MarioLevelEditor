@@ -19,6 +19,7 @@ import dk.itu.mariolevel.engine.MarioTracker;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.level.LevelGenerator;
 import dk.itu.mariolevel.engine.scene.AIScene;
+import dk.itu.mariolevel.engine.scene.LevelScene;
 import dk.itu.mariolevel.engine.scene.RenderScene;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
@@ -51,7 +52,7 @@ public class MultipleAIEnvironment implements Environment {
 	
 	private boolean left, right, speedScroll;
 	
-	private boolean editing, politeReset, trace;
+	private boolean editing, politeReset;
 	
 	public MultipleAIEnvironment() {	
 		// Generate the level
@@ -95,16 +96,9 @@ public class MultipleAIEnvironment implements Environment {
 		return playScene.level;
 	}
 	
-	public void toggleTracing() {
-		trace = !trace;
-		
-		MarioTracker.getInstance().clearTracing();
-		
-		if(trace)
-			addTracing();
-	}
-	
 	private void addTracing() {
+		MarioTracker.getInstance().removeAllTracing();
+		
 		if(editing) {
 			for(AIScene aiScene : aiPairs.values()) 
 				MarioTracker.getInstance().addTracing(aiScene);
@@ -175,8 +169,6 @@ public class MultipleAIEnvironment implements Environment {
         enemiesZ = new HashMap<Agent, byte[][]>();
         mergedZZ = new HashMap<Agent, byte[][]>();
 
-        MarioTracker.getInstance().clearTracing();
-        
         if(editing) {
         	renderScene.level = new Level(level);
             renderScene.reset();
@@ -184,7 +176,11 @@ public class MultipleAIEnvironment implements Environment {
             aiPairs.clear();
         	
     	    // Add test agent
-    	    addAgent(new ForwardAgent());
+//    	    addAgent(new ForwardAgent());
+    	    addAgent(new RandomAgent());
+    	    addAgent(new RandomAgent());
+    	    addAgent(new RandomAgent());
+    	    addAgent(new RandomAgent());
     	    addAgent(new RandomAgent());
     	    
     	    CameraHandler.getInstance().setFollowMario(null);
@@ -200,8 +196,7 @@ public class MultipleAIEnvironment implements Environment {
         	CameraHandler.getInstance().setFollowMario(playScene.mario);
         }
         
-        if(trace)
-        	addTracing();
+        addTracing();
 	}
 	
 	public List<Sprite> getSprites()
