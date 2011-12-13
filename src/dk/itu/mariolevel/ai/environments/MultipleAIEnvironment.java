@@ -57,7 +57,7 @@ public class MultipleAIEnvironment implements Environment {
 		// Generate the level
 //		level = LevelGenerator.createLevel(320, 15, new Random().nextLong(),0,0);
 		
-		level = LevelGenerator.createEditorLevel(320, 15);
+		level = LevelGenerator.createEditorLevel(100, 15);
 
 		renderScene = new RenderScene(new Level(level));
 		

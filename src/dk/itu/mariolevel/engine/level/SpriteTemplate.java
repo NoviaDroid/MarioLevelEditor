@@ -1,15 +1,20 @@
 package dk.itu.mariolevel.engine.level;
 
+import java.io.IOException;
+import java.io.Serializable;
+
 import dk.itu.mariolevel.engine.scene.LevelScene;
 import dk.itu.mariolevel.engine.sprites.Enemy;
 import dk.itu.mariolevel.engine.sprites.FlowerEnemy;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
-public class SpriteTemplate
+public class SpriteTemplate implements Serializable
 {
-    public int lastVisibleTick = -1;
-    public Sprite sprite;
-    public boolean isDead = false;
+	private static final long serialVersionUID = -1354910977314834331L;
+	
+	public transient int lastVisibleTick = -1;
+    public transient Sprite sprite;
+    public transient boolean isDead = false;
 
     private boolean winged;
     
