@@ -28,7 +28,6 @@
 package dk.itu.mariolevel.ai.environments;
 
 import dk.itu.mariolevel.ai.agents.Agent;
-import dk.itu.mariolevel.engine.Replayer;
 import dk.itu.mariolevel.engine.sprites.Mario;
 
 /**
@@ -142,27 +141,14 @@ void performAction(Agent agent, boolean[] action);
 
 boolean isLevelFinished(Agent agent);
 
-int[] getEvaluationInfoAsInts();
-
-String getEvaluationInfoAsString();
-
 void reset();
-
-void setAgent(Agent agent);
 
 public int getIntermediateReward(Agent agent);
 
 public int[] getMarioEgoPos();
 
-public void closeRecorder();
-
-public void setReplayer(Replayer recorder);
-
 public int getTimeSpent(Agent agent);
 
-public byte[][] getScreenCapture();
-
-void saveLastRun(String filename);
 }
 
 

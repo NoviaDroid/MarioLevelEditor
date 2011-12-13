@@ -14,16 +14,6 @@ public class Mario extends Sprite
     public static boolean fire = false;
     public static int coins = 0;
     public static int lives = 3;
-    public static String levelString = "none";
-
-    public static void resetStatic()
-    {
-        large = false;
-        fire = false;
-        coins = 0;
-        lives = 3;
-        levelString = "none";
-    }
 
     public static final int KEY_LEFT = 0;
     public static final int KEY_RIGHT = 1;
@@ -614,10 +604,8 @@ public class Mario extends Sprite
         world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.win);
         
         world.politeReset();
-        //Art.stopMusic();
-        //world.sound.play(Art.samples[Art.SAMPLE_LEVEL_EXIT], this, 1, 1, 1);
     }
-
+    
     public void die()
     {
         xDeathPos = (int) x;
@@ -627,8 +615,6 @@ public class Mario extends Sprite
         world.appendBonusPoints(-MultipleAIEnvironment.IntermediateRewardsSystemOfValues.win / 2);
         
         world.politeReset();
-        //Art.stopMusic();
-        //world.sound.play(Art.samples[Art.SAMPLE_MARIO_DEATH], this, 1, 1, 1);
     }
 
 

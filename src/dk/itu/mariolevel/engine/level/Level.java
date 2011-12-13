@@ -40,67 +40,6 @@ public class Level implements Serializable
 {
 	private static final long serialVersionUID = -2222762134065697580L;
 	
-	static public class objCounters implements Serializable
-	{
-	    public int deadEndsCount = 0;
-	    public int cannonsCount = 0;
-	    public int hillStraightCount = 0;
-	    public int tubesCount = 0;
-	    public int blocksCount = 0;
-	    public int coinsCount = 0;
-	    public int gapsCount = 0;
-	    public int hiddenBlocksCount = 0;
-	    public int totalCannons;
-	    public int totalGaps;
-	    public int totalDeadEnds;
-	    public int totalBlocks;
-	    public int totalHiddenBlocks;
-	    public int totalCoins;
-	    public int totalHillStraight;
-	    public int totalTubes;
-	    // TODO:TASK:[M] : include in Evaluation info:
-	    public int totalPowerUps;
-	
-	    public int mushrooms = 0;
-	    public int flowers = 0;
-	    public int creatures = 0;
-	    public int greenMushrooms = 0;
-	
-	    private static final long serialVersionUID = 4505050755444159808L;
-	
-	    public void reset()
-	    {
-	        deadEndsCount = 0;
-	        cannonsCount = 0;
-	        hillStraightCount = 0;
-	        tubesCount = 0;
-	        blocksCount = 0;
-	        coinsCount = 0;
-	        gapsCount = 0;
-	        hiddenBlocksCount = 0;
-	        mushrooms = 0;
-	        flowers = 0;
-	        creatures = 0;
-	        greenMushrooms = 0;
-	        totalHillStraight = Integer.MAX_VALUE;
-	        totalCannons = Integer.MAX_VALUE;
-	        totalGaps = Integer.MAX_VALUE;
-	        totalDeadEnds = 0;
-	        totalBlocks = Integer.MAX_VALUE;
-	        totalHiddenBlocks = 0;
-	        totalCoins = Integer.MAX_VALUE;
-	        totalTubes = Integer.MAX_VALUE;
-	        resetUncountableCounters();
-	    }
-	
-	    public void resetUncountableCounters()
-	    {
-	        mushrooms = 0;
-	        flowers = 0;
-	        greenMushrooms = 0;
-	    }
-	}
-	
 	public static final String[] BIT_DESCRIPTIONS = {//
 	        "BLOCK UPPER", //
 	        "BLOCK ALL", //
@@ -130,9 +69,6 @@ public class Level implements Serializable
 	public static final byte SPECIAL_BLOCK_GREEN_KOOPA = -5;
 	public static final byte SPECIAL_BLOCK_FLOWER = -6;
 	
-	
-	public static objCounters counters;
-	
 	//private final int FILE_HEADER = 0x271c4178;
 	public int length;
 	public int height;
@@ -142,8 +78,6 @@ public class Level implements Serializable
 	
 	public byte[][] map;
 	public byte[][] data;
-	// Experimental feature: Mario TRACE
-	public int[][] marioTrace;
 	
 	public SpriteTemplate[][] spriteTemplates;
 	
@@ -168,7 +102,6 @@ public class Level implements Serializable
 	        map = new byte[length][height];
 	        data = new byte[length][height];
 	        spriteTemplates = new SpriteTemplate[length][height];
-	        marioTrace = new int[length][height + 1];
 	        
 	    } catch (OutOfMemoryError e)
 	    {
@@ -200,7 +133,6 @@ public class Level implements Serializable
 	        map = cloneTwoDimensional(level.map);
 	        data = cloneTwoDimensional(level.data);
 	        spriteTemplates =  cloneSpriteTemplate(level.spriteTemplates);
-	        marioTrace = level.marioTrace.clone();
 	        
 	    } catch (OutOfMemoryError e)
 	    {
@@ -387,17 +319,5 @@ public class Level implements Serializable
 	    if (y >= height) return false;
 	    spriteTemplates[x][y] = spriteTemplate;
 	    return true;
-	}
-	
-	private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException
-	{
-	    aInputStream.defaultReadObject();
-	    counters = (Level.objCounters) aInputStream.readObject();
-	}
-	
-	private void writeObject(ObjectOutputStream aOutputStream) throws IOException
-	{
-	    aOutputStream.defaultWriteObject();
-	    aOutputStream.writeObject(counters);
 	}
 }

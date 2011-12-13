@@ -1,6 +1,5 @@
 package dk.itu.mariolevel.engine.level;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 import dk.itu.mariolevel.engine.scene.LevelScene;

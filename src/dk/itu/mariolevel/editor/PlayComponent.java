@@ -270,6 +270,10 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 		if(keyCode == KeyEvent.VK_M && !isPressed) {
 			getMarioPanel().toggleMenu();
 		}
+		
+		if(keyCode == KeyEvent.VK_T && !isPressed) {
+			environment.toggleTracing();
+		}
 	}
 
 	@Override

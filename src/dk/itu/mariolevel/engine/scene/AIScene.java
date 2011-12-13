@@ -92,8 +92,7 @@ public class AIScene extends LevelScene implements SpriteContext {
         if(CameraHandler.getInstance().getFollowMario() == oldMario) {
         	CameraHandler.getInstance().setFollowMario(mario);
         }
-	    
-	    
+	       
 	    startTime = 1;
 	    timeLeft = 200*15;
 	    
@@ -264,82 +263,7 @@ public class AIScene extends LevelScene implements SpriteContext {
         spritesToAdd.clear();
         spritesToRemove.clear();
 	}
-//	
-//    private DecimalFormat df = new DecimalFormat("00");
-//    private DecimalFormat df2 = new DecimalFormat("000");
 
-//	@Override
-//	public void render(Graphics g) {
-//		int xCam = (int) (mario.xOld + (mario.x - mario.xOld) * alpha) - 160;
-//        int yCam = (int) (mario.yOld + (mario.y - mario.yOld) * alpha) - 120;
-//        
-//        if (xCam < 0) xCam = 0;
-//        if (yCam < 0) yCam = 0;
-//        if (xCam > level.width * 16 - 320) xCam = level.width * 16 - 320;
-//        if (yCam > level.height * 16 - 240) yCam = level.height * 16 - 240;
-//        
-//        for (int i = 0; i < 2; i++)
-//        {
-//            bgLayer[i].setCam(xCam, yCam);
-//            bgLayer[i].render(g);
-//        }
-//        
-//        g.translate(-xCam, -yCam);
-//        for (Sprite sprite : sprites)
-//        {
-//            if (sprite.layer == 0) sprite.render(g, alpha);
-//        }
-//        g.translate(xCam, yCam);
-//        
-//        layer.setCam(xCam, yCam);
-//        layer.render(g, tick, paused?0:alpha);
-//        layer.renderExit0(g, tick, paused?0:alpha, mario.winTime==0);
-//        
-//        g.translate(-xCam, -yCam);
-//        for (Sprite sprite : sprites)
-//        {
-//            if (sprite.layer == 1) sprite.render(g, alpha);
-//        }
-//        g.translate(xCam, yCam);
-//        g.setColor(Color.BLACK);
-//        layer.renderExit1(g, tick, paused?0:alpha);
-//        
-//        drawStringDropShadow(g, "MARIO " + df.format(Mario.lives), 0, 0, 7);
-//        drawStringDropShadow(g, "00000000", 0, 1, 7);
-//        
-//        drawStringDropShadow(g, "COIN", 14, 0, 7);
-//        drawStringDropShadow(g, " "+df.format(Mario.coins), 14, 1, 7);
-//
-//        drawStringDropShadow(g, "WORLD", 24, 0, 7);
-//        drawStringDropShadow(g, " "+Mario.levelString, 24, 1, 7);
-//
-//        drawStringDropShadow(g, "TIME", 35, 0, 7);
-//        int time = (timeLeft+15-1)/15;
-//        if (time<0) time = 0;
-//        drawStringDropShadow(g, " "+df2.format(time), 35, 1, 7);
-//        
-//        if (mario.winTime > 0)
-//        {
-//            float t = mario.winTime + alpha;
-//            t = t * t * 0.2f;
-//
-//            if (t > 900)
-//            {
-//                //renderer.levelWon();
-//            }
-//        }
-//        
-//        if (mario.deathTime > 0)
-//        {
-//            float t = mario.deathTime + alpha;
-//            t = t * t * 0.4f;
-//
-//            if (t > 1800)
-//            {
-//                //renderer.levelFailed();
-//            }
-//        }     
-//	}
 	
 	@Override
     public void addSprite(Sprite sprite)
@@ -366,22 +290,7 @@ public class AIScene extends LevelScene implements SpriteContext {
     {
         return 0;
     }
-//	
-//	private void drawStringDropShadow(Graphics g, String text, int x, int y, int c)
-//    {
-//        drawString(g, text, x*8+5, y*8+5, 0);
-//        drawString(g, text, x*8+4, y*8+4, c);
-//    }
-//    
-//    private void drawString(Graphics g, String text, int x, int y, int c)
-//    {
-//        char[] ch = text.toCharArray();
-//        for (int i = 0; i < ch.length; i++)
-//        {
-//            g.drawImage(Art.font[ch[i] - 32][c], x + i * 8, y, null);
-//        }
-//    }
-	
+
     @Override
 	public void bump(int x, int y, boolean canBreakBricks)
     {

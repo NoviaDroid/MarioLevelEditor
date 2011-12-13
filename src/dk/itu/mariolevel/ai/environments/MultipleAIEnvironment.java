@@ -15,7 +15,7 @@ import dk.itu.mariolevel.ai.agents.ForwardAgent;
 import dk.itu.mariolevel.ai.agents.HumanKeyboardAgent;
 import dk.itu.mariolevel.ai.agents.RandomAgent;
 import dk.itu.mariolevel.engine.CameraHandler;
-import dk.itu.mariolevel.engine.Replayer;
+import dk.itu.mariolevel.engine.MarioTracker;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.level.LevelGenerator;
 import dk.itu.mariolevel.engine.scene.AIScene;
@@ -51,7 +51,7 @@ public class MultipleAIEnvironment implements Environment {
 	
 	private boolean left, right, speedScroll;
 	
-	private boolean editing, politeReset;
+	private boolean editing, politeReset, trace;
 	
 	public MultipleAIEnvironment() {	
 		// Generate the level
@@ -95,6 +95,25 @@ public class MultipleAIEnvironment implements Environment {
 		return playScene.level;
 	}
 	
+	public void toggleTracing() {
+		trace = !trace;
+		
+		MarioTracker.getInstance().clearTracing();
+		
+		if(trace)
+			addTracing();
+	}
+	
+	private void addTracing() {
+		if(editing) {
+			for(AIScene aiScene : aiPairs.values()) 
+				MarioTracker.getInstance().addTracing(aiScene);
+		}
+		else {
+			MarioTracker.getInstance().addTracing(playScene);
+		}
+	}
+	
 	@Override
 	public void tick() {
 		if(politeReset) {
@@ -133,6 +152,8 @@ public class MultipleAIEnvironment implements Environment {
 			playScene.tick();
 			playScene.performAction(playAgent.getAction());
 		}		
+		
+		MarioTracker.getInstance().tick();
 	}
 
 	@Override
@@ -154,6 +175,8 @@ public class MultipleAIEnvironment implements Environment {
         enemiesZ = new HashMap<Agent, byte[][]>();
         mergedZZ = new HashMap<Agent, byte[][]>();
 
+        MarioTracker.getInstance().clearTracing();
+        
         if(editing) {
         	renderScene.level = new Level(level);
             renderScene.reset();
@@ -176,6 +199,9 @@ public class MultipleAIEnvironment implements Environment {
         	
         	CameraHandler.getInstance().setFollowMario(playScene.mario);
         }
+        
+        if(trace)
+        	addTracing();
 	}
 	
 	public List<Sprite> getSprites()
@@ -198,9 +224,8 @@ public class MultipleAIEnvironment implements Environment {
 	
 	public int getTick()
 	{
-		if(editing) {
+		if(editing)
 			return renderScene.tickCount;
-		}
 		
 		return playScene.tickCount;
 	}
@@ -212,6 +237,8 @@ public class MultipleAIEnvironment implements Environment {
 		
 		aiPairs.put(agent, aiScene);
 
+		MarioTracker.getInstance().addTracing(playScene);
+		
 		agent.reset();
 		agent.setObservationDetails(receptiveFieldWidth, receptiveFieldHeight,marioEgoPos[0],marioEgoPos[1]);
 	}
@@ -553,24 +580,6 @@ public class MultipleAIEnvironment implements Environment {
 	}
 
 	@Override
-	public int[] getEvaluationInfoAsInts() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getEvaluationInfoAsString() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setAgent(Agent agent) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public int getIntermediateReward(Agent agent) {
 		if(aiPairs.containsKey(agent))
 			return aiPairs.get(agent).getBonusPoints();
@@ -584,32 +593,10 @@ public class MultipleAIEnvironment implements Environment {
 	}
 
 	@Override
-	public void closeRecorder() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setReplayer(Replayer recorder) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public int getTimeSpent(Agent agent) {
 		if(aiPairs.containsKey(agent))
 			return aiPairs.get(agent).getTimeSpent();
 		
 		return 0;
-	}
-
-	@Override
-	public byte[][] getScreenCapture() {
-		return null;
-	}
-
-	@Override
-	public void saveLastRun(String filename) {
-
 	}
 }
