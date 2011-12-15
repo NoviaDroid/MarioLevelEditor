@@ -1,7 +1,7 @@
 package dk.itu.mariolevel.engine.sprites;
 
 import dk.itu.mariolevel.engine.Art;
-import dk.itu.mariolevel.engine.scene.AIScene;
+import dk.itu.mariolevel.engine.scene.LevelScene;
 
 
 public class Mushroom extends Sprite
@@ -14,13 +14,13 @@ public class Mushroom extends Sprite
     private int width = 4;
     int height = 24;
 
-    private AIScene world;
+    private LevelScene world;
     public int facing;
 
     public boolean avoidCliffs = false;
     private int life;
 
-    public Mushroom(AIScene world, int x, int y)
+    public Mushroom(LevelScene world, int x, int y, boolean block)
     {
     	kind = KIND_MUSHROOM;
         sheet = Art.items;
@@ -35,7 +35,8 @@ public class Mushroom extends Sprite
         height = 12;
         facing = 1;
         wPic  = hPic = 16;
-        life = 0;
+        
+        life = block ? 0 : 10;
     }
 
     public void collideCheck()

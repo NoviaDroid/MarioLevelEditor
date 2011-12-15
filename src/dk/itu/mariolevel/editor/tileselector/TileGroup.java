@@ -91,11 +91,9 @@ public class TileGroup extends JComponent  implements MouseListener {
 				
 				if(tileByte == Level.SPECIAL_BLOCK_START) {
 					drawImage = Art.specialBlockStart;
-//					g.drawImage(Art.specialBlockStart, drawX, drawY, null);
 				}
 				else if(tileByte == Level.SPECIAL_BLOCK_END) {
 					drawImage = Art.specialBlockEnd;
-//					g.drawImage(Art.specialBlockEnd, drawX, drawY, null);
 				}
 				else if(tileByte == Level.SPECIAL_BLOCK_GOOMBA) {
 					drawImage = Art.enemies[0][2];
@@ -113,12 +111,15 @@ public class TileGroup extends JComponent  implements MouseListener {
 					drawImage = Art.enemies[0][6];
 					drawY -= 10;
 				}
+				else if(tileByte == Level.SPECIAL_BLOCK_MUSHROOM) {
+					drawImage = Art.items[0][0];
+//					drawY -= 10;
+				}
 				else {
 					int xPickedTile = (tileByte & 0xff) % 16;
 					int yPickedTile = (tileByte & 0xff) / 16;
 					
 					drawImage = Art.level[xPickedTile][yPickedTile];
-//					g.drawImage(Art.level[xPickedTile][yPickedTile], drawX, y*18+2, null);
 				}
 
 				if(drawImage != null)

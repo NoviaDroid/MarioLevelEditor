@@ -1,6 +1,5 @@
 package dk.itu.mariolevel.ai.environments;
 
-
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import dk.itu.mariolevel.ai.GeneralizerEnemies;
 import dk.itu.mariolevel.ai.GeneralizerLevelScene;
 import dk.itu.mariolevel.ai.SystemOfValues;
 import dk.itu.mariolevel.ai.agents.Agent;
-import dk.itu.mariolevel.ai.agents.ForwardAgent;
 import dk.itu.mariolevel.ai.agents.HumanKeyboardAgent;
 import dk.itu.mariolevel.ai.agents.RandomAgent;
 import dk.itu.mariolevel.engine.CameraHandler;
@@ -19,14 +17,11 @@ import dk.itu.mariolevel.engine.MarioTracker;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.level.LevelGenerator;
 import dk.itu.mariolevel.engine.scene.AIScene;
-import dk.itu.mariolevel.engine.scene.LevelScene;
 import dk.itu.mariolevel.engine.scene.RenderScene;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
 public class MultipleAIEnvironment implements Environment {
 
-	public static final int TICKS_PER_SECOND = 24;
-	
 	public static SystemOfValues IntermediateRewardsSystemOfValues = new SystemOfValues();
 	
 	private HashMap<Agent, AIScene> aiPairs;
@@ -56,8 +51,6 @@ public class MultipleAIEnvironment implements Environment {
 	
 	public MultipleAIEnvironment() {	
 		// Generate the level
-//		level = LevelGenerator.createLevel(320, 15, new Random().nextLong(),0,0);
-		
 		level = LevelGenerator.createEditorLevel(100, 15);
 
 		renderScene = new RenderScene(new Level(level));
@@ -177,10 +170,6 @@ public class MultipleAIEnvironment implements Environment {
         	
     	    // Add test agent
 //    	    addAgent(new ForwardAgent());
-    	    addAgent(new RandomAgent());
-    	    addAgent(new RandomAgent());
-    	    addAgent(new RandomAgent());
-    	    addAgent(new RandomAgent());
     	    addAgent(new RandomAgent());
     	    
     	    CameraHandler.getInstance().setFollowMario(null);

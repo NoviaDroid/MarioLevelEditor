@@ -309,7 +309,7 @@ public class AIScene extends LevelScene implements SpriteContext {
             {
                 if (!Mario.large)
                 {
-                    addSprite(new Mushroom(this, x * 16 + 8, y * 16 + 8));
+                    addSprite(new Mushroom(this, x * 16 + 8, y * 16 + 8, true));
                 }
                 else
                 {

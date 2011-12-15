@@ -38,6 +38,8 @@ public class Sparkle extends Sprite
         else
             xPic = xPicStart+(10-life)*4/10;
         
+        if(xPic > 7) xPic = 7;
+        
         if (life--<0) Sprite.spriteContext.removeSprite(this);
         
         x+=xa;

@@ -10,7 +10,7 @@ import dk.itu.mariolevel.engine.scene.LevelScene;
 import dk.itu.mariolevel.engine.sprites.Mario;
 
 public class MarioTracker {
-	private final static int POS_TRACE_INTERVAL = 5;
+	private final static int POS_TRACE_INTERVAL = 1;
 	
 	private static MarioTracker _instance;
 	
@@ -78,17 +78,10 @@ public class MarioTracker {
 				Mario mario = pair.getKey().mario;
 				TraceHolder traceHolder = pair.getValue();
 				
-				if(mario.getStatus() == Mario.STATUS_DEAD || mario.getStatus() == Mario.STATUS_WIN) {
+				if(mario.getStatus() == Mario.STATUS_DEAD || mario.getStatus() == Mario.STATUS_WIN)
 					traceHolder.addFinish(new Point(mario.xDeathPos, mario.yDeathPos), mario.getStatus() == Mario.STATUS_WIN);
-				}
-				else {
-					if(tick % POS_TRACE_INTERVAL == 0) {
-						int x = (int) (mario.x);
-						int y = (int) (mario.y - 7);
-
-						traceHolder.addToTrack(new Point(x, y));
-					}
-				}
+				else if(tick % POS_TRACE_INTERVAL == 0)
+					traceHolder.addToTrack(new Point((int) mario.x, (int) (mario.y - 7)));
 			}
 		}
 	}

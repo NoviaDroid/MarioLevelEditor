@@ -68,6 +68,7 @@ public class Level implements Serializable
 	public static final byte SPECIAL_BLOCK_RED_KOOPA = -4;
 	public static final byte SPECIAL_BLOCK_GREEN_KOOPA = -5;
 	public static final byte SPECIAL_BLOCK_FLOWER = -6;
+	public static final byte SPECIAL_BLOCK_MUSHROOM = -7;
 	
 	//private final int FILE_HEADER = 0x271c4178;
 	public int length;
@@ -236,8 +237,8 @@ public class Level implements Serializable
 			return;
 		}
 		
-		if(b == SPECIAL_BLOCK_GOOMBA || b == SPECIAL_BLOCK_GREEN_KOOPA || b == SPECIAL_BLOCK_RED_KOOPA || b == SPECIAL_BLOCK_FLOWER) {
-			addEnemy(x, y, b);
+		if(b == SPECIAL_BLOCK_GOOMBA || b == SPECIAL_BLOCK_GREEN_KOOPA || b == SPECIAL_BLOCK_RED_KOOPA || b == SPECIAL_BLOCK_FLOWER || b == SPECIAL_BLOCK_MUSHROOM) {
+			addSprite(x, y, b);
 			return;
 		}
 		
@@ -254,7 +255,7 @@ public class Level implements Serializable
 	    map[x][y] = b;
 	}
 	
-	private void addEnemy(int x, int y, byte b) {
+	private void addSprite(int x, int y, byte b) {
 		int kind = -1;
 		
 		if(b == SPECIAL_BLOCK_GOOMBA) {
@@ -268,6 +269,9 @@ public class Level implements Serializable
 		}
 		else if(b == SPECIAL_BLOCK_FLOWER) {
 			kind = Sprite.KIND_ENEMY_FLOWER;
+		}
+		else if(b == SPECIAL_BLOCK_MUSHROOM) {
+			kind = Sprite.KIND_MUSHROOM;
 		}
 		
 		if(kind != -1)

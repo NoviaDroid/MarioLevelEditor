@@ -171,7 +171,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 			for(int i = 0; i < traces.size(); i++) {
 				TraceHolder trace = traces.get(i);
 				
-				g.setColor(colors[i]);
+				g.setColor(colors[i%colors.length]);
 				
 				Point lastPoint = null;
 				
@@ -298,9 +298,9 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 		
 		if(keyCode == KeyEvent.VK_E && !isPressed) {
 			getMarioPanel().toggleEditing();
-			environment.reset(getMarioPanel().isEditing());
-			environment.tick();
 			layer.setLevel(environment.getLevelToRender());
+			environment.reset(getMarioPanel().isEditing());
+			
 		}
 		
 		if(keyCode == KeyEvent.VK_M && !isPressed) {

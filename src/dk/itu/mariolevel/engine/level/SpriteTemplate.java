@@ -5,6 +5,7 @@ import java.io.Serializable;
 import dk.itu.mariolevel.engine.scene.LevelScene;
 import dk.itu.mariolevel.engine.sprites.Enemy;
 import dk.itu.mariolevel.engine.sprites.FlowerEnemy;
+import dk.itu.mariolevel.engine.sprites.Mushroom;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
 public class SpriteTemplate implements Serializable
@@ -50,6 +51,10 @@ public class SpriteTemplate implements Serializable
         if (type == Sprite.KIND_ENEMY_FLOWER)
         {
             sprite = new FlowerEnemy(world, x*16+15, y*16+24);
+        }
+        else if (type == Sprite.KIND_MUSHROOM)
+        {
+        	sprite = new Mushroom(world, x*16+8, y*16+15, false);
         }
         else
         {
