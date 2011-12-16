@@ -299,7 +299,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 		if(keyCode == KeyEvent.VK_E && !isPressed) {
 			getMarioPanel().toggleEditing();
 			layer.setLevel(environment.getLevelToRender());
-			environment.reset(getMarioPanel().isEditing());
+			environment.changeAISet(getMarioPanel().isEditing() ? MultipleAIEnvironment.AI_SET_SIMPLE : MultipleAIEnvironment.AI_SET_PLAYER);
 			
 		}
 		

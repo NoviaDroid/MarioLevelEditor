@@ -24,6 +24,11 @@ public class MultipleAIEnvironment implements Environment {
 
 	public static SystemOfValues IntermediateRewardsSystemOfValues = new SystemOfValues();
 	
+	public static final int AI_SET_ALL = 0;
+	public static final int AI_SET_SIMPLE = 1;
+	public static final int AI_SET_COMPLEX = 2;
+	public static final int AI_SET_PLAYER = 3;
+	
 	private HashMap<Agent, AIScene> aiPairs;
 	
 	private int[] marioEgoPos = new int[]{9,9};
@@ -47,7 +52,9 @@ public class MultipleAIEnvironment implements Environment {
 	
 	private boolean left, right, speedScroll;
 	
-	private boolean editing, politeReset;
+	private boolean politeReset;
+	
+	private int currentAISet = AI_SET_PLAYER;
 	
 	public MultipleAIEnvironment() {	
 		// Generate the level
@@ -59,7 +66,11 @@ public class MultipleAIEnvironment implements Environment {
 	}
 
 	public void toggleKey(int keyCode, boolean isPressed){
-		if(editing) {
+		
+		if(currentAISet == AI_SET_PLAYER) {
+			playAgent.toggleKey(keyCode, isPressed);
+		}
+		else {
 			if (keyCode == KeyEvent.VK_LEFT)
 				left = isPressed;
 			if (keyCode == KeyEvent.VK_RIGHT)
@@ -67,9 +78,41 @@ public class MultipleAIEnvironment implements Environment {
 			if (keyCode == KeyEvent.VK_SHIFT)
 				speedScroll = isPressed;
 		}
-		else {
-			// Forward to keyboard controller
-			playAgent.toggleKey(keyCode, isPressed);
+	}
+	
+	public void changeAISet(int set) {
+		currentAISet = set;
+		politeReset = true;
+	}
+	
+	private void initializeAISet() {
+
+		aiPairs.clear();
+		
+		if(currentAISet == AI_SET_COMPLEX || currentAISet == AI_SET_ALL) {
+			
+		}
+		
+		if(currentAISet == AI_SET_SIMPLE || currentAISet == AI_SET_ALL) {
+//    	    addAgent(new ForwardAgent());
+    	    addAgent(new RandomAgent());
+		}
+		
+		if(currentAISet == AI_SET_PLAYER) {
+        	playAgent = new HumanKeyboardAgent();
+        	playAgent.reset();
+        	
+        	playScene = new AIScene(new Level(level));
+        	playScene.reset();
+        	
+        	CameraHandler.getInstance().setFollowMario(playScene.mario);
+		}
+		
+		if(currentAISet != AI_SET_PLAYER) {
+        	renderScene.level = new Level(level);
+            renderScene.reset();
+            
+            CameraHandler.getInstance().setFollowMario(null);
 		}
 	}
 	
@@ -83,21 +126,21 @@ public class MultipleAIEnvironment implements Environment {
 	}
 	
 	public Level getLevelToRender() {
-		if(editing)
-			return level;
-	
-		return playScene.level;
+		if(currentAISet == AI_SET_PLAYER)
+			return playScene.level;
+			
+		return level;
 	}
 	
 	private void addTracing() {
 		MarioTracker.getInstance().removeAllTracing();
 		
-		if(editing) {
-			for(AIScene aiScene : aiPairs.values()) 
-				MarioTracker.getInstance().addTracing(aiScene);
+		if(currentAISet == AI_SET_PLAYER) {
+			MarioTracker.getInstance().addTracing(playScene);
 		}
 		else {
-			MarioTracker.getInstance().addTracing(playScene);
+			for(AIScene aiScene : aiPairs.values()) 
+				MarioTracker.getInstance().addTracing(aiScene);
 		}
 	}
 	
@@ -115,7 +158,11 @@ public class MultipleAIEnvironment implements Environment {
 			CameraHandler.getInstance().moveCamera(speedScroll ? -100 : -20, 0);
 		}
 		
-		if(editing) {
+		if(currentAISet == AI_SET_PLAYER) {
+			playScene.tick();
+			playScene.performAction(playAgent.getAction());
+		}
+		else {
 			renderScene.tick();
 			
 			// Tick each level scene
@@ -134,11 +181,7 @@ public class MultipleAIEnvironment implements Environment {
 			for(Entry<Agent, AIScene> pair : aiPairs.entrySet()) {
 				pair.getValue().performAction(pair.getKey().getAction());
 			}
-		}
-		else {
-			playScene.tick();
-			playScene.performAction(playAgent.getAction());
-		}		
+		}	
 		
 		MarioTracker.getInstance().tick();
 	}
@@ -146,11 +189,6 @@ public class MultipleAIEnvironment implements Environment {
 	@Override
 	public void reset() {
 		politeReset = true;
-	}
-	
-	public void reset(boolean editing) {
-		politeReset = true;
-		this.editing = editing;
 	}
 	
 	public void actualReset() {
@@ -162,28 +200,7 @@ public class MultipleAIEnvironment implements Environment {
         enemiesZ = new HashMap<Agent, byte[][]>();
         mergedZZ = new HashMap<Agent, byte[][]>();
 
-        if(editing) {
-        	renderScene.level = new Level(level);
-            renderScene.reset();
-            
-            aiPairs.clear();
-        	
-    	    // Add test agent
-//    	    addAgent(new ForwardAgent());
-    	    addAgent(new RandomAgent());
-    	    
-    	    CameraHandler.getInstance().setFollowMario(null);
-        }
-        else {
-        	// Add human "agent"
-        	playAgent = new HumanKeyboardAgent();
-        	playAgent.reset();
-        	
-        	playScene = new AIScene(new Level(level));
-        	playScene.reset();
-        	
-        	CameraHandler.getInstance().setFollowMario(playScene.mario);
-        }
+        initializeAISet();
         
         addTracing();
 	}
@@ -192,15 +209,15 @@ public class MultipleAIEnvironment implements Environment {
 	{
 		ArrayList<Sprite> returnSprites = new ArrayList<Sprite>();
 		
-		if(editing) {
+		if(currentAISet == AI_SET_PLAYER) {
+			returnSprites.addAll(playScene.sprites);
+		}
+		else {
 			returnSprites.addAll(renderScene.sprites);		
 			
 			for(AIScene aiscene : aiPairs.values()) {
 				returnSprites.add(aiscene.mario);
 			}
-		}
-		else {
-			returnSprites.addAll(playScene.sprites);
 		}
 		
 	    return returnSprites;
@@ -208,10 +225,10 @@ public class MultipleAIEnvironment implements Environment {
 	
 	public int getTick()
 	{
-		if(editing)
-			return renderScene.tickCount;
+		if(currentAISet == AI_SET_PLAYER)
+			return playScene.tickCount;
 		
-		return playScene.tickCount;
+		return renderScene.tickCount;
 	}
 	
 	public void addAgent(Agent agent) {

@@ -151,6 +151,10 @@ public class Mario extends Sprite
             }
             x += xa;
             y += ya;
+            
+            if(y > 360)
+            	world.politeReset();
+            
             return;
         }
 
@@ -613,8 +617,6 @@ public class Mario extends Sprite
         deathTime = 1;
         status = STATUS_DEAD;
         world.appendBonusPoints(-MultipleAIEnvironment.IntermediateRewardsSystemOfValues.win / 2);
-        
-        world.politeReset();
     }
 
 
