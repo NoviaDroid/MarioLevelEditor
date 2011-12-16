@@ -2,6 +2,17 @@ This project is an effort to create an immediate-feedback level editor for the I
 
 This is done by having AI's run through the level as you create it. Using Ai's from the Mario AI Championship. http://www.marioai.org/
 
+GEBT Mario agent was created by:
+
+Diego Perez, Miguel Nicolau, Michael O’Neill and Anthony Brabazo
+
+
+A* Agent was created by:
+
+Robin Baumgarten
+
+--------------------------------------------
+
 Current controls are:
 
 E: Activate/Deactivate edit mode

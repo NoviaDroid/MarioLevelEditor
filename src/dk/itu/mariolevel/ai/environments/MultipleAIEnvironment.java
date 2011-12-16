@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import competition.cig.robinbaumgarten.AStarAgent;
 import competition.gic2010.gameplay.grammaticalbehaviors.GEBT_Mario.GEBT_MarioAgent;
 
 import dk.itu.mariolevel.ai.GeneralizerEnemies;
@@ -93,6 +94,7 @@ public class MultipleAIEnvironment implements Environment {
 		
 		if(currentAISet == AI_SET_COMPLEX || currentAISet == AI_SET_ALL) {
 			addAgent(new GEBT_MarioAgent());
+			addAgent(new AStarAgent());
 		}
 		
 		if(currentAISet == AI_SET_SIMPLE || currentAISet == AI_SET_ALL) {
