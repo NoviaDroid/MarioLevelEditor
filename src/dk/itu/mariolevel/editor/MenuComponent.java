@@ -22,7 +22,6 @@ public class MenuComponent extends JPanel implements ActionListener{
 	
 	public MenuComponent(int width) {
 		setLayout(new FlowLayout(FlowLayout.LEFT));
-//		setLayout(null);
 		
 		this.width = width;
 		this.height = 50;
@@ -38,27 +37,17 @@ public class MenuComponent extends JPanel implements ActionListener{
 	}
 	
 	private void addButtons() {
-//		Insets insets = getInsets();
-		
 		JButton b1 = new JButton("Load");
 		
 		b1.setActionCommand(LOAD_COMMAND);
 		b1.addActionListener(this);
-	
-//		Dimension size = b1.getPreferredSize();
-//		b1.setBounds(25 + insets.left, 10 + insets.top,
-//		             size.width, size.height);
-//		
+
 		add(b1);
 		
 		JButton b2 = new JButton("Save");
 		
 		b2.setActionCommand(SAVE_COMMAND);
 		b2.addActionListener(this);
-	
-//		Dimension size = b2.getPreferredSize();
-//		b2.setBounds(25 + insets.left, 10 + insets.top,
-//		             size.width, size.height);
 //		
 		add(b2);
 	}

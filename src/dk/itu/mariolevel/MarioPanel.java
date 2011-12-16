@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -129,17 +130,25 @@ public class MarioPanel extends JPanel {
 	public void loadLevel(String path) {
 		Level level = null;
 		
+		String failMessage = null;
+		
 		try {
 			level = Level.load(new ObjectInputStream(new FileInputStream(path)));
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			failMessage = "Something went wrong!";
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			failMessage = "Something went wrong!";
 		} catch (IOException e) {
-			e.printStackTrace();
+			failMessage = "You picked a file that isn't a level.";
 		}
 		
-		if(level != null) {
+		if(failMessage != null) {
+			JOptionPane.showMessageDialog(this,
+				    failMessage,
+				    "Level load fail",
+				    JOptionPane.ERROR_MESSAGE);
+		}
+		else if(level != null) {
 			playComponent.changeLevel(level);
 		}
 	}
