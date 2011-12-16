@@ -107,7 +107,7 @@ public class Level implements Serializable
 		copyLevel(safeCopy);
 	}
 	
-	protected void copyLevel(Level level) {
+	private void copyLevel(Level level) {
 	    this.length = level.length;
 	    this.height = level.height;
 	

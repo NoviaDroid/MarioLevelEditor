@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import competition.gic2010.gameplay.grammaticalbehaviors.GEBT_Mario.GEBT_MarioAgent;
+
 import dk.itu.mariolevel.ai.GeneralizerEnemies;
 import dk.itu.mariolevel.ai.GeneralizerLevelScene;
 import dk.itu.mariolevel.ai.agents.Agent;
@@ -90,7 +92,7 @@ public class MultipleAIEnvironment implements Environment {
 		aiPairs.clear();
 		
 		if(currentAISet == AI_SET_COMPLEX || currentAISet == AI_SET_ALL) {
-//			addAgent(new AStarAgent());
+			addAgent(new GEBT_MarioAgent());
 		}
 		
 		if(currentAISet == AI_SET_SIMPLE || currentAISet == AI_SET_ALL) {
@@ -226,7 +228,7 @@ public class MultipleAIEnvironment implements Environment {
 	{
 		if(currentAISet == AI_SET_PLAYER)
 			return playScene.tickCount;
-		
+
 		return renderScene.tickCount;
 	}
 	
@@ -234,19 +236,12 @@ public class MultipleAIEnvironment implements Environment {
 		// Each agent gets it's own copy of a aiscene
 		AIScene aiScene = null;
 		
-//		if(agent instanceof AStarAgent) {
-//			aiScene = new AStarAIScene(new AStarLevel(level));
-//		}
-//		else {
-			aiScene = new AIScene(new Level(level));
-//		}
-		 
+		aiScene = new AIScene(new Level(level));
+		
 		aiScene.reset();
 		
 		aiPairs.put(agent, aiScene);
 
-		MarioTracker.getInstance().addTracing(playScene);
-		
 		agent.reset();
 		agent.setObservationDetails(receptiveFieldWidth, receptiveFieldHeight,marioEgoPos[0],marioEgoPos[1]);
 	}
