@@ -14,7 +14,6 @@ public class Shell extends Sprite
     private int width = 4;
     int height = 24;
 
-    private LevelScene world;
     public int facing;
 
     public boolean avoidCliffs = false;
@@ -57,8 +56,6 @@ public class Shell extends Sprite
             if (yD > -height && yD < fireball.height)
             {
                 if (facing!=0) return true;
-                
-                //world.sound.play(Art.samples[Art.SAMPLE_MARIO_KICK], this, 1, 1, 1);
 
                 xa = fireball.facing * 2;
                 ya = -5;

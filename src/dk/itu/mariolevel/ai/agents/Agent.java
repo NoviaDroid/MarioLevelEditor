@@ -42,8 +42,6 @@ boolean[] getAction();
 
 void integrateObservation(Environment environment);
 
-void giveIntermediateReward(float intermediateReward);
-
 /**
  * clears all dynamic data, such as hidden layers in recurrent networks
  * just implement an empty method for a reactive controller

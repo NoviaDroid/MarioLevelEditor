@@ -6,10 +6,19 @@ import dk.itu.mariolevel.engine.sprites.Mario;
 import dk.itu.mariolevel.engine.sprites.Shell;
 import dk.itu.mariolevel.engine.sprites.SpriteContext;
 
-public abstract class LevelScene extends Scene implements SpriteContext{
+public abstract class LevelScene implements SpriteContext
+{
+    public static boolean[] keys = new boolean[16];
 
 	public Mario mario;
 	public Level level;
+	
+    public void toggleKey(int key, boolean isPressed)
+    {
+        keys[key] = isPressed;
+    }
+
+    public abstract void tick();
 
 	public abstract void checkShellCollide(Shell shell);
 	

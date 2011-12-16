@@ -110,11 +110,6 @@ public void integrateObservation(Environment environment)
 //    getKillsByShell = marioState[9];
 }
 
-public void giveIntermediateReward(float intermediateReward)
-{
-
-}
-
 public void reset()
 {
     // Just check you keyboard. Especially arrow buttons and 'A' and 'S'!

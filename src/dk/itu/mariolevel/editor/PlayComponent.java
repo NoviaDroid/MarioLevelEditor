@@ -269,7 +269,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1 && getMarioPanel().isEditing()) {
+        if (e.getButton() == MouseEvent.BUTTON1 && getMarioPanel().isEditing() && environment.canEdit()) {
         	Point bluh = CameraHandler.getInstance().mousePointToTile(lastMousePos);
         	environment.getLevel().setBlock(bluh.x, bluh.y, pickedTile);
         }
@@ -277,7 +277,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		if(getMarioPanel().isEditing()) {
+		if(getMarioPanel().isEditing() && environment.canEdit()) {
 			environment.reset();
 			layer.setLevel(environment.getLevelToRender());
 		}
@@ -316,7 +316,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	public void mouseDragged(MouseEvent e) {
 		lastMousePos = e.getPoint();
 
-		if(getMarioPanel().isEditing()) {
+		if(getMarioPanel().isEditing() && environment.canEdit()) {
 			Point bluh = CameraHandler.getInstance().mousePointToTile(lastMousePos);
 	    	environment.getLevel().setBlock(bluh.x, bluh.y, pickedTile);
 		}

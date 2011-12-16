@@ -14,7 +14,6 @@ public class Fireball extends Sprite
     private int width = 4;
     int height = 24;
 
-    private AIScene world;
     public int facing;
 
     public boolean avoidCliffs = false;

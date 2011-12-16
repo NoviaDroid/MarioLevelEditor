@@ -8,7 +8,6 @@ public class FireFlower extends Sprite
 {
     int height = 24;
 
-    private AIScene world;
     public int facing;
 
     public boolean avoidCliffs = false;

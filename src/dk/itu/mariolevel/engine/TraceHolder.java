@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class TraceHolder {
 	private final static int MAX_TRACES = 5;
-	private final static int MAX_POS_TRACE = 50;
+	private final static int MAX_POS_TRACE = 200;
 	
 	private int currentTrace;
 	private ArrayList<ArrayList<Point>> traces;

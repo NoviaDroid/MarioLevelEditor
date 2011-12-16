@@ -1,11 +1,10 @@
 package dk.itu.mariolevel.engine.sprites;
 
 
-import dk.itu.mariolevel.ai.environments.MultipleAIEnvironment;
 import dk.itu.mariolevel.engine.Art;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.scene.AIScene;
-import dk.itu.mariolevel.engine.scene.Scene;
+import dk.itu.mariolevel.engine.scene.LevelScene;
 
 
 public class Mario extends Sprite
@@ -18,9 +17,9 @@ public class Mario extends Sprite
     public static final int KEY_LEFT = 0;
     public static final int KEY_RIGHT = 1;
     public static final int KEY_DOWN = 2;
-    public static final int KEY_UP = 3;
-    public static final int KEY_JUMP = 4;
-    public static final int KEY_SPEED = 5;
+    public static final int KEY_JUMP = 3;
+    public static final int KEY_SPEED = 4;   
+    public static final int KEY_UP = 5;
 
     public static final int STATUS_RUNNING = 2;
     public static final int STATUS_WIN = 1;
@@ -45,7 +44,6 @@ public class Mario extends Sprite
     int width = 4;
     int height = 24;
 
-    private AIScene world;
     public int facing;
     private int powerUpTime = 0;
 
@@ -57,12 +55,14 @@ public class Mario extends Sprite
 
     public Sprite carried = null;
 
+    public AIScene world;
+    
     public Mario(AIScene world)
     {
         this.world = world;
         x = (world.getMarioInitialPos().x+1)*16;
         y = (world.getMarioInitialPos().y+1)*16;
-        keys = Scene.keys;
+        keys = LevelScene.keys;
         
         facing = 1;
         setLarge(Mario.large, Mario.fire);
@@ -537,7 +537,6 @@ public class Mario extends Sprite
         onGround = false;
         sliding = false;
         invulnerableTime = 1;
-        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.stomp);
     }
 
     public void stomp(Shell shell)
@@ -563,15 +562,12 @@ public class Mario extends Sprite
             sliding = false;
             invulnerableTime = 1;
         }
-        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.stomp);
     }
 
     public void getHurt()
     {
         if (deathTime > 0) return;
         if (invulnerableTime > 0) return;
-
-        world.appendBonusPoints(-MultipleAIEnvironment.IntermediateRewardsSystemOfValues.kills);
         
         if (large)
         {
@@ -596,7 +592,6 @@ public class Mario extends Sprite
     public void getHiddenBlock()
     {
         //++hiddenBlocksFound;
-        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.hiddenBlock);
     }
 
     private void win()
@@ -605,7 +600,6 @@ public class Mario extends Sprite
         yDeathPos = (int) y;
         winTime = 1;
         status = STATUS_WIN;
-        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.win);
         
         world.politeReset();
     }
@@ -616,7 +610,6 @@ public class Mario extends Sprite
         yDeathPos = (int) y;
         deathTime = 1;
         status = STATUS_DEAD;
-        world.appendBonusPoints(-MultipleAIEnvironment.IntermediateRewardsSystemOfValues.win / 2);
     }
 
 
@@ -635,7 +628,6 @@ public class Mario extends Sprite
             getCoin();
             //world.sound.play(Art.samples[Art.SAMPLE_GET_COIN], this, 1, 1, 1);
         }
-        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.flowerFire);
     }
 
     public void getMushroom()
@@ -653,7 +645,6 @@ public class Mario extends Sprite
             getCoin();
             //world.sound.play(Art.samples[Art.SAMPLE_GET_COIN], this, 1, 1, 1);
         }
-        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.mushroom);
     }
     
     public void getGreenMushroom()
@@ -693,7 +684,6 @@ public class Mario extends Sprite
         onGround = false;
         sliding = false;
         invulnerableTime = 1;
-        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.stomp);
     }
 
     public byte getKeyMask()
@@ -732,7 +722,6 @@ public class Mario extends Sprite
             coins = 0;
             get1Up();
         }
-        world.appendBonusPoints(MultipleAIEnvironment.IntermediateRewardsSystemOfValues.coins);
     }
     
     public int getMode()

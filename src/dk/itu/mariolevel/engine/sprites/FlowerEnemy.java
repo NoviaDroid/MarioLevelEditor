@@ -7,7 +7,6 @@ public class FlowerEnemy extends Enemy
     private int tick;
     private int yStart;
     private int jumpTime = 0;
-    private LevelScene world;
     
     public FlowerEnemy(LevelScene world, int x, int y)
     {
@@ -86,17 +85,4 @@ public class FlowerEnemy extends Enemy
         
         xPic = ((tick/2)&1)*2+((tick/6)&1);
     }
-
-/*    public void render(Graphics og, float alpha)
-    {
-        if (!visible) return;
-        
-        int xPixel = (int)(xOld+(x-xOld)*alpha)-xPicO;
-        int yPixel = (int)(yOld+(y-yOld)*alpha)-yPicO;
-
-        int a = ((tick/3)&1)*2;
-//        a += ((tick/8)&1);
-        og.drawImage(sheet[a*2+0][6], xPixel-8, yPixel+8, 16, 32, null);
-        og.drawImage(sheet[a*2+1][6], xPixel+8, yPixel+8, 16, 32, null);
-    }*/
 }

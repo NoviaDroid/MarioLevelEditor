@@ -20,9 +20,8 @@ import dk.itu.mariolevel.engine.sprites.Particle;
 import dk.itu.mariolevel.engine.sprites.Shell;
 import dk.itu.mariolevel.engine.sprites.Sparkle;
 import dk.itu.mariolevel.engine.sprites.Sprite;
-import dk.itu.mariolevel.engine.sprites.SpriteContext;
 
-public class AIScene extends LevelScene implements SpriteContext {
+public class AIScene extends LevelScene {
 	public static final int cellSize = 16;	
 	
     public List<Sprite> sprites = new ArrayList<Sprite>();
@@ -43,7 +42,6 @@ public class AIScene extends LevelScene implements SpriteContext {
     final private int[] marioState = new int[11];
     
     private Point marioInitialPos;
-    private int bonusPoints = -1;
 
     public static int killedCreaturesTotal;
     public static int killedCreaturesByFireBall;
@@ -77,10 +75,6 @@ public class AIScene extends LevelScene implements SpriteContext {
 	    killedCreaturesByStomp = 0;
 	    killedCreaturesByShell = 0;
 	    
-	    bonusPoints = -1;
-	    
-	    // Default value
-
         sprites.clear();
 	    
         level.reset();
@@ -445,21 +439,6 @@ public class AIScene extends LevelScene implements SpriteContext {
 	{
 	    // might look ugly , but arrayCopy is not necessary here:
 	    this.mario.keys = action;
-	}
-    
-	public int getBonusPoints()
-	{
-	    return bonusPoints;
-	}
-
-	public void setBonusPoints(final int bonusPoints)
-	{
-	    this.bonusPoints = bonusPoints;
-	}
-
-	public void appendBonusPoints(final int bonusPoints)
-	{
-	    this.bonusPoints += bonusPoints;
 	}
 	
     public float[] getCreaturesFloatPos()

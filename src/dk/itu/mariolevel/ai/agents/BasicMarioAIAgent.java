@@ -114,11 +114,6 @@ public void integrateObservation(Environment environment)
 //    }
 }
 
-public void giveIntermediateReward(float intermediateReward)
-{
-
-}
-
 public void reset()
 {
     action = new boolean[Environment.numberOfKeys];// Empty action

@@ -8,8 +8,8 @@ import java.util.Map.Entry;
 
 import dk.itu.mariolevel.ai.GeneralizerEnemies;
 import dk.itu.mariolevel.ai.GeneralizerLevelScene;
-import dk.itu.mariolevel.ai.SystemOfValues;
 import dk.itu.mariolevel.ai.agents.Agent;
+import dk.itu.mariolevel.ai.agents.ForwardAgent;
 import dk.itu.mariolevel.ai.agents.HumanKeyboardAgent;
 import dk.itu.mariolevel.ai.agents.RandomAgent;
 import dk.itu.mariolevel.engine.CameraHandler;
@@ -21,9 +21,6 @@ import dk.itu.mariolevel.engine.scene.RenderScene;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
 public class MultipleAIEnvironment implements Environment {
-
-	public static SystemOfValues IntermediateRewardsSystemOfValues = new SystemOfValues();
-	
 	public static final int AI_SET_ALL = 0;
 	public static final int AI_SET_SIMPLE = 1;
 	public static final int AI_SET_COMPLEX = 2;
@@ -32,8 +29,8 @@ public class MultipleAIEnvironment implements Environment {
 	private HashMap<Agent, AIScene> aiPairs;
 	
 	private int[] marioEgoPos = new int[]{9,9};
-	private int receptiveFieldHeight = 19; // standard value
-	private int receptiveFieldWidth = 19; // standard value
+	private int receptiveFieldHeight = 22; // standard value
+	private int receptiveFieldWidth = 22; // standard value
 	
 	private HashMap<Agent, byte[][]> aiSceneZ;
 	private HashMap<Agent, byte[][]> enemiesZ;
@@ -54,14 +51,13 @@ public class MultipleAIEnvironment implements Environment {
 	
 	private boolean politeReset;
 	
-	private int currentAISet = AI_SET_PLAYER;
+//	private int currentAISet = AI_SET_PLAYER;
+	private int currentAISet = AI_SET_COMPLEX;
 	
 	public MultipleAIEnvironment() {	
 		// Generate the level
 		level = LevelGenerator.createEditorLevel(100, 15);
 
-		renderScene = new RenderScene(new Level(level));
-		
 		aiPairs = new HashMap<Agent, AIScene>();
 	}
 
@@ -85,16 +81,20 @@ public class MultipleAIEnvironment implements Environment {
 		politeReset = true;
 	}
 	
+	public boolean canEdit() {
+		return currentAISet == AI_SET_SIMPLE;
+	}
+	
 	private void initializeAISet() {
 
 		aiPairs.clear();
 		
 		if(currentAISet == AI_SET_COMPLEX || currentAISet == AI_SET_ALL) {
-			
+//			addAgent(new AStarAgent());
 		}
 		
 		if(currentAISet == AI_SET_SIMPLE || currentAISet == AI_SET_ALL) {
-//    	    addAgent(new ForwardAgent());
+    	    addAgent(new ForwardAgent());
     	    addAgent(new RandomAgent());
 		}
 		
@@ -109,8 +109,7 @@ public class MultipleAIEnvironment implements Environment {
 		}
 		
 		if(currentAISet != AI_SET_PLAYER) {
-        	renderScene.level = new Level(level);
-            renderScene.reset();
+			renderScene = new RenderScene(new Level(level));
             
             CameraHandler.getInstance().setFollowMario(null);
 		}
@@ -233,7 +232,15 @@ public class MultipleAIEnvironment implements Environment {
 	
 	public void addAgent(Agent agent) {
 		// Each agent gets it's own copy of a aiscene
-		AIScene aiScene = new AIScene(new Level(level));
+		AIScene aiScene = null;
+		
+//		if(agent instanceof AStarAgent) {
+//			aiScene = new AStarAIScene(new AStarLevel(level));
+//		}
+//		else {
+			aiScene = new AIScene(new Level(level));
+//		}
+		 
 		aiScene.reset();
 		
 		aiPairs.put(agent, aiScene);
@@ -578,14 +585,6 @@ public class MultipleAIEnvironment implements Environment {
 			return aiPairs.get(agent).isLevelFinished();
 		
 		return false;
-	}
-
-	@Override
-	public int getIntermediateReward(Agent agent) {
-		if(aiPairs.containsKey(agent))
-			return aiPairs.get(agent).getBonusPoints();
-		
-		return 0;
 	}
 
 	@Override

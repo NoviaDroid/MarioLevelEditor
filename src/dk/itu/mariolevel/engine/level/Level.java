@@ -73,10 +73,7 @@ public class Level implements Serializable
 	//private final int FILE_HEADER = 0x271c4178;
 	public int length;
 	public int height;
-	public long randomSeed;
-	public int type;
-	public int difficulty;
-	
+
 	public byte[][] map;
 	public byte[][] data;
 	
@@ -98,18 +95,9 @@ public class Level implements Serializable
 	    xExit = 50;
 	    yExit = 10;
 	
-	    try
-	    {
-	        map = new byte[length][height];
-	        data = new byte[length][height];
-	        spriteTemplates = new SpriteTemplate[length][height];
-	        
-	    } catch (OutOfMemoryError e)
-	    {
-	        System.err.println("Java: MarioAI MEMORY EXCEPTION: OutOfMemory exception. Exiting...");
-	        e.printStackTrace();
-	        System.exit(-3);
-	    }
+        map = new byte[length][height];
+        data = new byte[length][height];
+        spriteTemplates = new SpriteTemplate[length][height];
 	}
 	
 	public Level(Level level)
@@ -119,7 +107,7 @@ public class Level implements Serializable
 		copyLevel(safeCopy);
 	}
 	
-	private void copyLevel(Level level) {
+	protected void copyLevel(Level level) {
 	    this.length = level.length;
 	    this.height = level.height;
 	
@@ -129,18 +117,9 @@ public class Level implements Serializable
 	    xExit = level.xExit;
 	    yExit = level.yExit;
 	
-	    try
-	    {
-	        map = cloneTwoDimensional(level.map);
-	        data = cloneTwoDimensional(level.data);
-	        spriteTemplates =  cloneSpriteTemplate(level.spriteTemplates);
-	        
-	    } catch (OutOfMemoryError e)
-	    {
-	        System.err.println("Java: MarioAI MEMORY EXCEPTION: OutOfMemory exception. Exiting...");
-	        e.printStackTrace();
-	        System.exit(-3);
-	    }
+	    map = cloneTwoDimensional(level.map);
+        data = cloneTwoDimensional(level.data);
+        spriteTemplates =  cloneSpriteTemplate(level.spriteTemplates);
 	}
 	
 	public void reset() {

@@ -24,7 +24,6 @@ public class Enemy extends Sprite
     int width = 4;
     int height = 24;
 
-    public LevelScene world;
     public int facing;
     public int deadTime = 0;
     public boolean flyDeath = false;

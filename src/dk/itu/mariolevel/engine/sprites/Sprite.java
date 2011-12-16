@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import dk.itu.mariolevel.engine.level.SpriteTemplate;
+import dk.itu.mariolevel.engine.scene.LevelScene;
 
 public class Sprite
 {
@@ -37,7 +38,7 @@ public class Sprite
     public byte kind = KIND_UNDEF;
     
     public float xOld, yOld, x, y, xa, ya;
-    
+
     public int mapX, mapY;
     
     public int xPic, yPic;
@@ -48,6 +49,8 @@ public class Sprite
     public boolean yFlipPic = false;
     public Image[][] sheet;
     public boolean visible = true;
+    
+    public LevelScene world;
     
     public int layer = 1;
 
@@ -87,8 +90,6 @@ public class Sprite
                 return "Power up Flower";
             case Sprite.KIND_GREEN_MUSHROOM:
                 return "Green mushroom";
-            /*case Sprite.KIND_PRINCESS:
-                return "Princess";*/
         }
 
         return "Unknown";

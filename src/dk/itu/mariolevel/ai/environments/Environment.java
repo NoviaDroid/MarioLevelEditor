@@ -143,8 +143,6 @@ boolean isLevelFinished(Agent agent);
 
 void reset();
 
-public int getIntermediateReward(Agent agent);
-
 public int[] getMarioEgoPos();
 
 public int getTimeSpent(Agent agent);
