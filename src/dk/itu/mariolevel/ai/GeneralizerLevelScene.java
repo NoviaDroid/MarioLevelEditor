@@ -64,6 +64,7 @@ public static byte ZLevelGeneralization(byte el, int ZLevel)
                 case 17:  // brick with a hidden coin
                 case 18:  // brick with a hidden friendly flower
                     return BREAKABLE_BRICK;
+                case 20:
                 case 21:       // question brick, contains coin
                 case 22:       // question brick, contains flower/mushroom
                 case 23:       // question brick, N coins inside. prevents cheating
@@ -71,6 +72,8 @@ public static byte ZLevelGeneralization(byte el, int ZLevel)
                 case 34:
                     return COIN_ANIM;
                 case 4:
+                case 12:
+                case 9:
                 case -111:
                 case -127:
                     return BORDER_CANNOT_PASS_THROUGH;
@@ -160,6 +163,7 @@ public static byte ZLevelGeneralization(byte el, int ZLevel)
                 case (-81):
                 case (-77):
                 case (-111):
+                case (12):
                 case (4):  // kicked hidden brick
                 case (9):
                     return BORDER_CANNOT_PASS_THROUGH;   // border, cannot pass through, can stand on
@@ -209,6 +213,7 @@ public static byte ZLevelGeneralization(byte el, int ZLevel)
                     //here bricks are any objects cannot jump through and can stand on
                 case 4: //kicked hidden block
                 case 9:
+                case 12:
                 case (10):
                 case (11):
                 case (26):
