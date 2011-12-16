@@ -74,7 +74,6 @@ public class GEBT_MarioAgent implements Agent
     private int m_heightTrapLeft;
     private int m_trapPos;
 
-    private int m_tickCounter;
     private int m_xLastScan;
     private int m_objective;
 
@@ -114,7 +113,6 @@ public class GEBT_MarioAgent implements Agent
         m_OldMarioXInMap = 0;
         m_MarioYInMapChunk = 0;
         m_MarioYInMap = 0;
-        m_tickCounter = 0;
         m_xLastScan = 0;
         m_inertia = 0;
         m_maxGraphTo = 0;
@@ -156,7 +154,6 @@ public class GEBT_MarioAgent implements Agent
 
         m_speedCellsPerCycleX = 0;
         m_lastRealXPos = 0;
-        m_tickCounter = 0;
         m_maxGraphTo = 0;
         m_isATrap = false;
         m_isATrapRight = false;
@@ -194,7 +191,6 @@ public class GEBT_MarioAgent implements Agent
 
         m_speedCellsPerCycleX = 0;
         m_lastRealXPos = 0;
-        m_tickCounter = 0;
         m_maxGraphTo = 0;
         m_isATrap = false;
         m_isATrapRight = false;
@@ -323,7 +319,6 @@ public class GEBT_MarioAgent implements Agent
 
     public int getClosestNodeToMario()
     {
-        int nodeIdOld = m_map.getGraph().getClosestNodeTo(m_MarioXInMap, m_MarioYInMap);
         int nodeId = m_map.getGraph().getClosestNodeToFloatPos(marioFloatPos[0], marioFloatPos[1]);
         return nodeId;
     }
@@ -435,8 +430,6 @@ public class GEBT_MarioAgent implements Agent
     
     public boolean[] getAction()
     {
-        m_tickCounter++;
-
         //Clean all the actions
         cleanActions();
         

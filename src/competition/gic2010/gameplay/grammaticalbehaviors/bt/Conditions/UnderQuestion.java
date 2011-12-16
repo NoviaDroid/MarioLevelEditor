@@ -5,15 +5,14 @@
 
 package competition.gic2010.gameplay.grammaticalbehaviors.bt.Conditions;
 
+import competition.gic2010.gameplay.grammaticalbehaviors.GEBT_Mario.GEBT_MarioAgent;
+import competition.gic2010.gameplay.grammaticalbehaviors.GEBT_Mario.Graph;
 import competition.gic2010.gameplay.grammaticalbehaviors.GEBT_Mario.Map;
 import competition.gic2010.gameplay.grammaticalbehaviors.GEBT_Mario.Node;
-import competition.gic2010.gameplay.grammaticalbehaviors.GEBT_Mario.Graph;
-import competition.gic2010.gameplay.grammaticalbehaviors.GEBT_Mario.GEBT_MarioAgent;
 import competition.gic2010.gameplay.grammaticalbehaviors.bt.behaviortree.BTConstants;
 import competition.gic2010.gameplay.grammaticalbehaviors.bt.behaviortree.BTLeafNode;
 import competition.gic2010.gameplay.grammaticalbehaviors.bt.behaviortree.BTNode;
 import competition.gic2010.gameplay.grammaticalbehaviors.bt.behaviortree.IncorrectNodeException;
-import java.util.Vector;
 
 /**
  *

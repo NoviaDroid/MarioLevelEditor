@@ -45,12 +45,6 @@ public class Graph {
     //Edge counter
     private int m_nodeCounter;
 
-    //Edge counter
-    private int m_edgeCounter;
-
-    //Metadata for the edge
-    private int m_metadata;
-
     private Map m_myMap;
 
     public Graph(Map a_map)
@@ -58,7 +52,6 @@ public class Graph {
         m_edges = new HashMap<Long, Edge>();
         m_nodes = new HashMap<Integer, Node>();
         m_nodeCounter = 0;
-        m_edgeCounter = 0;
         m_shortestPaths = new HashMap<Integer, HashMap<Integer, Path>>();
         m_myMap = a_map;
     }
@@ -157,11 +150,6 @@ public class Graph {
 
         if(nodeA != null && nodeB != null)
         {
-            int aY = nodeA.getY();
-            int aX = nodeA.getX();
-            int bY = nodeB.getY();
-            int bX = nodeB.getX();
-
             int distance = nodeA.manhattanDistanceTo(nodeB);
             Edge newEdge = null;
             Long idKey = new Long(0);
@@ -180,7 +168,6 @@ public class Graph {
                     newEdge = new Edge(id, a_aID, a_bID, a_mode, distance);
                     nodeA.addEdge(id);
                     m_edges.put(idKey, newEdge);
-                    m_edgeCounter++;
                 }
             }
             else
@@ -196,7 +183,6 @@ public class Graph {
                     newEdge = new Edge(id, a_bID, a_aID, a_mode, distance);
                     nodeB.addEdge(id);
                     m_edges.put(idKey, newEdge);
-                    m_edgeCounter++;
                 }
             }
         }
@@ -213,11 +199,6 @@ public class Graph {
 
             if(nodeA != null && nodeB != null)
             {
-                int aY = nodeA.getY();
-                int aX = nodeA.getX();
-                int bY = nodeB.getY();
-                int bX = nodeB.getX();
-
                 int distance = nodeA.manhattanDistanceTo(nodeB);
                 Edge newEdge = null;
                 Long idKey = new Long(0);
@@ -235,7 +216,6 @@ public class Graph {
                         newEdge = new Edge(id, a_aID, a_bID, a_mode, distance);
                         nodeA.addEdge(id);
                         m_edges.put(idKey, newEdge);
-                        m_edgeCounter++;
                     }
                 }
                 else
@@ -251,7 +231,6 @@ public class Graph {
                         newEdge = new Edge(id, a_bID, a_aID, a_mode, distance);
                         nodeB.addEdge(id);
                         m_edges.put(idKey, newEdge);
-                        m_edgeCounter++;
                     }
                 }
 
@@ -279,11 +258,6 @@ public class Graph {
                     int aX = nodeA.getX();
                     int bY = nodeB.getY();
                     int bX = nodeB.getX();
-
-                    /*if(aX == 143 && aY == 3 && bX == 144 && bY == 4)
-                    {
-                        int a = 0;
-                    }*/
 
                     int distance = nodeA.manhattanDistanceTo(nodeB);
                     int modeAB = a_mode;
@@ -324,7 +298,6 @@ public class Graph {
                                 m_edges.put(idKey2, newEdgeBA);
                                 nodeB.addEdge(id2);
                             }
-                            m_edgeCounter++;
                             return;
                         }
                     }
@@ -350,9 +323,6 @@ public class Graph {
                     {
                         newEdgeBA.setMetadata(Edge.META_SOLID);
                     }
-
-                    // System.out.println(a_aID + " -> " + a_bID);
-                    m_edgeCounter+=2;
                 }
             }
         }
@@ -1016,7 +986,6 @@ public class Graph {
     }
 
     private HashMap<Integer, Path> getShortestPaths(int a_origin){return m_shortestPaths.get(a_origin);}
-    private HashMap<Integer, HashMap<Integer, Path>> getShortestPaths() {return m_shortestPaths;}
 
 
     //Sets path

@@ -11,8 +11,9 @@ package competition.gic2010.gameplay.grammaticalbehaviors.bt.behaviortree;
  */
 public class IncorrectNodeException extends Exception{
 
-    
-    IncorrectNodeException()
+	private static final long serialVersionUID = -56596028319153966L;
+
+	IncorrectNodeException()
     {
     }
     

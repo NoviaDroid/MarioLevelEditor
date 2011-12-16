@@ -35,7 +35,6 @@ public class FollowCurrentPath extends BTLeafNode{
     private boolean m_redoJump;
     private float m_lastSpeed;
     private int m_forceMove;
-    private int m_preSlowdownCount;
     private boolean m_jumpPressSpeed;
     private boolean m_grantLRMove;
     private Hashtable<Long, Integer> m_edgeAttempts;
@@ -59,7 +58,6 @@ public class FollowCurrentPath extends BTLeafNode{
         m_lastSpeed = 0;
         m_forceMove = 0;
         m_jumpDestHolesMode = 0;
-        m_preSlowdownCount = 1;
         m_grantLRMove = false;
         m_edgeAttempts = new Hashtable<Long, Integer>();
         m_currentLinkType = 0;
@@ -80,7 +78,6 @@ public class FollowCurrentPath extends BTLeafNode{
         m_lastSpeed = 0;
         m_forceMove = 0;
         m_jumpDestHolesMode = 0;
-        m_preSlowdownCount = 1;
         m_grantLRMove = false;
         m_edgeAttempts = new Hashtable<Long, Integer>();
         m_currentLinkType = 0;
@@ -154,11 +151,6 @@ public class FollowCurrentPath extends BTLeafNode{
             mario.followingNewPath(false);
         }
 
-        if(m_startingEdge)
-        {
-            m_preSlowdownCount = 1;
-        }
-        
         //Check if we are at the end
         if(marioIndex >= curPath.m_points.size()-1)
         {
@@ -355,8 +347,6 @@ public class FollowCurrentPath extends BTLeafNode{
                                 aboutToJump++;
                                 shouldISlowDown = (marioNode.getX() < destNode.getX()) && (marioSpeedX > 3); //right too fast
                                 shouldISlowDown |= (marioNode.getX() > destNode.getX()) && (marioSpeedX < -3); //left too fast
-
-                                if(shouldISlowDown) m_preSlowdownCount++;
                             }
                         }
 
@@ -825,7 +815,6 @@ public class FollowCurrentPath extends BTLeafNode{
     private boolean verticalJump(GEBT_MarioAgent mario, Node a_marioNode,
                                 Node a_destNode)
     {
-        int marioInertia = mario.getInertia();
         float marioSpeedX = mario.getMarioSpeedX();
 
         if(m_startingEdge)

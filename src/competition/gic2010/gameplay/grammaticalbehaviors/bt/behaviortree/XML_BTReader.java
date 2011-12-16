@@ -96,8 +96,6 @@ public abstract class XML_BTReader {
 
     public BehaviorTree readDouble(BTInterface a_bt, BTStream a_stream)
     {
-        boolean ok = true;
-
         BehaviorTree bt_temp = new BehaviorTree(a_bt.getAgent(),a_bt.getReader());
 
         BTRootNode btRoot = new BTRootNode();

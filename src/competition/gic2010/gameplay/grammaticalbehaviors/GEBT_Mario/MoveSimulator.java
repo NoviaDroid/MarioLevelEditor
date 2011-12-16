@@ -158,11 +158,6 @@ public class MoveSimulator {
             //Check arrived at destination...
             hit = a_destX == cellX && a_destY == cellY && marioXInMapChunkOk;// && marioYInMapChunk == 1;
 
-            if(hit)
-            {
-                int a = 0;
-            }
-
             //Or It'll be a miss.
             missed = (a_destY > cellY);
         }

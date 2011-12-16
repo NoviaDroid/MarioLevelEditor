@@ -71,18 +71,10 @@ public class Edge {
         int internalCost = a_dest.internalCost(a_agent);
         int totalCost = m_cost + internalCost;
 
-        if(totalCost < m_cost)
-        {
-            int a = 0;
-        }
-
         if(a_volatile)
             return totalCost;
         else
             return m_cost;
         
     }
-
-
-
 }

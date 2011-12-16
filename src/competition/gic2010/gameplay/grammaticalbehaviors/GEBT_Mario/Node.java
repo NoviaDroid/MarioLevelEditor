@@ -76,11 +76,6 @@ public class Node {
     public void setItems(Vector<Item> a_items) {m_items = a_items;}
     public Vector<Item> getItems() {return m_items;}
 
-
-    private final float COIN_WEIGHT = 0f;
-    private final float ITEM_WEIGHT_SMALL = -10f;
-    private final float ITEM_WEIGHT_BIG = -15f;
-    private final float ITEM_WEIGHT_FIRE = -20f;
     private final float ENEMY_WEIGHT_STOMP_SLOW = 8;
     private final float ENEMY_WEIGHT_STOMP_FAST = 16;
     private final float ENEMY_WEIGHT_WINGED = 24;
@@ -89,18 +84,6 @@ public class Node {
     //Cost dependant on coins, enemies, items.
     public int internalCost(GEBT_MarioAgent a_agent)
     {
-        //Coin factor.
-        float coinWeight = COIN_WEIGHT;
-        int costCoins = (int) (m_coins*coinWeight);
-
-        //Item factor.
-        float itemWeight = ITEM_WEIGHT_SMALL; //Small Mario: risk to die!
-        if(a_agent.isMarioLarge())
-            itemWeight = ITEM_WEIGHT_BIG; //Possibility to fire but risk to be small
-        if(a_agent.isMarioFire())
-            itemWeight = ITEM_WEIGHT_FIRE; //Possibility to keep fire if damaged in the way
-        int costItems = (int)(itemWeight*m_items.size());
-
         //Enemy factor
         float costEnemies = 0;
         int numEnemies = m_enemies.size();
