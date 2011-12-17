@@ -21,13 +21,13 @@ import dk.itu.mariolevel.engine.Art;
 import dk.itu.mariolevel.engine.BgRenderer;
 import dk.itu.mariolevel.engine.CameraHandler;
 import dk.itu.mariolevel.engine.LevelRenderer;
-import dk.itu.mariolevel.engine.MarioTracker;
 import dk.itu.mariolevel.engine.Scale2x;
-import dk.itu.mariolevel.engine.TraceHolder;
 import dk.itu.mariolevel.engine.level.BgLevelGenerator;
 import dk.itu.mariolevel.engine.level.Level;
 import dk.itu.mariolevel.engine.sprites.Mario;
 import dk.itu.mariolevel.engine.sprites.Sprite;
+import dk.itu.mariolevel.engine.tracking.MarioTracker;
+import dk.itu.mariolevel.engine.tracking.TraceHolder;
 
 public class PlayComponent extends JComponent implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 5552300968020476470L;

@@ -49,6 +49,29 @@ public class CameraHandler {
 		camX += x;
 		camY += y;
 		
+		fixBounds();
+	}
+	
+	public void moveCameraTo(int x, int y) {
+		camX = x;
+		camY = y;
+		
+		fixBounds();
+	}
+	
+	public void moveCameraToX(int x) {
+		camX = x;
+		
+		fixBounds();
+	}
+	
+	public void moveCameraToY(int y) {
+		camY = y;
+		
+		fixBounds();
+	}
+	
+	private void fixBounds() {
 		if(camX + width > maxX)
 			camX = maxX - width;
     	

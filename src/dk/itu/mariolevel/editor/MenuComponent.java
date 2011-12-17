@@ -135,7 +135,7 @@ public class MenuComponent extends JPanel implements ActionListener{
 			}
 		}
 		else if(RATE_COMMAND.equals(e.getActionCommand())) {
-			
+			getMarioPanel().rateLevel();
 		}
 		else {
 			if(ALL_AI_COMMAND.equals(e.getActionCommand())) {
@@ -150,9 +150,9 @@ public class MenuComponent extends JPanel implements ActionListener{
 			else if(PLAYER_COMMAND.equals(e.getActionCommand())) {
 				getMarioPanel().changeAISet(MultipleAIEnvironment.AI_SET_PLAYER);
 			}
-			
-			getMarioPanel().returnFocusToGame();
 		}
+		
+		getMarioPanel().returnFocusToGame();
 	}
 	
 	public void changeAvailableAISets(boolean editing) {
@@ -182,7 +182,7 @@ public class MenuComponent extends JPanel implements ActionListener{
 			returnVal = fc.showSaveDialog(getMarioPanel());
 		}
 		
-		getMarioPanel().returnFocusToGame();
+//		getMarioPanel().returnFocusToGame();
 		
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
            	return fc.getSelectedFile().getPath();

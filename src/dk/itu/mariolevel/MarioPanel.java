@@ -10,6 +10,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -20,7 +23,10 @@ import dk.itu.mariolevel.editor.EditorComponent;
 import dk.itu.mariolevel.editor.MenuComponent;
 import dk.itu.mariolevel.editor.PlayComponent;
 import dk.itu.mariolevel.engine.Art;
+import dk.itu.mariolevel.engine.CameraHandler;
 import dk.itu.mariolevel.engine.level.Level;
+import dk.itu.mariolevel.engine.tracking.FinishPoint;
+import dk.itu.mariolevel.engine.tracking.MarioTracker;
 
 public class MarioPanel extends JPanel {
 	private static final long serialVersionUID = 8118679016668905717L;
@@ -161,5 +167,40 @@ public class MarioPanel extends JPanel {
 
 	public void returnFocusToGame() {
 		playComponent.requestFocus();
+	}
+
+	private int threshold = 50;
+	private int minDeaths = 5;
+	
+	public void rateLevel() {
+		ArrayList<FinishPoint> finishMap = MarioTracker.getInstance().getTraceAndFinish(true);
+
+		if(finishMap.size() < minDeaths) {
+			JOptionPane.showMessageDialog(this, "Need more deaths to give a proper estimate.", "Death to all agents", JOptionPane.INFORMATION_MESSAGE);
+		}
+		else {
+			HashMap<Integer, Integer> deathMap = new HashMap<Integer, Integer>();
+			
+			// Get only deaths:
+			for(FinishPoint point : finishMap) {
+				int mapX =  ((int)(point.finish.x+threshold/2.0) / threshold) * threshold;
+				
+				if(!deathMap.containsKey(mapX)) 
+					deathMap.put(mapX, 0);
+				
+				deathMap.put(mapX, deathMap.get(mapX) + 1);
+			}
+			
+			int mostDeath = -1;
+			
+			for(Entry<Integer, Integer> pair : deathMap.entrySet()) {
+				if(mostDeath == -1 || pair.getValue() > deathMap.get(mostDeath))
+					mostDeath = pair.getKey();
+			}
+			
+			CameraHandler.getInstance().moveCameraToX(mostDeath-CameraHandler.getInstance().width/2);
+			
+			JOptionPane.showMessageDialog(this, "A lot of agents seem to die here.", "Death to all agents", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 }

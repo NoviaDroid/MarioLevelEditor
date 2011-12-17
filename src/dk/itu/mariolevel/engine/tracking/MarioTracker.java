@@ -1,4 +1,4 @@
-package dk.itu.mariolevel.engine;
+package dk.itu.mariolevel.engine.tracking;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -70,6 +70,16 @@ public class MarioTracker {
 		return returnList;
 	}
 	
+	public ArrayList<FinishPoint> getTraceAndFinish(boolean deathsOnly) {
+		ArrayList<FinishPoint> returnList = new ArrayList<FinishPoint>();
+		
+		for(TraceHolder holder : traceMap.values()) {
+			returnList.addAll(holder.getTraceAndFinish(deathsOnly));
+		}
+
+		return returnList;
+	}
+	
 	public void tick() {
 		tick++;
 		
@@ -78,9 +88,9 @@ public class MarioTracker {
 				Mario mario = pair.getKey().mario;
 				TraceHolder traceHolder = pair.getValue();
 				
-				if(mario.getStatus() == Mario.STATUS_DEAD || mario.getStatus() == Mario.STATUS_WIN)
+				if((mario.getStatus() == Mario.STATUS_DEAD && mario.deathTime == 1) || mario.getStatus() == Mario.STATUS_WIN)
 					traceHolder.addFinish(new Point(mario.xDeathPos, mario.yDeathPos), mario.getStatus() == Mario.STATUS_WIN);
-				else if(tick % POS_TRACE_INTERVAL == 0)
+				else if(mario.getStatus() == Mario.STATUS_RUNNING && tick % POS_TRACE_INTERVAL == 0)
 					traceHolder.addToTrack(new Point((int) mario.x, (int) (mario.y - 7)));
 			}
 		}
