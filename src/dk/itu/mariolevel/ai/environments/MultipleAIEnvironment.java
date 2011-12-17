@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import competition.cig.robinbaumgarten.AStarAgent;
 import competition.gic2010.gameplay.grammaticalbehaviors.GEBT_Mario.GEBT_MarioAgent;
 
 import dk.itu.mariolevel.ai.GeneralizerEnemies;
@@ -54,8 +53,7 @@ public class MultipleAIEnvironment implements Environment {
 	
 	private boolean politeReset;
 	
-//	private int currentAISet = AI_SET_PLAYER;
-	private int currentAISet = AI_SET_COMPLEX;
+	private int currentAISet, nextAISet;
 	
 	public MultipleAIEnvironment() {	
 		// Generate the level
@@ -80,7 +78,7 @@ public class MultipleAIEnvironment implements Environment {
 	}
 	
 	public void changeAISet(int set) {
-		currentAISet = set;
+		nextAISet = set;
 		politeReset = true;
 	}
 	
@@ -94,7 +92,7 @@ public class MultipleAIEnvironment implements Environment {
 		
 		if(currentAISet == AI_SET_COMPLEX || currentAISet == AI_SET_ALL) {
 			addAgent(new GEBT_MarioAgent());
-			addAgent(new AStarAgent());
+//			addAgent(new AStarAgent());
 		}
 		
 		if(currentAISet == AI_SET_SIMPLE || currentAISet == AI_SET_ALL) {
@@ -145,6 +143,24 @@ public class MultipleAIEnvironment implements Environment {
 			for(AIScene aiScene : aiPairs.values()) 
 				MarioTracker.getInstance().addTracing(aiScene);
 		}
+	}
+	
+	public String getAgentName(AIScene levelScene) {
+		if(levelScene == null) return "";
+		
+		
+		
+		for(Agent agent : aiPairs.keySet()) {
+			if(aiPairs.get(agent).equals(levelScene)) {
+				return agent.getName();
+			}
+		}
+		
+		if(levelScene.equals(playScene)) {
+			return playAgent.getName();
+		}
+		
+		return "";
 	}
 	
 	@Override
@@ -203,6 +219,8 @@ public class MultipleAIEnvironment implements Environment {
         enemiesZ = new HashMap<Agent, byte[][]>();
         mergedZZ = new HashMap<Agent, byte[][]>();
 
+        currentAISet = nextAISet;
+        
         initializeAISet();
         
         addTracing();

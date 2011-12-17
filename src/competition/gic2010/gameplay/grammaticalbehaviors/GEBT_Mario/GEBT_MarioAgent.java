@@ -133,7 +133,7 @@ public class GEBT_MarioAgent implements Agent
         
         //loadBehaviorTree("bestIndividual_GEBT_MarioAgent.xml");
         loadBehaviorTree("bestIndividual_GEBT_MarioAgent.xml");
-        System.out.println("Tried to load: bestIndividual_GEBT_MarioAgent.xml");
+//        System.out.println("Tried to load: bestIndividual_GEBT_MarioAgent.xml");
         
     }
 
@@ -1396,17 +1396,17 @@ public class GEBT_MarioAgent implements Agent
 
     public boolean isMarioSmall()
     {
-        return !(Mario.large || Mario.fire);
+        return marioMode == 0;
     }
 
     public boolean isMarioLarge()
     {
-        return Mario.large;
+        return marioMode == 1;
     }    
     
     public boolean isMarioFire()
     {
-        return Mario.fire;
+        return marioMode == 2;
     }
     
     public boolean isMarioStuck()

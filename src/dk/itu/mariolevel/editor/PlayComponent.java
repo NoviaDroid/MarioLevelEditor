@@ -26,6 +26,7 @@ import dk.itu.mariolevel.engine.Scale2x;
 import dk.itu.mariolevel.engine.TraceHolder;
 import dk.itu.mariolevel.engine.level.BgLevelGenerator;
 import dk.itu.mariolevel.engine.level.Level;
+import dk.itu.mariolevel.engine.sprites.Mario;
 import dk.itu.mariolevel.engine.sprites.Sprite;
 
 public class PlayComponent extends JComponent implements Runnable, KeyListener, MouseListener, MouseMotionListener {
@@ -137,7 +138,20 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	    g.translate(-xCam, -yCam);
 
 	    for (Sprite sprite : sprites)  // Mario, creatures
-	        if (sprite.layer == 1) sprite.render(g);
+	        if (sprite.layer == 1) {
+	        	if(sprite instanceof Mario) {
+	        		Mario mario = (Mario) sprite;
+	        			        		
+	        		int c = 7;
+	        		int x = (int)mario.x;
+	        		int y = (int)mario.y - (mario.hPic == 16 ? mario.hPic+10 : mario.hPic+2);
+	        		String text = environment.getAgentName(mario.world);
+	        		
+	        		drawString(g, text, x-(text.length()*4), y, c);
+	        	}
+
+	        	sprite.render(g);
+	        }
 
 	    g.translate(xCam, yCam);
 	    		
@@ -196,6 +210,15 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 	    }
 	}
 	
+    private void drawString(Graphics g, String text, int x, int y, int c)
+    {
+        char[] ch = text.toCharArray();
+        for (int i = 0; i < ch.length; i++)
+        {
+            g.drawImage(Art.font[ch[i] - 32][c], x + i * 8, y, null);
+        }
+    }
+	
 	private Color[] colors = new Color[]{Color.RED, Color.BLUE, Color.GREEN, Color.ORANGE, Color.YELLOW};
 	
 
@@ -246,6 +269,8 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
         // Stupid hack to fix weird frame packing
         getMarioPanel().toggleEditing();
         getMarioPanel().toggleEditing();
+        
+        changeAISet(MultipleAIEnvironment.AI_SET_SIMPLE);
         // Stupid hack to fix weird frame packing
         
 		while(running) {
@@ -299,8 +324,10 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 		if(keyCode == KeyEvent.VK_E && !isPressed) {
 			getMarioPanel().toggleEditing();
 			layer.setLevel(environment.getLevelToRender());
-			environment.changeAISet(getMarioPanel().isEditing() ? MultipleAIEnvironment.AI_SET_SIMPLE : MultipleAIEnvironment.AI_SET_PLAYER);
 			
+			if(getMarioPanel().isEditing()) {
+				changeAISet(MultipleAIEnvironment.AI_SET_SIMPLE);
+			}		
 		}
 		
 		if(keyCode == KeyEvent.VK_M && !isPressed) {
@@ -320,6 +347,10 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 			Point bluh = CameraHandler.getInstance().mousePointToTile(lastMousePos);
 	    	environment.getLevel().setBlock(bluh.x, bluh.y, pickedTile);
 		}
+	}
+	
+	public void changeAISet(int aiSet) {
+		environment.changeAISet(aiSet);
 	}
 	
 	public void setPickedTile(byte tile) {

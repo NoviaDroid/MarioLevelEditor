@@ -301,7 +301,7 @@ public class AIScene extends LevelScene {
 
             if (((Level.TILE_BEHAVIORS[block & 0xff]) & Level.BIT_SPECIAL) > 0)
             {
-                if (!Mario.large)
+                if (!mario.large)
                 {
                     addSprite(new Mushroom(this, x * 16 + 8, y * 16 + 8, true));
                 }

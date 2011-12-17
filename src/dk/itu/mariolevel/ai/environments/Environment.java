@@ -146,7 +146,6 @@ void reset();
 public int[] getMarioEgoPos();
 
 public int getTimeSpent(Agent agent);
-
 }
 
 

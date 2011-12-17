@@ -45,7 +45,7 @@ public class HumanKeyboardAgent implements Agent
 {
 List<boolean[]> history = new ArrayList<boolean[]>();
 private boolean[] Action = null;
-private String Name = "HumanKeyboardAgent";
+private String Name = "Human";
 
 /*final*/
 protected byte[][] levelScene;

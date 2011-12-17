@@ -9,8 +9,8 @@ import dk.itu.mariolevel.engine.scene.LevelScene;
 
 public class Mario extends Sprite
 {
-    public static boolean large = false;
-    public static boolean fire = false;
+    public boolean large = false;
+    public boolean fire = false;
     public static int coins = 0;
     public static int lives = 3;
 
@@ -65,7 +65,7 @@ public class Mario extends Sprite
         keys = LevelScene.keys;
         
         facing = 1;
-        setLarge(Mario.large, Mario.fire);
+        setLarge(large, fire);
     }
     
     public Mario(int x, int y) {
@@ -80,8 +80,8 @@ public class Mario extends Sprite
     
     private void blink(boolean on)
     {
-        Mario.large = on?newLarge:lastLarge;
-        Mario.fire = on?newFire:lastFire;
+        large = on?newLarge:lastLarge;
+        fire = on?newFire:lastFire;
         
         if (large)
         {
@@ -110,14 +110,14 @@ public class Mario extends Sprite
         if (fire) large = true;
         if (!large) fire = false;
         
-        lastLarge = Mario.large;
-        lastFire = Mario.fire;
+        lastLarge = this.large;
+        lastFire = this.fire;
         
-        Mario.large = large;
-        Mario.fire = fire;
+        this.large = large;
+        this.fire = fire;
 
-        newLarge = Mario.large;
-        newFire = Mario.fire;
+        newLarge = this.large;
+        newFire = this.fire;
         
         blink(true);
     }
@@ -264,7 +264,7 @@ public class Mario extends Sprite
             sliding = false;
         }
         
-        if (keys[KEY_SPEED] && canShoot && Mario.fire && world.fireballsOnScreen<2)
+        if (keys[KEY_SPEED] && canShoot && this.fire && world.fireballsOnScreen<2)
         {
             //world.sound.play(Art.samples[Art.SAMPLE_MARIO_FIREBALL], this, 1, 1, 1);
             world.addSprite(new Fireball(world, x+facing*6, y-20, facing));

@@ -55,6 +55,8 @@ public class MarioPanel extends JPanel {
 	public void toggleEditing() {
 		showEdit = !showEdit;
 		
+		menuComponent.changeAvailableAISets(showEdit);
+		
 		updateComponents();
 	}
 	
@@ -66,6 +68,10 @@ public class MarioPanel extends JPanel {
 	
 	public boolean isEditing() {
 		return showEdit;
+	}
+	
+	public void changeAISet(int aiSet) {
+		playComponent.changeAISet(aiSet);
 	}
 	
 	private void updateComponents() {
