@@ -46,7 +46,7 @@ public class EditorComponent extends JPanel {
 		addTileGroup(new TileGroup("enemies", new byte[]{Level.SPECIAL_BLOCK_GOOMBA,Level.SPECIAL_BLOCK_FLOWER,14,0,0,Level.SPECIAL_BLOCK_RED_KOOPA,Level.SPECIAL_BLOCK_GREEN_KOOPA,30,0,0,0,0,46,0,0}, width, this));
 		addTileGroup(new TileGroup("pipes", new byte[]{10,11,24,0,0,26,27,40,0,0,0,0,56,0,0}, width, this));
 		addTileGroup(new TileGroup("special", new byte[]{Level.SPECIAL_BLOCK_START,Level.SPECIAL_BLOCK_END,Level.SPECIAL_BLOCK_MUSHROOM,0,0}, width, this));
-		addTileGroup(new TileGroup("misc", new byte[]{80,81,82,0,0,96,97,98}, width, this));
+		addTileGroup(new TileGroup("misc", new byte[]{80,81,82,0,0,96,97,98,0,0}, width, this));
 		
 		revalidate();
 	}

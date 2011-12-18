@@ -92,7 +92,6 @@ public class MultipleAIEnvironment implements Environment {
 		
 		if(currentAISet == AI_SET_COMPLEX || currentAISet == AI_SET_ALL) {
 			addAgent(new GEBT_MarioAgent());
-//			addAgent(new AStarAgent());
 		}
 		
 		if(currentAISet == AI_SET_SIMPLE || currentAISet == AI_SET_ALL) {
