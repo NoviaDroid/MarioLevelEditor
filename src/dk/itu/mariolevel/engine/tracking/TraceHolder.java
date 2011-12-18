@@ -4,10 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 public class TraceHolder {
-//	private final static int MAX_TRACES = 10;
 	private final static int MAX_POS_TRACE = 200;
 	
-//	private int currentTrace;
 	private ArrayList<ArrayList<Point>> traces;
 	private ArrayList<FinishPoint> finishMap;
 	
@@ -19,9 +17,6 @@ public class TraceHolder {
 	}
 	
 	public void addToTrack(Point point) {
-//		if(currentTrace >= traces.size())
-//			traces.add(new ArrayList<Point>());
-//		
 		int currentTrace = traces.size()-1;
 		
 		// Avoid additional points the same place
@@ -57,17 +52,6 @@ public class TraceHolder {
 	}
 	
 	public void addFinish(Point point, boolean win) {
-//		currentTrace++;
-//		
-//		if(currentTrace == MAX_TRACES -1) {
-//			traces.remove(0);
-//			finishMap.remove(0);
-//			
-//			currentTrace--;
-//		}
-//		
-		
-		System.out.println(point);
 		traces.add(new ArrayList<Point>());
 		finishMap.add(new FinishPoint(point, win));
 	}

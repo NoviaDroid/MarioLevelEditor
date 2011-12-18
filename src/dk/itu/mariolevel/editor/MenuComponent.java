@@ -31,6 +31,8 @@ public class MenuComponent extends JPanel implements ActionListener{
 	private JRadioButton b3, b4, b5, b6;
 	private ButtonGroup group;
 	
+	private JButton b7;
+	
 	public MenuComponent(int width) {
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		
@@ -106,7 +108,7 @@ public class MenuComponent extends JPanel implements ActionListener{
 		
 		add(panel);
 		
-		JButton b7 = new JButton("Make suggestion");
+		b7 = new JButton("Make suggestion");
 		
 		b7.setActionCommand(RATE_COMMAND);
 		b7.addActionListener(this);
@@ -150,6 +152,8 @@ public class MenuComponent extends JPanel implements ActionListener{
 			else if(PLAYER_COMMAND.equals(e.getActionCommand())) {
 				getMarioPanel().changeAISet(MultipleAIEnvironment.AI_SET_PLAYER);
 			}
+			
+			b7.setEnabled(!PLAYER_COMMAND.equals(e.getActionCommand()));
 		}
 		
 		getMarioPanel().returnFocusToGame();
