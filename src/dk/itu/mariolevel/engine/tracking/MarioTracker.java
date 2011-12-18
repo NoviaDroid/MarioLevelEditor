@@ -46,19 +46,11 @@ public class MarioTracker {
 		tick = 0;
 	}
 	
-	private void clearTracing() {
-		for(LevelScene key : traceMap.keySet())
-			traceMap.put(key, new TraceHolder());
-		
-		tick = 0;
-	}
-	
-	public void toggleTracing() {
+	public void toggleShowTracing() {
 		trace = !trace;
-		clearTracing();
 	}
 	
-	public boolean isTracing() {
+	public boolean showTracing() {
 		return trace;
 	}
 	
@@ -83,16 +75,14 @@ public class MarioTracker {
 	public void tick() {
 		tick++;
 		
-		if(trace) {
-			for(Entry<LevelScene, TraceHolder> pair : traceMap.entrySet()) {
-				Mario mario = pair.getKey().mario;
-				TraceHolder traceHolder = pair.getValue();
-				
-				if((mario.getStatus() == Mario.STATUS_DEAD && mario.deathTime == 1) || mario.getStatus() == Mario.STATUS_WIN)
-					traceHolder.addFinish(new Point(mario.xDeathPos, mario.yDeathPos), mario.getStatus() == Mario.STATUS_WIN);
-				else if(mario.getStatus() == Mario.STATUS_RUNNING && tick % POS_TRACE_INTERVAL == 0)
-					traceHolder.addToTrack(new Point((int) mario.x, (int) (mario.y - 7)));
-			}
+		for(Entry<LevelScene, TraceHolder> pair : traceMap.entrySet()) {
+			Mario mario = pair.getKey().mario;
+			TraceHolder traceHolder = pair.getValue();
+			
+			if((mario.getStatus() == Mario.STATUS_DEAD && mario.deathTime == 1) || mario.getStatus() == Mario.STATUS_WIN)
+				traceHolder.addFinish(new Point(mario.xDeathPos, mario.yDeathPos), mario.getStatus() == Mario.STATUS_WIN);
+			else if(mario.getStatus() == Mario.STATUS_RUNNING && tick % POS_TRACE_INTERVAL == 0)
+				traceHolder.addToTrack(new Point((int) mario.x, (int) (mario.y - 7)));
 		}
 	}
 }

@@ -179,7 +179,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 		    g.drawRect(relativeTilePositionX, relativeTilePositionY, 16, 16);
 	    }
 	    
-	    if(MarioTracker.getInstance().isTracing()) {
+	    if(MarioTracker.getInstance().showTracing()) {
 			List<TraceHolder> traces = MarioTracker.getInstance().getTracings();
 			
 			for(int i = 0; i < traces.size(); i++) {
@@ -335,7 +335,7 @@ public class PlayComponent extends JComponent implements Runnable, KeyListener, 
 		}
 		
 		if(keyCode == KeyEvent.VK_T && !isPressed) {
-			MarioTracker.getInstance().toggleTracing();
+			MarioTracker.getInstance().toggleShowTracing();
 		}
 	}
 
